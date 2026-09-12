@@ -285,9 +285,9 @@ People reach for department names when asked which function a use case serves.
 Neither is a function here: **manufacturing** is a *sector* (ISIC section C), and
 **finance** is either a sector (section L) or, as work, the three stages above
 marked finance — credit and risk assessment, invoicing and settlement, tax
-administration. The value stream is what makes that legible: it shows where the
-finance-side and the production-side stages fall inside one sequence, which is
-the thing a department name is reaching for.
+administration. The value stream makes that legible by showing where the
+finance-side and the production-side stages fall within one sequence, which is
+what a department name is pointing at.
 
 ## Why, and how far: the axes on top
 
@@ -306,7 +306,7 @@ case, unranked:
 | `fraud-prevention` | forgery, impersonation and misrepresentation made impractical rather than merely detectable afterwards |
 | `compliance-assurance` | evidence a supervisor will accept, produced as a by-product of the work rather than as an exercise |
 | `data-quality` | transcription, reconciliation and staleness errors removed |
-| `data-minimisation` | proving what the counterparty is entitled to know without disclosing the rest — often what makes an exchange permissible at all |
+| `data-minimisation` | proving what the counterparty is entitled to know without disclosing the rest, which can permit an exchange that full disclosure would not |
 | `reach-and-inclusion` | counterparties served who could not be before: remote, cross-border, or with no prior relationship |
 | `new-revenue` | a chargeable service, market or pricing model that verifiable data is a precondition for |
 
@@ -540,10 +540,10 @@ A party is not limited to one verb. The school that issues a school-leaving
 certificate also verifies the graduate's e-ID, and both are recorded on its
 participation.
 
-A credential type **evidences a state**, which is how this layer joins the rest:
-holding the credential is what makes the state true, and states are what use
-cases compose against. Adding credentials therefore does not change the
-composition — it explains it.
+A credential type **evidences a state**, which connects this layer to the rest:
+holding the credential is the condition that satisfies the state, and states are
+what use cases compose against. Credentials explain an existing composition
+without altering it.
 
 Recorded per type: the format (`SD-JWT VC`, `W3C VCDM 2.0`), the ecosystem whose
 schemas apply (`swiyu`, `ELM` for education and labour, `UN/CEFACT` for trade),

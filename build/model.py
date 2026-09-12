@@ -71,8 +71,8 @@ SCHEMES = {
     "ifm-credential-types": {
         "title": "Credential types",
         "description": "What is actually issued, presented and checked. A credential "
-                       "type evidences a state, which connects this layer to the rest: "
-                       "holding the credential is what makes the state true.",
+                       "type evidences a state, which connects this layer to the "
+                       "rest: holding the credential satisfies the state.",
         "source": "https://www.w3.org/TR/vc-data-model-2.0/",
     },
     "ifm-states": {
@@ -94,8 +94,8 @@ SCHEMES = {
     "ifm-replaced-evidence": {
         "title": "Replaced evidence",
         "description": "What the credential displaces: a paper document, an uncheckable "
-                       "PDF, a phone call, an in-person visit. Recording it is what "
-                       "makes a friction-reduction claim measurable.",
+                       "PDF, a phone call, an in-person visit. Recording it is how a "
+                       "friction-reduction claim becomes measurable.",
         "source": BASE,
     },
     "ifm-value-streams": {

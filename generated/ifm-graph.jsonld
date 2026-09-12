@@ -139,7 +139,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "What is actually issued, presented and checked. A credential type evidences a state, which connects this layer to the rest: holding the credential is what makes the state true.",
+        "@value": "What is actually issued, presented and checked. A credential type evidences a state, which connects this layer to the rest: holding the credential satisfies the state.",
         "@language": "en"
       },
       "dct:source": {
@@ -190,7 +190,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Recording it is what makes a friction-reduction claim measurable.",
+        "@value": "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Recording it is how a friction-reduction claim becomes measurable.",
         "@language": "en"
       },
       "dct:source": {

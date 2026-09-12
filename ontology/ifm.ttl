@@ -211,9 +211,9 @@ ifm:changeMode a owl:ObjectProperty ;
 # credential and another checks a different one within the same use case.
 #
 # A credential type evidences a state, which connects this layer to the rest:
-# holding the credential is what makes the state true, and states are what use
-# cases compose against. Credentials explain an existing composition; they do
-# not alter it.
+# holding the credential satisfies the state, and states are what use cases
+# compose against. Credentials explain an existing composition without altering
+# it.
 ################################################################
 
 ifm:CredentialType a owl:Class ;
@@ -227,7 +227,7 @@ ifm:evidences a owl:ObjectProperty ;
     rdfs:label "evidences"@en ;
     rdfs:domain ifm:CredentialType ;
     rdfs:range ifm:State ;
-    rdfs:comment "Holding this credential is what makes the state true."@en .
+    rdfs:comment "Holding this credential satisfies the state."@en .
 
 ifm:credentialFormat a owl:DatatypeProperty ;
     rdfs:label "credential format"@en ;
@@ -359,8 +359,8 @@ ifm:ReplacedEvidence a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     rdfs:label "Replaced evidence"@en ;
     rdfs:comment """What the credential displaces: a paper document, an uncheckable
-PDF, a phone call, an in-person visit. Recording it is what makes a claim of
-friction reduction measurable."""@en .
+PDF, a phone call, an in-person visit. Recording it is how a claim of friction
+reduction becomes measurable."""@en .
 
 ifm:replaces a owl:ObjectProperty ;
     rdfs:label "replaces"@en ;

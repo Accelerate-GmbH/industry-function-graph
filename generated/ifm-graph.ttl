@@ -70,7 +70,7 @@ scheme:ifm-transformation-modes
 scheme:ifm-credential-types
     a skos:ConceptScheme ;
     dct:title "Credential types"@en ;
-    dct:description "What is actually issued, presented and checked. A credential type evidences a state, which connects this layer to the rest: holding the credential is what makes the state true."@en ;
+    dct:description "What is actually issued, presented and checked. A credential type evidences a state, which connects this layer to the rest: holding the credential satisfies the state."@en ;
     dct:source <https://www.w3.org/TR/vc-data-model-2.0/> .
 
 scheme:ifm-states
@@ -88,7 +88,7 @@ scheme:ifm-trust-roles
 scheme:ifm-replaced-evidence
     a skos:ConceptScheme ;
     dct:title "Replaced evidence"@en ;
-    dct:description "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Recording it is what makes a friction-reduction claim measurable."@en ;
+    dct:description "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Recording it is how a friction-reduction claim becomes measurable."@en ;
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 scheme:ifm-value-streams
