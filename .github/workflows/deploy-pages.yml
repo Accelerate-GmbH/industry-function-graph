@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: MIT
+
+# Publishes generated/ to GitHub Pages, so that the matrix, the graph and the
+# ontology are fetchable under the namespace the concepts are minted in,
+# https://didas-swiss.github.io/industry-function-graph/.
+#
+# Requires: Settings > Pages > Source = "GitHub Actions" (not "Deploy from a branch")
+
+name: Deploy Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Assemble static output
+        run: |
+          mkdir -p dist
+          cp generated/index.html generated/ifm-graph.ttl generated/ifm-graph.jsonld dist/
+          # served both at the ontology IRI itself and under a .ttl extension
+          cp ontology/ifm.ttl dist/ontology
+          cp ontology/ifm.ttl dist/ontology.ttl
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy-pages:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build-pages
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

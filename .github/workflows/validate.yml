@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: MIT
+
+# Keeps generated/ honest: the graph and the matrix are built from data/*.csv, so
+# a pull request that edits the data without rebuilding — or that breaks a
+# reference between the layers — fails here rather than being noticed later.
+
+name: Validate
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install rdflib
+        run: pip install rdflib
+
+      - name: Validate the data
+        run: python3 build/validate.py
+
+      - name: Check generated/ is up to date
+        run: python3 build/build.py --check
