@@ -515,6 +515,17 @@ def build_html(model):
         change = model.change_mode_of(uc_id)
         drivers = ", ".join(esc(model.label("driver", d))
                             for d in model.value_drivers_of[uc_id])
+        requires = ", ".join(esc(model.label("state", st))
+                             for st in model.pre_of[uc_id]) or "&mdash; nothing"
+        establishes = ", ".join(esc(model.label("state", st))
+                                for st in model.post_of[uc_id])
+        streams = ", ".join(esc(model.label("stream", vs))
+                            for vs in model.streams_of[uc_id])
+        stream_line = (f'\n          <p class="meta"><strong>Value stream:</strong> '
+                       f'{streams}</p>') if streams else ""
+        payers = ", ".join(esc(p["party"]) for p in model.bears_cost_without_value(uc_id))
+        asym_line = (f'\n          <p class="meta asym"><strong>Pays without direct '
+                     f'return:</strong> {payers}</p>') if payers else ""
         cards.append(f"""      <div class="flow" id="{esc(uc_id)}">
         <div class="flow-tag">{esc(scope)} &middot; {esc(row['maturity'])}
           &middot; <span class="mode mode-{esc(change)}">{esc(mode['pref_label_en'])}</span></div>
@@ -525,6 +536,8 @@ def build_html(model):
           <p class="meta"><strong>Primary function:</strong> {esc(model.label('function', primary))}</p>
           <p class="meta"><strong>Supporting:</strong> {esc(', '.join(supporting)) or '&mdash;'}</p>
           <p class="meta"><strong>Why it pays:</strong> {drivers}</p>
+          <p class="meta"><strong>Needs:</strong> {requires}</p>
+          <p class="meta"><strong>Leaves:</strong> {establishes}</p>{stream_line}{asym_line}
         </div>
 {link}
       </div>""")
@@ -547,6 +560,36 @@ def build_html(model):
         f'{esc(row["pref_label_en"])}</span> '
         f'<span class="muted">&mdash; {esc(row["change_mode"])}</span></li>'
         for key, row in model.modes.items())
+
+    # roots: nothing here produces what they need, so the chain starts at them
+    sockets = set(model.unproduced_states())
+    roots = [uc for uc in model.use_cases
+             if not model.pre_of[uc] or set(model.pre_of[uc]) <= sockets]
+
+    def chain_items(uc_id, seen):
+        if uc_id in seen:
+            return ""
+        seen = seen | {uc_id}
+        children = "".join(chain_items(nxt, seen) for nxt in model.enables(uc_id))
+        inner = f"<ul>{children}</ul>" if children else ""
+        name = esc(model.use_cases[uc_id]["name"])
+        return (f'<li><a href="#{esc(uc_id)}">{name}</a>'
+                f'<span class="muted"> leaves '
+                f'{esc(", ".join(model.label("state", s) for s in model.post_of[uc_id]))}'
+                f'</span>{inner}</li>')
+
+    chain_html = "\n".join(f"      {chain_items(r, frozenset())}" for r in roots)
+    sockets_html = ", ".join(f"<code>{esc(s)}</code>" for s in sorted(sockets)) or "none"
+
+    streams_html = "\n".join(
+        '      <div><h3>' + esc(row["pref_label_en"]) + '</h3><ol class="stages">'
+        + "".join(
+            f'<li>{esc(stage["stage_label"])}'
+            f'<span class="muted"> &middot; {esc(model.label("function", stage["function_id"]))}'
+            f'</span></li>'
+            for stage in model.stages_of[stream_id])
+        + '</ol></div>'
+        for stream_id, row in model.value_streams.items())
 
     reused = []
     for function in functions:
@@ -625,6 +668,12 @@ def build_html(model):
   .muted {{ color: var(--body); font-size: 12px; }}
   .mode {{ font-weight: 600; }}
   .mode-change {{ color: var(--accent); }}
+  .meta.asym {{ color: var(--accent); }}
+  ul.chain {{ font-size: 14px; }}
+  ul.chain ul {{ margin: 4px 0; }}
+  ul.chain li {{ padding: 2px 0; }}
+  ol.stages {{ font-size: 13px; color: var(--body); padding-left: 20px; margin: 0; }}
+  ol.stages li {{ padding: 2px 0; }}
   .flows {{ display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }}
   .flow {{ border: 1px solid var(--line); border-radius: 6px; display: flex;
     flex-direction: column; scroll-margin-top: 20px; }}
@@ -689,6 +738,34 @@ def build_html(model):
     <ul>
 {chr(10).join(reused)}
     </ul>
+  </section>
+
+  <section>
+    <h2>What plugs into what</h2>
+    <p class="prose">
+      A use case declares what must already be true to run and what is true once it
+      has. The arrows below are derived from those interfaces &mdash; nobody drew them.
+      Change a postcondition and the chain changes with it.
+    </p>
+    <ul class="chain">
+{chain_html}
+    </ul>
+    <p class="legend">
+      <strong>Open sockets:</strong> {sockets_html} &mdash; needed by a use case here and
+      produced by none, so each is a flow the ecosystem has not written down yet.
+    </p>
+  </section>
+
+  <section>
+    <h2>Value streams</h2>
+    <p class="prose">
+      Where the work sits end to end. The concept follows ArchiMate's
+      <em>Value Stream</em> element; the catalogue is this repository's own, because
+      no openly licensed one exists.
+    </p>
+    <div class="axes">
+{streams_html}
+    </div>
   </section>
 
   <section>
