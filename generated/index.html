@@ -57,6 +57,15 @@
   .dot.support { color: #9aa3b0; }
   .legend { font-size: 13px; color: var(--body); margin-top: 12px; }
   .meta { font-size: 13px; color: var(--body); margin: 4px 0; }
+  .axes { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .axes h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--body); }
+  ul.tally { list-style: none; padding: 0; margin: 0; font-size: 14px; }
+  ul.tally li { padding: 5px 0; border-bottom: 1px solid var(--line); }
+  ul.tally .n { display: inline-block; min-width: 26px; font-weight: 600; }
+  .muted { color: var(--body); font-size: 12px; }
+  .mode { font-weight: 600; }
+  .mode-change { color: var(--accent); }
   .flows { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
   .flow { border: 1px solid var(--line); border-radius: 6px; display: flex;
     flex-direction: column; scroll-margin-top: 20px; }
@@ -138,126 +147,181 @@
   </section>
 
   <section>
+    <h2>Why these are worth doing</h2>
+    <p class="prose">
+      Sector and function say where a use case sits. They say nothing about why a
+      verifiable credential is worth applying there, or whether it improves a process
+      that already exists or replaces it. Those are separate axes, and the same
+      function in the same sector can be either.
+    </p>
+    <div class="axes">
+      <div>
+        <h3>Value drivers</h3>
+        <ul class="tally">
+          <li><span class="n">10</span> Friction reduction</li>
+          <li><span class="n">8</span> Fraud prevention</li>
+          <li><span class="n">6</span> Data quality</li>
+          <li><span class="n">4</span> Compliance assurance</li>
+          <li><span class="n">2</span> Data minimisation</li>
+          <li><span class="n">2</span> Reach and inclusion</li>
+          <li><span class="n">0</span> New revenue</li>
+        </ul>
+      </div>
+      <div>
+        <h3>How far the process changes</h3>
+        <ul class="tally">
+          <li><span class="n">1</span> <span class="mode mode-run">Digitise</span> <span class="muted">&mdash; run</span></li>
+          <li><span class="n">5</span> <span class="mode mode-run">Optimise</span> <span class="muted">&mdash; run</span></li>
+          <li><span class="n">5</span> <span class="mode mode-change">Redesign</span> <span class="muted">&mdash; change</span></li>
+          <li><span class="n">0</span> <span class="mode mode-change">Enable</span> <span class="muted">&mdash; change</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
     <h2>Use cases</h2>
     <div class="flows">
       <div class="flow" id="banking-kyc-onboarding">
-        <div class="flow-tag">Sector-specific &middot; Modelled</div>
+        <div class="flow-tag">Sector-specific &middot; Modelled
+          &middot; <span class="mode mode-change">Redesign</span></div>
         <div class="flow-body">
           <h3>Online onboarding and KYC credential issuance</h3>
           <p>A prospective customer opens a bank account remotely. The bank identifies them against the e-ID and issues a reusable KYC attestation.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">6419</span> Other monetary intermediation, <span class="code">6512</span> Non-life insurance</p>
           <p class="meta"><strong>Primary function:</strong> Customer onboarding</p>
           <p class="meta"><strong>Supporting:</strong> Identity proofing, Regulatory compliance</p>
+          <p class="meta"><strong>Why it pays:</strong> Friction reduction, Fraud prevention, Compliance assurance, Data quality</p>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="banking-re-kyc">
-        <div class="flow-tag">Sector-specific &middot; Modelled</div>
+        <div class="flow-tag">Sector-specific &middot; Modelled
+          &middot; <span class="mode mode-run">Optimise</span></div>
         <div class="flow-body">
           <h3>Periodic KYC re-evaluation</h3>
           <p>The bank re-runs customer due diligence on an existing relationship at the interval its supervisor requires, reusing the identity already established.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">6419</span> Other monetary intermediation</p>
           <p class="meta"><strong>Primary function:</strong> Regulatory compliance</p>
           <p class="meta"><strong>Supporting:</strong> Identity lifecycle management</p>
+          <p class="meta"><strong>Why it pays:</strong> Friction reduction, Compliance assurance</p>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="banking-reidentification-password-reset">
-        <div class="flow-tag">Sector-specific &middot; Modelled</div>
+        <div class="flow-tag">Sector-specific &middot; Modelled
+          &middot; <span class="mode mode-run">Optimise</span></div>
         <div class="flow-body">
           <h3>Re-identification after a forgotten password</h3>
           <p>An existing e-banking customer who has lost their credentials is re-identified before access is restored, without a branch visit.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">6419</span> Other monetary intermediation</p>
           <p class="meta"><strong>Primary function:</strong> Identity lifecycle management</p>
           <p class="meta"><strong>Supporting:</strong> Customer service, Access management</p>
+          <p class="meta"><strong>Why it pays:</strong> Friction reduction, Fraud prevention, Reach and inclusion</p>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="banking-age-of-majority-reidentification">
-        <div class="flow-tag">Sector-specific &middot; Modelled</div>
+        <div class="flow-tag">Sector-specific &middot; Modelled
+          &middot; <span class="mode mode-run">Optimise</span></div>
         <div class="flow-body">
           <h3>Re-identification at the age of majority</h3>
           <p>A customer onboarded as a minor turns 18. The relationship is re-established at full legal capacity, with a qualified electronic signature.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">6419</span> Other monetary intermediation</p>
           <p class="meta"><strong>Primary function:</strong> Identity lifecycle management</p>
           <p class="meta"><strong>Supporting:</strong> Regulatory compliance</p>
+          <p class="meta"><strong>Why it pays:</strong> Compliance assurance, Friction reduction</p>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="education-maturitaetszeugnis-issuance">
-        <div class="flow-tag">Sector-specific &middot; Modelled</div>
+        <div class="flow-tag">Sector-specific &middot; Modelled
+          &middot; <span class="mode mode-run">Digitise</span></div>
         <div class="flow-body">
           <h3>Issuance of a Maturitätszeugnis</h3>
           <p>An upper-secondary school issues the school-leaving certificate to the graduate as a digital attestation.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">8531</span> General secondary education</p>
           <p class="meta"><strong>Primary function:</strong> Certification and attestation</p>
           <p class="meta"><strong>Supporting:</strong> Records management</p>
+          <p class="meta"><strong>Why it pays:</strong> Fraud prevention, Data quality</p>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="education-university-immatriculation">
-        <div class="flow-tag">Sector-specific &middot; Modelled</div>
+        <div class="flow-tag">Sector-specific &middot; Modelled
+          &middot; <span class="mode mode-change">Redesign</span></div>
         <div class="flow-body">
           <h3>University immatriculation</h3>
           <p>A university admits a student on the strength of the e-ID and the Maturitätszeugnis, without re-collecting or re-checking paper documents.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">8540</span> Tertiary education</p>
           <p class="meta"><strong>Primary function:</strong> Customer onboarding</p>
           <p class="meta"><strong>Supporting:</strong> Eligibility verification, Identity proofing</p>
+          <p class="meta"><strong>Why it pays:</strong> Friction reduction, Data quality, Fraud prevention</p>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="retail-hospitality-age-verification">
-        <div class="flow-tag">Cross-sector &middot; Exploratory</div>
+        <div class="flow-tag">Cross-sector &middot; Exploratory
+          &middot; <span class="mode mode-change">Redesign</span></div>
         <div class="flow-body">
           <h3>Age verification at the point of sale</h3>
           <p>A merchant or a restaurant checks that a customer is over the legal age for a restricted product, learning nothing else about them.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">4711</span> Non-specialized retail sale with food, beverages or tobacco predominating, <span class="code">5610</span> Restaurants and mobile food service activities</p>
           <p class="meta"><strong>Primary function:</strong> Eligibility verification</p>
           <p class="meta"><strong>Supporting:</strong> Regulatory compliance</p>
+          <p class="meta"><strong>Why it pays:</strong> Data minimisation, Fraud prevention, Friction reduction</p>
         </div>
 <div class="flow-link"><span class="status">Not yet modelled</span></div>
       </div>
       <div class="flow" id="employment-identity-proofing">
-        <div class="flow-tag">Cross-sector &middot; Exploratory</div>
+        <div class="flow-tag">Cross-sector &middot; Exploratory
+          &middot; <span class="mode mode-run">Optimise</span></div>
         <div class="flow-body">
           <h3>Employee identity proofing and onboarding</h3>
           <p>An employer identifies a new hire and checks the qualifications the role requires, before provisioning any account.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">C</span> Manufacturing, <span class="code">K</span> Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities, <span class="code">L</span> Financial and insurance activities, <span class="code">Q</span> Education, <span class="code">R</span> Human health and social work activities</p>
           <p class="meta"><strong>Primary function:</strong> Human capital management</p>
           <p class="meta"><strong>Supporting:</strong> Identity proofing, Eligibility verification</p>
+          <p class="meta"><strong>Why it pays:</strong> Friction reduction, Fraud prevention, Data quality</p>
         </div>
 <div class="flow-link"><span class="status">Not yet modelled</span></div>
       </div>
       <div class="flow" id="aerospace-supplier-onboarding">
-        <div class="flow-tag">Sector-specific &middot; Exploratory</div>
+        <div class="flow-tag">Sector-specific &middot; Exploratory
+          &middot; <span class="mode mode-change">Redesign</span></div>
         <div class="flow-body">
           <h3>Automated aerospace supplier onboarding</h3>
           <p>A manufacturer qualifies a new supplier by checking its legal existence, its signatories and its quality accreditations.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">3030</span> Manufacture of air and spacecraft and related machinery</p>
           <p class="meta"><strong>Primary function:</strong> Sourcing and procurement</p>
           <p class="meta"><strong>Supporting:</strong> Supply chain traceability, Regulatory compliance</p>
+          <p class="meta"><strong>Why it pays:</strong> Friction reduction, Compliance assurance, Data quality, Fraud prevention</p>
         </div>
 <div class="flow-link"><span class="status">Not yet modelled</span></div>
       </div>
       <div class="flow" id="healthcare-patient-identification">
-        <div class="flow-tag">Sector-specific &middot; Exploratory</div>
+        <div class="flow-tag">Sector-specific &middot; Exploratory
+          &middot; <span class="mode mode-run">Optimise</span></div>
         <div class="flow-body">
           <h3>Patient identification at admission</h3>
           <p>A hospital identifies a patient at admission and links them to the right record.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">8610</span> Hospital activities</p>
           <p class="meta"><strong>Primary function:</strong> Service delivery</p>
           <p class="meta"><strong>Supporting:</strong> Identity proofing, Records management</p>
+          <p class="meta"><strong>Why it pays:</strong> Data quality, Friction reduction, Fraud prevention</p>
         </div>
 <div class="flow-link"><span class="status">Not yet modelled</span></div>
       </div>
       <div class="flow" id="egov-service-access">
-        <div class="flow-tag">Sector-specific &middot; Exploratory</div>
+        <div class="flow-tag">Sector-specific &middot; Exploratory
+          &middot; <span class="mode mode-change">Redesign</span></div>
         <div class="flow-body">
           <h3>Access to an online government service</h3>
           <p>A resident authenticates to a public-administration service portal and proves the attributes the service is entitled to see.</p>
           <p class="meta"><strong>Sectors:</strong> <span class="code">8411</span> General public administration activities</p>
           <p class="meta"><strong>Primary function:</strong> Access management</p>
           <p class="meta"><strong>Supporting:</strong> Identity proofing, Service delivery</p>
+          <p class="meta"><strong>Why it pays:</strong> Friction reduction, Data minimisation, Reach and inclusion</p>
         </div>
 <div class="flow-link"><span class="status">Not yet modelled</span></div>
       </div>

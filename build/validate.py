@@ -30,6 +30,7 @@ SECTOR_ID = re.compile(r"^ISIC-([A-V]|\d{2}|\d{4})$")
 SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 CODE_STATUS = {"verified", "provisional"}
 MATURITY = {"Exploratory", "Modelled", "Live"}
+CHANGE_MODE = {"run", "change"}
 MATCH_TYPES = {"exactMatch", "closeMatch", "broadMatch", "narrowMatch", "relatedMatch"}
 DOC_URL = re.compile(r"^https://\S+$")
 
@@ -133,11 +134,54 @@ def check_alignments(model):
         seen.add(key)
 
 
+def check_axes(model):
+    """The two axes layered on the use case: why, and how far."""
+    for driver_id, row in model.value_drivers.items():
+        if not SLUG.match(driver_id):
+            error(f"value-drivers.csv[{driver_id}]: id must be a lower-case slug")
+        if not row["definition"].strip():
+            error(f"value-drivers.csv[{driver_id}]: a driver without a definition will "
+                  f"be used to mean two things")
+    for mode_id, row in model.modes.items():
+        if not SLUG.match(mode_id):
+            error(f"transformation-modes.csv[{mode_id}]: id must be a lower-case slug")
+        if row["change_mode"] not in CHANGE_MODE:
+            error(f"transformation-modes.csv[{mode_id}]: change_mode "
+                  f"{row['change_mode']!r} not in {sorted(CHANGE_MODE)}")
+
+    for index, row in enumerate(model.uc_value_drivers, start=2):
+        where = f"use-case-value-drivers.csv:{index}"
+        if row["use_case_id"] not in model.use_cases:
+            error(f"{where}: unknown use case {row['use_case_id']!r}")
+        if row["value_driver_id"] not in model.value_drivers:
+            error(f"{where}: unknown value driver {row['value_driver_id']!r}")
+
+    used = {r["value_driver_id"] for r in model.uc_value_drivers}
+    unused = [d for d in model.value_drivers if d not in used]
+    if unused:
+        warn(f"{len(unused)} of {len(model.value_drivers)} value drivers are not yet "
+             f"claimed by a use case: {', '.join(unused)}")
+    for mode_id in model.modes:
+        if not any(uc["transformation_mode"] == mode_id for uc in model.use_cases.values()):
+            warn(f"transformation-modes.csv[{mode_id}]: no use case is classified here")
+
+
 def check_use_cases(model):
     for uc_id, row in model.use_cases.items():
         where = f"use-cases.csv[{uc_id}]"
         if not SLUG.match(uc_id):
             error(f"{where}: id must be a lower-case slug")
+        mode = row["transformation_mode"]
+        if mode not in model.modes:
+            error(f"{where}: transformation_mode {mode!r} is not in "
+                  f"transformation-modes.csv")
+        drivers = model.value_drivers_of.get(uc_id, [])
+        if not drivers:
+            error(f"{where}: no value driver. A use case nobody can say the point of "
+                  f"is not ready to be in the graph")
+        if len(drivers) != len(set(drivers)):
+            error(f"{where}: the same value driver is listed twice")
+
         if row["maturity"] not in MATURITY:
             error(f"{where}: maturity {row['maturity']!r} not in {sorted(MATURITY)}")
 
@@ -227,6 +271,7 @@ def main():
     check_sectors(model)
     check_functions(model)
     check_alignments(model)
+    check_axes(model)
     check_use_cases(model)
     check_links(model)
     check_rdf()
@@ -237,7 +282,8 @@ def main():
         print(f"error: {message}", file=sys.stderr)
 
     counts = (f"{len(model.use_cases)} use cases, {len(model.sectors)} sectors, "
-              f"{len(model.functions)} functions, {len(model.alignments)} alignments")
+              f"{len(model.functions)} functions, {len(model.alignments)} alignments, "
+              f"{len(model.value_drivers)} value drivers")
     if errors:
         print(f"\nFAILED: {len(errors)} error(s) in {counts}", file=sys.stderr)
         return 1

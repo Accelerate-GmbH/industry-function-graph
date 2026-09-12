@@ -48,6 +48,7 @@ Nothing in the model is invented where a standard exists:
 | 1 · Sector | ISIC Rev. 5, NACE Rev. 2.1 | `skos:ConceptScheme` with the official code in `skos:notation`. All 22 ISIC sections, plus the divisions and classes the use cases actually reach. |
 | 2 · Function | UNECE/Eurostat CBF, APQC PCF | A local function scheme mapped onto both with SKOS mapping relations. |
 | 3 · Use case | `schema:Action` | The bridge: each use case links ≥1 sector and exactly one primary function. |
+| 3a · Why and how far | own vocabularies | Value drivers (what it removes, prevents or makes possible) and one transformation mode (how far the process changes). |
 | 4 · Credential | W3C VCDM 2.0, EBSI, DCC/ELM, UN/CEFACT | **Not implemented yet** — see [Layer 4](#layer-4--deferred). |
 
 ## Layout
@@ -236,6 +237,52 @@ and a support function of a manufacturer. Hanging our functions under
 `CBF-CORE` or `CBF-SUP` as `skos:broader` would bake one enterprise's viewpoint
 into the vocabulary, so the relation used is `skos:broadMatch` between schemes
 instead.
+
+## Why, and how far: the axes on top
+
+Sector and function say *where* a use case sits. They say nothing about why a
+verifiable credential is worth applying there, or whether it improves a process
+that already exists or replaces it — and those are the questions someone
+deciding what to build actually asks. The same function in the same sector can
+be a paper substitution in one instance and a new business model in another.
+
+**Value drivers** — what it removes, prevents or makes possible. Several per use
+case, unranked:
+
+| Driver | |
+|---|---|
+| `friction-reduction` | steps, waiting, re-keying or intermediaries removed from an exchange that already happens |
+| `fraud-prevention` | forgery, impersonation and misrepresentation made impractical rather than merely detectable afterwards |
+| `compliance-assurance` | evidence a supervisor will accept, produced as a by-product of the work rather than as an exercise |
+| `data-quality` | transcription, reconciliation and staleness errors removed |
+| `data-minimisation` | proving what the counterparty is entitled to know without disclosing the rest — often what makes an exchange permissible at all |
+| `reach-and-inclusion` | counterparties served who could not be before: remote, cross-border, or with no prior relationship |
+| `new-revenue` | a chargeable service, market or pricing model that verifiable data is a precondition for |
+
+**Transformation mode** — how far the process changes. Exactly one per use case,
+and the pair of them splits into *run* and *change*:
+
+| Mode | | |
+|---|---|---|
+| `digitise` | **run** | the process keeps its shape; a paper artefact becomes a credential |
+| `optimise` | **run** | steps, hand-offs or waiting removed, but recognisably the same process |
+| `redesign` | **change** | reorganised around verifiable data; roles and sequence change, and the old process is not recoverable from the new one |
+| `enable` | **change** | the activity was not viable before, because the trust it needs could not be established at acceptable cost |
+
+`ifm:changeMode` is derived from the mode, never typed in.
+
+The distinction earns its place because the two halves are justified
+differently: *run* is a business case — count the steps removed — while *change*
+is a strategy, and can look like a poor business case right up until it works.
+Collapsing them is how digitisation programmes end up paving the cowpath: a PDF
+becomes a credential, every signature stays where it was, and nobody asks
+whether the process should exist.
+
+It is also a coverage check on the repository. Of the eleven seeded use cases,
+**none** is classified `enable`, and `new-revenue` is claimed by none of them —
+every one improves or reorganises something organisations already do. That is a
+fair reflection of where Swiss e-ID practice currently is, and the graph says so
+out loud rather than implying a breadth it does not have.
 
 ## What belongs in the function layer
 

@@ -7,6 +7,8 @@
     "cbf": "https://didas-swiss.github.io/industry-function-graph/id/cbf/",
     "apqc": "https://didas-swiss.github.io/industry-function-graph/id/apqc/",
     "uc": "https://didas-swiss.github.io/industry-function-graph/id/use-case/",
+    "driver": "https://didas-swiss.github.io/industry-function-graph/id/value-driver/",
+    "mode": "https://didas-swiss.github.io/industry-function-graph/id/transformation-mode/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "schema": "https://schema.org/",
     "dct": "http://purl.org/dc/terms/",
@@ -84,6 +86,40 @@
       },
       "dct:source": {
         "@id": "https://www.apqc.org/process-frameworks"
+      }
+    },
+    {
+      "@id": "scheme:ifm-value-drivers",
+      "@type": [
+        "skos:ConceptScheme"
+      ],
+      "dct:title": {
+        "@value": "Value drivers",
+        "@language": "en"
+      },
+      "dct:description": {
+        "@value": "Why applying a verifiable credential to a function is worth doing: what it removes, prevents or makes possible. A use case usually has several.",
+        "@language": "en"
+      },
+      "dct:source": {
+        "@id": "https://didas-swiss.github.io/industry-function-graph/"
+      }
+    },
+    {
+      "@id": "scheme:ifm-transformation-modes",
+      "@type": [
+        "skos:ConceptScheme"
+      ],
+      "dct:title": {
+        "@value": "Transformation modes",
+        "@language": "en"
+      },
+      "dct:description": {
+        "@value": "How far the process changes. The first two are run - improving a process that already exists. The last two are change - reorganising it, or doing something that was not viable before. A use case has exactly one.",
+        "@language": "en"
+      },
+      "dct:source": {
+        "@id": "https://didas-swiss.github.io/industry-function-graph/"
       }
     },
     {
@@ -2312,6 +2348,249 @@
       }
     },
     {
+      "@id": "driver:friction-reduction",
+      "@type": [
+        "ifm:ValueDriver",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:prefLabel": {
+        "@value": "Friction reduction",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Removing steps, waiting time, re-keying or intermediaries from an exchange that already happens.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "driver:fraud-prevention",
+      "@type": [
+        "ifm:ValueDriver",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:prefLabel": {
+        "@value": "Fraud prevention",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Making forgery, impersonation or misrepresentation of a claim impractical rather than merely detectable after the fact.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "driver:compliance-assurance",
+      "@type": [
+        "ifm:ValueDriver",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:prefLabel": {
+        "@value": "Compliance assurance",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Producing evidence a supervisor or auditor will accept as a by-product of doing the work, rather than as a separate exercise.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "driver:data-quality",
+      "@type": [
+        "ifm:ValueDriver",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:prefLabel": {
+        "@value": "Data quality",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Removing transcription, reconciliation and staleness errors by carrying the data in a form a machine can check.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "driver:data-minimisation",
+      "@type": [
+        "ifm:ValueDriver",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:prefLabel": {
+        "@value": "Data minimisation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Proving what a counterparty is entitled to know without disclosing the rest, which often makes an exchange permissible that was not.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "driver:reach-and-inclusion",
+      "@type": [
+        "ifm:ValueDriver",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:prefLabel": {
+        "@value": "Reach and inclusion",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Serving counterparties who could not be served before - remote, cross-border, or without a pre-existing relationship.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "driver:new-revenue",
+      "@type": [
+        "ifm:ValueDriver",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-drivers"
+      },
+      "skos:prefLabel": {
+        "@value": "New revenue",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Making a chargeable service, a market or a pricing model possible that verifiable data is a precondition for.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "mode:digitise",
+      "@type": [
+        "ifm:TransformationMode",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-transformation-modes"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-transformation-modes"
+      },
+      "skos:prefLabel": {
+        "@value": "Digitise",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The process keeps its shape. A paper or PDF artefact becomes a credential, and the sequence of steps does not change.",
+        "@language": "en"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Run"
+      }
+    },
+    {
+      "@id": "mode:optimise",
+      "@type": [
+        "ifm:TransformationMode",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-transformation-modes"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-transformation-modes"
+      },
+      "skos:prefLabel": {
+        "@value": "Optimise",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Steps, hand-offs or waiting are removed and the channel may change, but the process is recognisably the same one.",
+        "@language": "en"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Run"
+      }
+    },
+    {
+      "@id": "mode:redesign",
+      "@type": [
+        "ifm:TransformationMode",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-transformation-modes"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-transformation-modes"
+      },
+      "skos:prefLabel": {
+        "@value": "Redesign",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "An existing process is reorganised around verifiable data. Roles, sequence or who holds what change, and the old process is not recoverable from the new one.",
+        "@language": "en"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
+      }
+    },
+    {
+      "@id": "mode:enable",
+      "@type": [
+        "ifm:TransformationMode",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-transformation-modes"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-transformation-modes"
+      },
+      "skos:prefLabel": {
+        "@value": "Enable",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The activity was not viable before, because the trust it depends on could not be established at acceptable cost.",
+        "@language": "en"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
+      }
+    },
+    {
       "@id": "uc:banking-kyc-onboarding",
       "@type": [
         "ifm:UseCase",
@@ -2347,6 +2626,26 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:friction-reduction"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        },
+        {
+          "@id": "driver:compliance-assurance"
+        },
+        {
+          "@id": "driver:data-quality"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:redesign"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
+      },
       "ifm:maturity": {
         "@id": "ifm:Modelled"
       },
@@ -2379,6 +2678,20 @@
       },
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:friction-reduction"
+        },
+        {
+          "@id": "driver:compliance-assurance"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:optimise"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Run"
       },
       "ifm:maturity": {
         "@id": "ifm:Modelled"
@@ -2418,6 +2731,23 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:friction-reduction"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        },
+        {
+          "@id": "driver:reach-and-inclusion"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:optimise"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Run"
+      },
       "ifm:maturity": {
         "@id": "ifm:Modelled"
       },
@@ -2451,6 +2781,20 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:compliance-assurance"
+        },
+        {
+          "@id": "driver:friction-reduction"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:optimise"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Run"
+      },
       "ifm:maturity": {
         "@id": "ifm:Modelled"
       },
@@ -2483,6 +2827,20 @@
       },
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:fraud-prevention"
+        },
+        {
+          "@id": "driver:data-quality"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:digitise"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Run"
       },
       "ifm:maturity": {
         "@id": "ifm:Modelled"
@@ -2522,6 +2880,23 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:friction-reduction"
+        },
+        {
+          "@id": "driver:data-quality"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:redesign"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
+      },
       "ifm:maturity": {
         "@id": "ifm:Modelled"
       },
@@ -2559,6 +2934,23 @@
       },
       "ifm:sectorScope": {
         "@id": "ifm:CrossSector"
+      },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:data-minimisation"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        },
+        {
+          "@id": "driver:friction-reduction"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:redesign"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
       },
       "ifm:maturity": {
         "@id": "ifm:Exploratory"
@@ -2609,6 +3001,23 @@
       "ifm:sectorScope": {
         "@id": "ifm:CrossSector"
       },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:friction-reduction"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        },
+        {
+          "@id": "driver:data-quality"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:optimise"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Run"
+      },
       "ifm:maturity": {
         "@id": "ifm:Exploratory"
       }
@@ -2643,6 +3052,26 @@
       ],
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:friction-reduction"
+        },
+        {
+          "@id": "driver:compliance-assurance"
+        },
+        {
+          "@id": "driver:data-quality"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:redesign"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
       },
       "ifm:maturity": {
         "@id": "ifm:Exploratory"
@@ -2679,6 +3108,23 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:data-quality"
+        },
+        {
+          "@id": "driver:friction-reduction"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:optimise"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Run"
+      },
       "ifm:maturity": {
         "@id": "ifm:Exploratory"
       }
@@ -2713,6 +3159,23 @@
       ],
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:friction-reduction"
+        },
+        {
+          "@id": "driver:data-minimisation"
+        },
+        {
+          "@id": "driver:reach-and-inclusion"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:redesign"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
       },
       "ifm:maturity": {
         "@id": "ifm:Exploratory"

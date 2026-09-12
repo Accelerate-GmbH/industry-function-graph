@@ -53,6 +53,21 @@ SCHEMES = {
                        "redistributed here.",
         "source": "https://www.apqc.org/process-frameworks",
     },
+    "ifm-value-drivers": {
+        "title": "Value drivers",
+        "description": "Why applying a verifiable credential to a function is worth "
+                       "doing: what it removes, prevents or makes possible. A use case "
+                       "usually has several.",
+        "source": BASE,
+    },
+    "ifm-transformation-modes": {
+        "title": "Transformation modes",
+        "description": "How far the process changes. The first two are run - improving "
+                       "a process that already exists. The last two are change - "
+                       "reorganising it, or doing something that was not viable before. "
+                       "A use case has exactly one.",
+        "source": BASE,
+    },
     "ifm-functions": {
         "title": "IFM operational business functions",
         "description": "The function vocabulary this repository actually maps use cases "
@@ -77,9 +92,17 @@ class Model:
         self.apqc = {r["id"]: r for r in _read("apqc-pcf.csv")}
         self.functions = {r["id"]: r for r in _read("functions.csv")}
         self.alignments = _read("function-alignments.csv")
+        self.value_drivers = {r["id"]: r for r in _read("value-drivers.csv")}
+        self.modes = {r["id"]: r for r in _read("transformation-modes.csv")}
         self.use_cases = {r["id"]: r for r in _read("use-cases.csv")}
         self.uc_sectors = _read("use-case-sectors.csv")
         self.uc_functions = _read("use-case-functions.csv")
+        self.uc_value_drivers = _read("use-case-value-drivers.csv")
+
+        self.value_drivers_of = {uc: [] for uc in self.use_cases}
+        for row in self.uc_value_drivers:
+            self.value_drivers_of.setdefault(row["use_case_id"], []).append(
+                row["value_driver_id"])
 
         self.sectors_of = {uc: [] for uc in self.use_cases}
         for row in self.uc_sectors:
@@ -114,6 +137,11 @@ class Model:
     def scope_of(self, uc_id):
         return "CrossSector" if len(self.sections_of_use_case(uc_id)) > 1 else "SectorSpecific"
 
+    def change_mode_of(self, uc_id):
+        """run or change - derived from the transformation mode, not typed in."""
+        mode = self.modes.get(self.use_cases[uc_id]["transformation_mode"])
+        return mode["change_mode"] if mode else None
+
     def primary_function(self, uc_id):
         for row in self.functions_of.get(uc_id, []):
             if row["role"] == "primary":
@@ -147,7 +175,8 @@ class Model:
 
     def label(self, kind, ident):
         table = {"sector": self.sectors, "function": self.functions,
-                 "cbf": self.cbf, "apqc-pcf": self.apqc}[kind]
+                 "cbf": self.cbf, "apqc-pcf": self.apqc,
+                 "driver": self.value_drivers, "mode": self.modes}[kind]
         row = table.get(ident, {})
         return row.get("pref_label_en", ident)
 

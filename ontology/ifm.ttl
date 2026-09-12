@@ -106,6 +106,52 @@ ifm:functionHasUseCase a owl:ObjectProperty ;
     owl:inverseOf ifm:executesFunction .
 
 ################################################################
+# Layer 3a - why it is worth doing, and how far it changes things
+#
+# Sector and function say where a use case sits. They say nothing about why
+# applying a verifiable credential there is worth the effort, or whether it
+# improves a process that already exists or replaces it. Both are properties
+# of the use case: the same function, in the same sector, can be a paper
+# substitution in one instance and a new business model in another.
+################################################################
+
+ifm:ValueDriver a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Value driver"@en ;
+    rdfs:comment """What applying a verifiable credential to this use case
+removes, prevents or makes possible - friction, fraud, disclosure, unreachable
+counterparties. A use case usually has several, and they are not ranked."""@en .
+
+ifm:valueDriver a owl:ObjectProperty ;
+    rdfs:label "value driver"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:ValueDriver .
+
+ifm:TransformationMode a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Transformation mode"@en ;
+    rdfs:comment """How far the process changes: digitise, optimise, redesign or
+enable. Exactly one per use case. The distinction matters because the first two
+are worth doing on a business case and the last two are worth doing on a
+strategy, and confusing them is how digitisation programmes pave the cowpath."""@en .
+
+ifm:transformationMode a owl:ObjectProperty ;
+    rdfs:label "transformation mode"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:TransformationMode .
+
+ifm:ChangeMode a owl:Class ; rdfs:label "Change mode"@en .
+ifm:Run    a ifm:ChangeMode ; rdfs:label "Run"@en ;
+    rdfs:comment "Improving a process the organisation already has. Derived from the transformation mode."@en .
+ifm:Change a ifm:ChangeMode ; rdfs:label "Change"@en ;
+    rdfs:comment "Reorganising a process, or doing something that was not viable before. Derived from the transformation mode."@en .
+
+ifm:changeMode a owl:ObjectProperty ;
+    rdfs:label "change mode"@en ;
+    rdfs:range ifm:ChangeMode ;
+    rdfs:comment "Run or change. Derived from the transformation mode, never typed in."@en .
+
+################################################################
 # Use case attributes
 ################################################################
 

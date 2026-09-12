@@ -27,6 +27,8 @@ PREFIXES = [
     ("cbf", ID_BASE + "cbf/"),
     ("apqc", ID_BASE + "apqc/"),
     ("uc", ID_BASE + "use-case/"),
+    ("driver", ID_BASE + "value-driver/"),
+    ("mode", ID_BASE + "transformation-mode/"),
     ("skos", "http://www.w3.org/2004/02/skos/core#"),
     ("schema", "https://schema.org/"),
     ("dct", "http://purl.org/dc/terms/"),
@@ -75,6 +77,8 @@ PREFIX_OF_KIND = {
     "cbf": "cbf",
     "apqc": "apqc",
     "use-case": "uc",
+    "driver": "driver",
+    "mode": "mode",
 }
 
 
@@ -177,6 +181,25 @@ def graph_blocks(model):
         pairs.append(("skos:editorialNote", notes))
         blocks.append((heading, Ref(concept_ref("function", function_id)), pairs))
 
+    heading = "Layer 3a - Value drivers and transformation modes"
+    for driver_id, row in model.value_drivers.items():
+        blocks.append((heading, Ref(concept_ref("driver", driver_id)), [
+            ("a", [Ref("ifm:ValueDriver"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-value-drivers"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-value-drivers"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+        ]))
+    for mode_id, row in model.modes.items():
+        blocks.append((heading, Ref(concept_ref("mode", mode_id)), [
+            ("a", [Ref("ifm:TransformationMode"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-transformation-modes"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-transformation-modes"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+            ("ifm:changeMode", R(f"ifm:{row['change_mode'].capitalize()}")),
+        ]))
+
     heading = "Layer 3 - Use cases (sector x function intersection nodes)"
     for uc_id, row in model.use_cases.items():
         primary = model.primary_function(uc_id)
@@ -192,6 +215,10 @@ def graph_blocks(model):
             ("ifm:primaryFunction", R(concept_ref("function", primary)) if primary else []),
             ("ifm:executesFunction", [Ref(concept_ref("function", f)) for f in supporting]),
             ("ifm:sectorScope", R(f"ifm:{model.scope_of(uc_id)}")),
+            ("ifm:valueDriver", [Ref(concept_ref("driver", d))
+                                 for d in model.value_drivers_of[uc_id]]),
+            ("ifm:transformationMode", R(concept_ref("mode", row["transformation_mode"]))),
+            ("ifm:changeMode", R(f"ifm:{(model.change_mode_of(uc_id) or '').capitalize()}")),
             ("ifm:maturity", R(f"ifm:{row['maturity']}")),
             ("ifm:documentedBy", R(f"<{documentation}>") if documentation else []),
         ]))
@@ -378,17 +405,42 @@ def build_html(model):
                 if documentation else
                 '<div class="flow-link"><span class="status">Not yet modelled</span></div>')
         scope = "Cross-sector" if model.scope_of(uc_id) == "CrossSector" else "Sector-specific"
+        mode = model.modes[row["transformation_mode"]]
+        change = model.change_mode_of(uc_id)
+        drivers = ", ".join(esc(model.label("driver", d))
+                            for d in model.value_drivers_of[uc_id])
         cards.append(f"""      <div class="flow" id="{esc(uc_id)}">
-        <div class="flow-tag">{esc(scope)} &middot; {esc(row['maturity'])}</div>
+        <div class="flow-tag">{esc(scope)} &middot; {esc(row['maturity'])}
+          &middot; <span class="mode mode-{esc(change)}">{esc(mode['pref_label_en'])}</span></div>
         <div class="flow-body">
           <h3>{esc(row['name'])}</h3>
           <p>{esc(row['description'])}</p>
           <p class="meta"><strong>Sectors:</strong> {sector_list}</p>
           <p class="meta"><strong>Primary function:</strong> {esc(model.label('function', primary))}</p>
           <p class="meta"><strong>Supporting:</strong> {esc(', '.join(supporting)) or '&mdash;'}</p>
+          <p class="meta"><strong>Why it pays:</strong> {drivers}</p>
         </div>
 {link}
       </div>""")
+
+    driver_counts = {d: 0 for d in model.value_drivers}
+    for uc_id in model.use_cases:
+        for d in model.value_drivers_of[uc_id]:
+            driver_counts[d] += 1
+    driver_tally = "\n".join(
+        f'          <li><span class="n">{count}</span> '
+        f'{esc(model.label("driver", key))}</li>'
+        for key, count in sorted(driver_counts.items(), key=lambda kv: -kv[1]))
+
+    mode_counts = {m: 0 for m in model.modes}
+    for uc_id, row in model.use_cases.items():
+        mode_counts[row["transformation_mode"]] += 1
+    mode_tally = "\n".join(
+        f'          <li><span class="n">{mode_counts[key]}</span> '
+        f'<span class="mode mode-{esc(row["change_mode"])}">'
+        f'{esc(row["pref_label_en"])}</span> '
+        f'<span class="muted">&mdash; {esc(row["change_mode"])}</span></li>'
+        for key, row in model.modes.items())
 
     reused = []
     for function in functions:
@@ -458,6 +510,15 @@ def build_html(model):
   .dot.support {{ color: #9aa3b0; }}
   .legend {{ font-size: 13px; color: var(--body); margin-top: 12px; }}
   .meta {{ font-size: 13px; color: var(--body); margin: 4px 0; }}
+  .axes {{ display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }}
+  .axes h3 {{ font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--body); }}
+  ul.tally {{ list-style: none; padding: 0; margin: 0; font-size: 14px; }}
+  ul.tally li {{ padding: 5px 0; border-bottom: 1px solid var(--line); }}
+  ul.tally .n {{ display: inline-block; min-width: 26px; font-weight: 600; }}
+  .muted {{ color: var(--body); font-size: 12px; }}
+  .mode {{ font-weight: 600; }}
+  .mode-change {{ color: var(--accent); }}
   .flows {{ display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }}
   .flow {{ border: 1px solid var(--line); border-radius: 6px; display: flex;
     flex-direction: column; scroll-margin-top: 20px; }}
@@ -522,6 +583,30 @@ def build_html(model):
     <ul>
 {chr(10).join(reused)}
     </ul>
+  </section>
+
+  <section>
+    <h2>Why these are worth doing</h2>
+    <p class="prose">
+      Sector and function say where a use case sits. They say nothing about why a
+      verifiable credential is worth applying there, or whether it improves a process
+      that already exists or replaces it. Those are separate axes, and the same
+      function in the same sector can be either.
+    </p>
+    <div class="axes">
+      <div>
+        <h3>Value drivers</h3>
+        <ul class="tally">
+{driver_tally}
+        </ul>
+      </div>
+      <div>
+        <h3>How far the process changes</h3>
+        <ul class="tally">
+{mode_tally}
+        </ul>
+      </div>
+    </div>
   </section>
 
   <section>

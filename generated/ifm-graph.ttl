@@ -10,6 +10,8 @@
 @prefix cbf: <https://didas-swiss.github.io/industry-function-graph/id/cbf/> .
 @prefix apqc: <https://didas-swiss.github.io/industry-function-graph/id/apqc/> .
 @prefix uc: <https://didas-swiss.github.io/industry-function-graph/id/use-case/> .
+@prefix driver: <https://didas-swiss.github.io/industry-function-graph/id/value-driver/> .
+@prefix mode: <https://didas-swiss.github.io/industry-function-graph/id/transformation-mode/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix schema: <https://schema.org/> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -45,6 +47,18 @@ scheme:apqc-pcf
     dct:title "APQC Process Classification Framework (referenced categories)"@en ;
     dct:description "Only the cross-industry PCF categories an alignment actually references. The framework itself is published by APQC and is not redistributed here."@en ;
     dct:source <https://www.apqc.org/process-frameworks> .
+
+scheme:ifm-value-drivers
+    a skos:ConceptScheme ;
+    dct:title "Value drivers"@en ;
+    dct:description "Why applying a verifiable credential to a function is worth doing: what it removes, prevents or makes possible. A use case usually has several."@en ;
+    dct:source <https://didas-swiss.github.io/industry-function-graph/> .
+
+scheme:ifm-transformation-modes
+    a skos:ConceptScheme ;
+    dct:title "Transformation modes"@en ;
+    dct:description "How far the process changes. The first two are run - improving a process that already exists. The last two are change - reorganising it, or doing something that was not viable before. A use case has exactly one."@en ;
+    dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 scheme:ifm-functions
     a skos:ConceptScheme ;
@@ -820,6 +834,91 @@ func:research-and-development
     skos:relatedMatch apqc:apqc-2.0 .
 
 ######################################################################
+# Layer 3a - Value drivers and transformation modes
+######################################################################
+
+driver:friction-reduction
+    a ifm:ValueDriver, skos:Concept ;
+    skos:inScheme scheme:ifm-value-drivers ;
+    skos:topConceptOf scheme:ifm-value-drivers ;
+    skos:prefLabel "Friction reduction"@en ;
+    skos:definition "Removing steps, waiting time, re-keying or intermediaries from an exchange that already happens."@en .
+
+driver:fraud-prevention
+    a ifm:ValueDriver, skos:Concept ;
+    skos:inScheme scheme:ifm-value-drivers ;
+    skos:topConceptOf scheme:ifm-value-drivers ;
+    skos:prefLabel "Fraud prevention"@en ;
+    skos:definition "Making forgery, impersonation or misrepresentation of a claim impractical rather than merely detectable after the fact."@en .
+
+driver:compliance-assurance
+    a ifm:ValueDriver, skos:Concept ;
+    skos:inScheme scheme:ifm-value-drivers ;
+    skos:topConceptOf scheme:ifm-value-drivers ;
+    skos:prefLabel "Compliance assurance"@en ;
+    skos:definition "Producing evidence a supervisor or auditor will accept as a by-product of doing the work, rather than as a separate exercise."@en .
+
+driver:data-quality
+    a ifm:ValueDriver, skos:Concept ;
+    skos:inScheme scheme:ifm-value-drivers ;
+    skos:topConceptOf scheme:ifm-value-drivers ;
+    skos:prefLabel "Data quality"@en ;
+    skos:definition "Removing transcription, reconciliation and staleness errors by carrying the data in a form a machine can check."@en .
+
+driver:data-minimisation
+    a ifm:ValueDriver, skos:Concept ;
+    skos:inScheme scheme:ifm-value-drivers ;
+    skos:topConceptOf scheme:ifm-value-drivers ;
+    skos:prefLabel "Data minimisation"@en ;
+    skos:definition "Proving what a counterparty is entitled to know without disclosing the rest, which often makes an exchange permissible that was not."@en .
+
+driver:reach-and-inclusion
+    a ifm:ValueDriver, skos:Concept ;
+    skos:inScheme scheme:ifm-value-drivers ;
+    skos:topConceptOf scheme:ifm-value-drivers ;
+    skos:prefLabel "Reach and inclusion"@en ;
+    skos:definition "Serving counterparties who could not be served before - remote, cross-border, or without a pre-existing relationship."@en .
+
+driver:new-revenue
+    a ifm:ValueDriver, skos:Concept ;
+    skos:inScheme scheme:ifm-value-drivers ;
+    skos:topConceptOf scheme:ifm-value-drivers ;
+    skos:prefLabel "New revenue"@en ;
+    skos:definition "Making a chargeable service, a market or a pricing model possible that verifiable data is a precondition for."@en .
+
+mode:digitise
+    a ifm:TransformationMode, skos:Concept ;
+    skos:inScheme scheme:ifm-transformation-modes ;
+    skos:topConceptOf scheme:ifm-transformation-modes ;
+    skos:prefLabel "Digitise"@en ;
+    skos:definition "The process keeps its shape. A paper or PDF artefact becomes a credential, and the sequence of steps does not change."@en ;
+    ifm:changeMode ifm:Run .
+
+mode:optimise
+    a ifm:TransformationMode, skos:Concept ;
+    skos:inScheme scheme:ifm-transformation-modes ;
+    skos:topConceptOf scheme:ifm-transformation-modes ;
+    skos:prefLabel "Optimise"@en ;
+    skos:definition "Steps, hand-offs or waiting are removed and the channel may change, but the process is recognisably the same one."@en ;
+    ifm:changeMode ifm:Run .
+
+mode:redesign
+    a ifm:TransformationMode, skos:Concept ;
+    skos:inScheme scheme:ifm-transformation-modes ;
+    skos:topConceptOf scheme:ifm-transformation-modes ;
+    skos:prefLabel "Redesign"@en ;
+    skos:definition "An existing process is reorganised around verifiable data. Roles, sequence or who holds what change, and the old process is not recoverable from the new one."@en ;
+    ifm:changeMode ifm:Change .
+
+mode:enable
+    a ifm:TransformationMode, skos:Concept ;
+    skos:inScheme scheme:ifm-transformation-modes ;
+    skos:topConceptOf scheme:ifm-transformation-modes ;
+    skos:prefLabel "Enable"@en ;
+    skos:definition "The activity was not viable before, because the trust it depends on could not be established at acceptable cost."@en ;
+    ifm:changeMode ifm:Change .
+
+######################################################################
 # Layer 3 - Use cases (sector x function intersection nodes)
 ######################################################################
 
@@ -831,6 +930,9 @@ uc:banking-kyc-onboarding
     ifm:primaryFunction func:customer-onboarding ;
     ifm:executesFunction func:identity-proofing, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:friction-reduction, driver:fraud-prevention, driver:compliance-assurance, driver:data-quality ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Modelled ;
     ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential> .
 
@@ -842,6 +944,9 @@ uc:banking-re-kyc
     ifm:primaryFunction func:regulatory-compliance ;
     ifm:executesFunction func:identity-lifecycle-management ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:friction-reduction, driver:compliance-assurance ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run ;
     ifm:maturity ifm:Modelled ;
     ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential> .
 
@@ -853,6 +958,9 @@ uc:banking-reidentification-password-reset
     ifm:primaryFunction func:identity-lifecycle-management ;
     ifm:executesFunction func:customer-service, func:access-management ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:friction-reduction, driver:fraud-prevention, driver:reach-and-inclusion ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run ;
     ifm:maturity ifm:Modelled ;
     ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password> .
 
@@ -864,6 +972,9 @@ uc:banking-age-of-majority-reidentification
     ifm:primaryFunction func:identity-lifecycle-management ;
     ifm:executesFunction func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:compliance-assurance, driver:friction-reduction ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run ;
     ifm:maturity ifm:Modelled ;
     ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority> .
 
@@ -875,6 +986,9 @@ uc:education-maturitaetszeugnis-issuance
     ifm:primaryFunction func:certification-and-attestation ;
     ifm:executesFunction func:records-management ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:fraud-prevention, driver:data-quality ;
+    ifm:transformationMode mode:digitise ;
+    ifm:changeMode ifm:Run ;
     ifm:maturity ifm:Modelled ;
     ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education> .
 
@@ -886,6 +1000,9 @@ uc:education-university-immatriculation
     ifm:primaryFunction func:customer-onboarding ;
     ifm:executesFunction func:eligibility-verification, func:identity-proofing ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:friction-reduction, driver:data-quality, driver:fraud-prevention ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Modelled ;
     ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education> .
 
@@ -897,6 +1014,9 @@ uc:retail-hospitality-age-verification
     ifm:primaryFunction func:eligibility-verification ;
     ifm:executesFunction func:regulatory-compliance ;
     ifm:sectorScope ifm:CrossSector ;
+    ifm:valueDriver driver:data-minimisation, driver:fraud-prevention, driver:friction-reduction ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Exploratory .
 
 uc:employment-identity-proofing
@@ -907,6 +1027,9 @@ uc:employment-identity-proofing
     ifm:primaryFunction func:human-capital-management ;
     ifm:executesFunction func:identity-proofing, func:eligibility-verification ;
     ifm:sectorScope ifm:CrossSector ;
+    ifm:valueDriver driver:friction-reduction, driver:fraud-prevention, driver:data-quality ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run ;
     ifm:maturity ifm:Exploratory .
 
 uc:aerospace-supplier-onboarding
@@ -917,6 +1040,9 @@ uc:aerospace-supplier-onboarding
     ifm:primaryFunction func:sourcing-and-procurement ;
     ifm:executesFunction func:supply-chain-traceability, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:friction-reduction, driver:compliance-assurance, driver:data-quality, driver:fraud-prevention ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Exploratory .
 
 uc:healthcare-patient-identification
@@ -927,6 +1053,9 @@ uc:healthcare-patient-identification
     ifm:primaryFunction func:service-delivery ;
     ifm:executesFunction func:identity-proofing, func:records-management ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:data-quality, driver:friction-reduction, driver:fraud-prevention ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run ;
     ifm:maturity ifm:Exploratory .
 
 uc:egov-service-access
@@ -937,4 +1066,7 @@ uc:egov-service-access
     ifm:primaryFunction func:access-management ;
     ifm:executesFunction func:identity-proofing, func:service-delivery ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:friction-reduction, driver:data-minimisation, driver:reach-and-inclusion ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Exploratory .
