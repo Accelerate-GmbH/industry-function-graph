@@ -5,11 +5,12 @@
 # https://didas-swiss.github.io/industry-function-graph/.
 #
 # Requires: Settings > Pages > Source = "GitHub Actions" (not "Deploy from a branch").
-# The configure-pages step asks to create the site itself (enablement: true), but
-# this organization does not let the Actions token do that - it fails with
-# "Create Pages site failed / Resource not accessible by integration" - so the
-# setting has to be flipped once by hand. The flag is kept because it is correct
-# where the token is allowed, and harmless once the site exists.
+# That was set by hand and the workflow is green. It had to be: the configure-pages
+# step asks to create the site itself (enablement: true), but this organization
+# refuses the Actions token with "Create Pages site failed / Resource not
+# accessible by integration". The flag is kept because it is correct where the
+# token is allowed, and a no-op once the site exists - but a repository that turns
+# Pages off again will need the setting restored by hand, not by this workflow.
 
 name: Deploy Pages
 
