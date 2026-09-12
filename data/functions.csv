@@ -1,5 +1,5 @@
 id,pref_label_en,broader,definition
-identity-proofing,Identity proofing,,"Establishing to a stated level of assurance that a claimed identity corresponds to a real subject."
+identity-proofing,Identity proofing,,Establishing to a stated level of assurance that a claimed identity corresponds to a real subject.
 customer-onboarding,Customer onboarding,,"Establishing a new customer or member relationship, including the due diligence that regulation attaches to it."
 identity-lifecycle-management,Identity lifecycle management,identity-proofing,"Maintaining an established identity relationship over time: re-verification, recovery, attribute updates, revocation."
 eligibility-verification,Eligibility verification,,"Checking whether a subject meets a stated condition — age, residency, licence, membership — without necessarily identifying them."
@@ -7,8 +7,23 @@ access-management,Access management,,"Granting, restricting and revoking access 
 certification-and-attestation,Certification and attestation,,"Issuing an authoritative statement about a subject, a product or a process — a diploma, a certificate, an accreditation."
 regulatory-compliance,Regulatory compliance,,"Meeting statutory and regulatory obligations, including record-keeping and supervisory reporting."
 sourcing-and-procurement,Sourcing and procurement,,"Selecting, qualifying and contracting suppliers, and running the purchase-to-pay process."
-supply-chain-traceability,Supply chain traceability,sourcing-and-procurement,"Establishing provenance and chain of custody for goods and their inputs."
+supply-chain-traceability,Supply chain traceability,sourcing-and-procurement,Establishing provenance and chain of custody for goods and their inputs.
 human-capital-management,Human capital management,,"Hiring, employing and offboarding people, and administering their qualifications and entitlements."
 customer-service,Customer service,,"Handling requests, incidents and complaints from an existing customer relationship."
-service-delivery,Service delivery,,"Performing and delivering the service the organisation exists to provide."
-records-management,Records management,,"Maintaining an authoritative register or record and answering queries against it."
+service-delivery,Service delivery,,Performing and delivering the service the organisation exists to provide.
+records-management,Records management,,Maintaining an authoritative register or record and answering queries against it.
+contracting-and-signing,Contracting and signing,,Concluding an agreement and applying a signature that binds the parties to it.
+invoicing-and-settlement,Invoicing and settlement,,"Billing for goods or services delivered, and settling the payment that follows."
+credit-and-risk-assessment,Credit and risk assessment,,Judging the creditworthiness or risk of a counterparty before committing to a transaction or a relationship.
+claims-handling,Claims handling,,"Assessing and settling a claim made under a policy, a warranty or a guarantee."
+quality-assurance,Quality assurance,,Inspecting and testing that output conforms to a specification before it leaves the organisation.
+audit-and-assurance,Audit and assurance,,"Examining records, processes or claims against a standard, independently of whoever produced them."
+product-compliance,Product compliance,,Demonstrating that a product meets the regulatory and standards requirements of the markets it is placed on.
+customs-and-trade-facilitation,Customs and trade facilitation,,Declaring goods to an authority and clearing them across a border.
+asset-lifecycle-management,Asset lifecycle management,,"Registering, maintaining, servicing and transferring a physical asset over its life."
+sustainability-reporting,Sustainability reporting,,"Measuring and disclosing environmental and social performance, to a regulator or to the market."
+tax-administration,Tax administration,,"Determining, declaring and substantiating a tax obligation."
+consent-management,Consent management,,"Obtaining, recording and honouring a subject's permission for data about them to be used."
+data-sharing-and-provenance,Data sharing and provenance,,"Releasing data to another party with its origin, integrity and permitted use demonstrable."
+entitlement-administration,Entitlement administration,,"Granting and maintaining a benefit, subsidy or allowance once eligibility has been established."
+research-and-development,Research and development,,"Systematic work to create new knowledge, products or processes."

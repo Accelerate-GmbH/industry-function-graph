@@ -237,6 +237,38 @@ and a support function of a manufacturer. Hanging our functions under
 into the vocabulary, so the relation used is `skos:broadMatch` between schemes
 instead.
 
+## What belongs in the function layer
+
+The first draft of this vocabulary read like a list of electronic-identity use
+cases — proofing, onboarding, access. That is too narrow, and narrowing it that
+way quietly answers a question it should leave open.
+
+A verifiable credential is a container for **any** signed, structured,
+machine-checkable claim. Identity is the most familiar payload, not the only
+valuable one: a test certificate, a customs declaration, a product conformity
+statement, an emissions figure, a consent record and an invoice are all
+structured assertions whose value comes from being checkable without calling the
+issuer. The function axis should therefore cover the business functions where a
+checkable claim removes a phone call, a PDF or a trusted intermediary — not the
+functions where identity happens to be the subject.
+
+So the vocabulary deliberately spans more than it currently uses. It is wider
+than the seeded use cases, and `validate.py` reports the unexercised ones as
+coverage rather than as a problem.
+
+Two rules keep it from sprawling:
+
+- **A function is work, not a credential type.** "Diploma" is a credential;
+  "certification and attestation" is the function that issues one. If a proposed
+  entry names a document, it is in the wrong layer.
+- **A function is sector-independent.** If it cannot be stated without naming an
+  industry, it belongs in a use case instead.
+
+Three entries are close together and worth telling apart: **quality assurance**
+is checking your own output before it ships, **audit and assurance** is someone
+independent checking it afterwards, and **certification and attestation** is
+issuing the statement that results.
+
 ## Layer 4 — deferred
 
 The verifiable credential layer is intentionally left out for now. When it is

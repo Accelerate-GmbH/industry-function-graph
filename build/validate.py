@@ -185,10 +185,14 @@ def check_links(model):
         if row["function_id"] not in model.functions:
             error(f"{where}: unknown function {row['function_id']!r}")
 
+    # The vocabulary is deliberately wider than the seeded use cases, so an
+    # unused function is coverage information rather than a defect. One line,
+    # not one line each.
     used_functions = {r["function_id"] for r in model.uc_functions}
-    for function_id in model.functions:
-        if function_id not in used_functions:
-            warn(f"functions.csv[{function_id}]: not used by any use case")
+    unused = [f for f in model.functions if f not in used_functions]
+    if unused:
+        warn(f"{len(unused)} of {len(model.functions)} functions are not yet exercised "
+             f"by a use case: {', '.join(unused)}")
 
 
 def check_rdf():

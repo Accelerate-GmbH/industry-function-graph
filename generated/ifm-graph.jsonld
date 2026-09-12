@@ -1389,6 +1389,28 @@
       }
     },
     {
+      "@id": "apqc:apqc-2.0",
+      "@type": [
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:apqc-pcf"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:apqc-pcf"
+      },
+      "skos:prefLabel": {
+        "@value": "Develop and Manage Products and Services",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "2.0"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
       "@id": "apqc:apqc-3.0",
       "@type": [
         "skos:Concept"
@@ -1475,6 +1497,50 @@
       },
       "skos:notation": {
         "@value": "8.0"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "apqc:apqc-9.0",
+      "@type": [
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:apqc-pcf"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:apqc-pcf"
+      },
+      "skos:prefLabel": {
+        "@value": "Manage Financial Resources",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "9.0"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "apqc:apqc-10.0",
+      "@type": [
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:apqc-pcf"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:apqc-pcf"
+      },
+      "skos:prefLabel": {
+        "@value": "Acquire, Construct, and Manage Assets",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "10.0"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -1848,6 +1914,401 @@
       },
       "skos:broadMatch": {
         "@id": "cbf:CBF-SUP-ADM"
+      }
+    },
+    {
+      "@id": "func:contracting-and-signing",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Contracting and signing",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Concluding an agreement and applying a signature that binds the parties to it.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ADM"
+      }
+    },
+    {
+      "@id": "func:invoicing-and-settlement",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Invoicing and settlement",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Billing for goods or services delivered, and settling the payment that follows.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ADM"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-9.0"
+      }
+    },
+    {
+      "@id": "func:credit-and-risk-assessment",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Credit and risk assessment",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Judging the creditworthiness or risk of a counterparty before committing to a transaction or a relationship.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ADM"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-11.0"
+      }
+    },
+    {
+      "@id": "func:claims-handling",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Claims handling",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Assessing and settling a claim made under a policy, a warranty or a guarantee.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-MKT"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-6.0"
+      },
+      "skos:editorialNote": {
+        "@value": "After-sales in CBF terms; core for an insurer.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "func:quality-assurance",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Quality assurance",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Inspecting and testing that output conforms to a specification before it leaves the organisation.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ENG"
+      }
+    },
+    {
+      "@id": "func:audit-and-assurance",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Audit and assurance",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Examining records, processes or claims against a standard, independently of whoever produced them.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ADM"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-11.0"
+      },
+      "skos:editorialNote": {
+        "@value": "Core for an audit firm; support everywhere else.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "func:product-compliance",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Product compliance",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Demonstrating that a product meets the regulatory and standards requirements of the markets it is placed on.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ENG"
+      }
+    },
+    {
+      "@id": "func:customs-and-trade-facilitation",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Customs and trade facilitation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Declaring goods to an authority and clearing them across a border.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-DIST"
+      }
+    },
+    {
+      "@id": "func:asset-lifecycle-management",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Asset lifecycle management",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Registering, maintaining, servicing and transferring a physical asset over its life.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-OTH"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-10.0"
+      }
+    },
+    {
+      "@id": "func:sustainability-reporting",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Sustainability reporting",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Measuring and disclosing environmental and social performance, to a regulator or to the market.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ADM"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-11.0"
+      }
+    },
+    {
+      "@id": "func:tax-administration",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Tax administration",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Determining, declaring and substantiating a tax obligation.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ADM"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-9.0"
+      }
+    },
+    {
+      "@id": "func:consent-management",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Consent management",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Obtaining, recording and honouring a subject's permission for data about them to be used.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ADM"
+      }
+    },
+    {
+      "@id": "func:data-sharing-and-provenance",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Data sharing and provenance",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Releasing data to another party with its origin, integrity and permitted use demonstrable.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ICT"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-8.0"
+      }
+    },
+    {
+      "@id": "func:entitlement-administration",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Entitlement administration",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Granting and maintaining a benefit, subsidy or allowance once eligibility has been established.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-ADM"
+      }
+    },
+    {
+      "@id": "func:research-and-development",
+      "@type": [
+        "ifm:BusinessFunction",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-functions"
+      },
+      "skos:prefLabel": {
+        "@value": "Research and development",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Systematic work to create new knowledge, products or processes.",
+        "@language": "en"
+      },
+      "skos:broadMatch": {
+        "@id": "cbf:CBF-SUP-RND"
+      },
+      "skos:relatedMatch": {
+        "@id": "apqc:apqc-2.0"
       }
     },
     {
