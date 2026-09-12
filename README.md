@@ -558,6 +558,15 @@ Where the format and ecosystem values come from:
 | `W3C VCDM 2.0` + `UN/CEFACT` | The UN Transparency Protocol states that its credentials, the Digital Conformity Credential among them, conform to W3C VCDM v2.0. |
 | `W3C VCDM` + `ELM` | The European Learning Model extends the W3C data model. Which version the European Digital Credentials infrastructure requires is **not settled here**, so no version is recorded. |
 
+The `eid-credential` type is the one with a statute behind it: the Swiss E-ID Act
+(BGEID) of 20 December 2024, BBl 2025 20, read from the Federal Gazette text. It
+governs the federal trust infrastructure and the EID, and the attribute list in
+the type's definition is Art. 15 para. 1 verbatim. Nothing in that Act decides
+what any other credential type in this file may carry or who may ask for it —
+Art. 23's proportionality duty on verifiers binds the EID alone. Where a type
+here has a legal basis, it is a different statute and this repository has not
+read it.
+
 The `age-attestation` type is worth reading before reusing it. SD-JWT discloses a
 claim or withholds it and cannot prove a property of a withheld claim, so there
 are no predicate proofs in this profile. Over-18 works in swiyu because the

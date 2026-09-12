@@ -897,7 +897,7 @@ cred:eid-credential
     skos:inScheme scheme:ifm-credential-types ;
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Electronic identity credential"@en ;
-    skos:definition "The state-issued electronic identity, held in a wallet and presented with selective disclosure."@en ;
+    skos:definition "The state-issued electronic identity, held in a wallet and presented with selective disclosure. In Switzerland the EID under the E-ID Act (BGEID) of 20 December 2024: issued by fedpol through the federal trust infrastructure (Art. 13), carrying official name, given names, date of birth, sex, place of origin, place of birth, nationality, facial image and the AHV number (Art. 15 para. 1). Art. 10 para. 1 requires that the holder be able to determine which parts of it, and which information derived from them, reach the verifier."@en ;
     ifm:evidences state:eid-held ;
     ifm:credentialFormat "SD-JWT VC" ;
     ifm:ecosystem "swiyu" ;
