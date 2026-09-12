@@ -166,6 +166,48 @@ def check_axes(model):
             warn(f"transformation-modes.csv[{mode_id}]: no use case is classified here")
 
 
+def check_value_streams(model):
+    for stream_id, row in model.value_streams.items():
+        where = f"value-streams.csv[{stream_id}]"
+        if not SLUG.match(stream_id):
+            error(f"{where}: id must be a lower-case slug")
+        if not row["definition"].strip():
+            error(f"{where}: a stream without a definition is a name, not a model")
+        if row["code_status"] not in CODE_STATUS:
+            error(f"{where}: bad code_status {row['code_status']!r}")
+
+        stages = model.stages_of.get(stream_id, [])
+        if not stages:
+            error(f"{where}: no stages. A value stream is its sequence")
+            continue
+        positions = [int(st["position"]) for st in stages]
+        if positions != list(range(1, len(positions) + 1)):
+            error(f"{where}: stage positions must run 1..n with no gaps, got {positions}")
+        seen: set[str] = set()
+        for stage in stages:
+            stage_where = f"{where} stage {stage['position']}"
+            if stage["function_id"] not in model.functions:
+                error(f"{stage_where}: unknown function {stage['function_id']!r}")
+            if not stage["stage_label"].strip():
+                error(f"{stage_where}: needs a label saying what happens there")
+            if stage["function_id"] in seen:
+                warn(f"{stage_where}: {stage['function_id']} appears twice in this stream")
+            seen.add(stage["function_id"])
+
+    for index, row in enumerate(model.uc_value_streams, start=2):
+        where = f"use-case-value-streams.csv:{index}"
+        if row["use_case_id"] not in model.use_cases:
+            error(f"{where}: unknown use case {row['use_case_id']!r}")
+        if row["value_stream_id"] not in model.value_streams:
+            error(f"{where}: unknown value stream {row['value_stream_id']!r}")
+
+    placed = {r["value_stream_id"] for r in model.uc_value_streams}
+    empty = [v for v in model.value_streams if v not in placed]
+    if empty:
+        warn(f"{len(empty)} of {len(model.value_streams)} value streams have no use case "
+             f"in them yet: {', '.join(empty)}")
+
+
 def check_use_cases(model):
     for uc_id, row in model.use_cases.items():
         where = f"use-cases.csv[{uc_id}]"
@@ -272,6 +314,7 @@ def main():
     check_functions(model)
     check_alignments(model)
     check_axes(model)
+    check_value_streams(model)
     check_use_cases(model)
     check_links(model)
     check_rdf()
@@ -283,7 +326,8 @@ def main():
 
     counts = (f"{len(model.use_cases)} use cases, {len(model.sectors)} sectors, "
               f"{len(model.functions)} functions, {len(model.alignments)} alignments, "
-              f"{len(model.value_drivers)} value drivers")
+              f"{len(model.value_drivers)} value drivers, "
+              f"{len(model.value_streams)} value streams")
     if errors:
         print(f"\nFAILED: {len(errors)} error(s) in {counts}", file=sys.stderr)
         return 1

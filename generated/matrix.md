@@ -3,16 +3,16 @@
 
 Rows are ISIC Rev. 5 sections, columns are business functions. `#` marks a use case where the function is the primary one, `.` marks a supporting function.
 
-| Sector | Identity proofing | Customer onboarding | Identity lifecycle management | Eligibility verification | Access management | Certification and attestation | Regulatory compliance | Sourcing and procurement | Supply chain traceability | Human capital management | Customer service | Service delivery | Records management |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **C** Manufacturing | . |  |  | . |  |  | . | # | . | # |  |  |  |
-| **G** Wholesale and retail trade |  |  |  | # |  |  | . |  |  |  |  |  |  |
-| **I** Accommodation and food service activities |  |  |  | # |  |  | . |  |  |  |  |  |  |
-| **K** Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities | . |  |  | . |  |  |  |  |  | # |  |  |  |
-| **L** Financial and insurance activities | .. | # | ##. | . | . |  | #.. |  |  | # | . |  |  |
-| **P** Public administration and defence; compulsory social security | . |  |  |  | # |  |  |  |  |  |  | . |  |
-| **Q** Education | .. | # |  | .. |  | # |  |  |  | # |  |  | . |
-| **R** Human health and social work activities | .. |  |  | . |  |  |  |  |  | # |  | # | . |
+| Sector | Identity proofing | Customer onboarding | Identity lifecycle management | Eligibility verification | Access management | Certification and attestation | Regulatory compliance | Sourcing and procurement | Supply chain traceability | Human capital management | Customer service | Service delivery | Records management | Quality assurance | Audit and assurance | Product compliance |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| **C** Manufacturing | .. |  |  | . |  |  | . | ## | . | # |  |  |  | . | . | . |
+| **G** Wholesale and retail trade |  |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |
+| **I** Accommodation and food service activities |  |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |
+| **K** Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities | . |  |  | . |  |  |  |  |  | # |  |  |  |  |  |  |
+| **L** Financial and insurance activities | .. | # | ##. | . | . |  | #.. |  |  | # | . |  |  |  |  |  |
+| **P** Public administration and defence; compulsory social security | . |  |  |  | # |  |  |  |  |  |  | . |  |  |  |  |
+| **Q** Education | .. | # |  | .. |  | # |  |  |  | # |  |  | . |  |  |  |
+| **R** Human health and social work activities | .. |  |  | . |  |  |  |  |  | # |  | # | . |  |  |  |
 
 ## Functions reused across sections
 
@@ -132,4 +132,13 @@ A resident authenticates to a public-administration service portal and proves th
 - Sectors: 8411 General public administration activities
 - Primary function: Access management
 - Supporting functions: Identity proofing, Service delivery
+- Scope: sector-specific · Maturity: exploratory
+
+### Qualification of a pharmaceutical supplier
+
+A manufacturer qualifies an API or excipient supplier: that it legally exists, that its GMP certification and quality accreditations are current, and that what it will supply conforms.
+
+- Sectors: 2100 Manufacture of pharmaceuticals, medicinal chemical and botanical products
+- Primary function: Sourcing and procurement
+- Supporting functions: Audit and assurance, Product compliance, Quality assurance, Identity proofing
 - Scope: sector-specific · Maturity: exploratory

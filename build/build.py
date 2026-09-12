@@ -19,6 +19,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from model import BASE, GENERATED_DIR, ID_BASE, ONT, SCHEMES, Model  # noqa: E402
 
+XSD_IRI = "http://www.w3.org/2001/XMLSchema#"
+
 PREFIXES = [
     ("ifm", ONT),
     ("scheme", ID_BASE + "scheme/"),
@@ -29,6 +31,8 @@ PREFIXES = [
     ("uc", ID_BASE + "use-case/"),
     ("driver", ID_BASE + "value-driver/"),
     ("mode", ID_BASE + "transformation-mode/"),
+    ("stream", ID_BASE + "value-stream/"),
+    ("stage", ID_BASE + "value-stream-stage/"),
     ("skos", "http://www.w3.org/2004/02/skos/core#"),
     ("schema", "https://schema.org/"),
     ("dct", "http://purl.org/dc/terms/"),
@@ -51,13 +55,17 @@ class Ref(str):
 
 
 class Lit:
-    def __init__(self, value, lang="en"):
+    def __init__(self, value, lang="en", datatype=None):
         self.value = str(value)
-        self.lang = lang
+        # A datatype and a language tag are mutually exclusive in RDF.
+        self.lang = None if datatype else lang
+        self.datatype = datatype
 
     def turtle(self):
         text = (self.value.replace("\\", "\\\\").replace('"', '\\"')
                 .replace("\n", "\\n").replace("\r", ""))
+        if self.datatype:
+            return f'"{text}"^^{self.datatype}'
         return f'"{text}"@{self.lang}' if self.lang else f'"{text}"'
 
 
@@ -79,6 +87,8 @@ PREFIX_OF_KIND = {
     "use-case": "uc",
     "driver": "driver",
     "mode": "mode",
+    "stream": "stream",
+    "stage": "stage",
 }
 
 
@@ -200,6 +210,33 @@ def graph_blocks(model):
             ("ifm:changeMode", R(f"ifm:{row['change_mode'].capitalize()}")),
         ]))
 
+    heading = "Layer 2d - Value streams (ordered compositions of functions)"
+    for stream_id, row in model.value_streams.items():
+        stages = model.stages_of[stream_id]
+        blocks.append((heading, Ref(concept_ref("stream", stream_id)), [
+            ("a", [Ref("ifm:ValueStream"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-value-streams"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-value-streams"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:altLabel", [Lit(alt.strip()) for alt in row["also_known_as"].split(";")
+                               if alt.strip()]),
+            ("skos:definition", L(row["definition"])),
+            ("ifm:codeStatus", L(row["code_status"], lang=None)),
+            ("ifm:hasStage", [Ref(concept_ref("stage", f"{stream_id}-{int(st['position']):02d}"))
+                              for st in stages]),
+        ]))
+        for stage in stages:
+            position = int(stage["position"])
+            blocks.append((heading, Ref(concept_ref(
+                "stage", f"{stream_id}-{position:02d}")), [
+                ("a", R("ifm:ValueStreamStage")),
+                ("ifm:inValueStream", R(concept_ref("stream", stream_id))),
+                ("ifm:position", [Lit(position, datatype="xsd:integer")]),
+                ("rdfs:label", L(stage["stage_label"])),
+                ("ifm:stageFunction", R(concept_ref("function", stage["function_id"]))),
+                ("skos:scopeNote", L(stage["note"])),
+            ]))
+
     heading = "Layer 3 - Use cases (sector x function intersection nodes)"
     for uc_id, row in model.use_cases.items():
         primary = model.primary_function(uc_id)
@@ -217,6 +254,8 @@ def graph_blocks(model):
             ("ifm:sectorScope", R(f"ifm:{model.scope_of(uc_id)}")),
             ("ifm:valueDriver", [Ref(concept_ref("driver", d))
                                  for d in model.value_drivers_of[uc_id]]),
+            ("ifm:valueStream", [Ref(concept_ref("stream", vs))
+                                 for vs in model.streams_of[uc_id]]),
             ("ifm:transformationMode", R(concept_ref("mode", row["transformation_mode"]))),
             ("ifm:changeMode", R(f"ifm:{(model.change_mode_of(uc_id) or '').capitalize()}")),
             ("ifm:maturity", R(f"ifm:{row['maturity']}")),
@@ -277,6 +316,9 @@ def build_jsonld(model):
                     ref = str(obj)
                     ref = ref[1:-1] if ref.startswith("<") else ref
                     values.append(ref if key == "@type" else {"@id": ref})
+                elif obj.datatype:
+                    values.append({"@value": obj.value,
+                                   "@type": XSD_IRI + obj.datatype.split(":", 1)[1]})
                 elif obj.lang:
                     values.append({"@value": obj.value, "@language": obj.lang})
                 else:

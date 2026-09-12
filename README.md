@@ -48,6 +48,7 @@ Nothing in the model is invented where a standard exists:
 | 1 · Sector | ISIC Rev. 5, NACE Rev. 2.1 | `skos:ConceptScheme` with the official code in `skos:notation`. All 22 ISIC sections, plus the divisions and classes the use cases actually reach. |
 | 2 · Function | UNECE/Eurostat CBF, APQC PCF | A local function scheme mapped onto both with SKOS mapping relations. |
 | 3 · Use case | `schema:Action` | The bridge: each use case links ≥1 sector and exactly one primary function. |
+| 2d · Value stream | ArchiMate `Value Stream` | An ordered composition of functions delivering an outcome — procure to pay, order to cash. Catalogue is our own; no openly licensed one exists. |
 | 3a · Why and how far | own vocabularies | Value drivers (what it removes, prevents or makes possible) and one transformation mode (how far the process changes). |
 | 4 · Credential | W3C VCDM 2.0, EBSI, DCC/ELM, UN/CEFACT | **Not implemented yet** — see [Layer 4](#layer-4--deferred). |
 
@@ -237,6 +238,54 @@ and a support function of a manufacturer. Hanging our functions under
 `CBF-CORE` or `CBF-SUP` as `skos:broader` would bake one enterprise's viewpoint
 into the vocabulary, so the relation used is `skos:broadMatch` between schemes
 instead.
+
+## Value streams
+
+A function says what kind of work something is. It does not say where that work
+sits in an end-to-end sequence — and "supplier qualification" only means
+something once you know it is the front of procure-to-pay.
+
+The concept follows [ArchiMate's Value Stream
+element](https://pubs.opengroup.org/architecture/archimate32-doc/) — *a sequence
+of activities that create an overall result for a customer, stakeholder or end
+user*, the **what** rather than the **how**. ArchiMate is an open standard for
+expressing a value stream. There is **no openly licensed catalogue** of them:
+APQC publishes end-to-end process maps, including for procure-to-pay, under its
+own terms, and the SAP naming is proprietary. So the catalogue here is this
+repository's own, marked `provisional` like every other unverified vocabulary.
+
+Streams **compose** functions, they do not contain them. One function appears in
+several streams, so this is not a hierarchy over the function layer. Stages are
+reified rather than listed, so each carries a position and its own label:
+
+```
+procure-to-pay
+  1  Source and qualify                              sourcing-and-procurement
+  2  Establish the supplier is a real legal entity   identity-proofing
+  3  Assess counterparty and financial risk          credit-and-risk-assessment
+  4  Check accreditations and audit reports          audit-and-assurance
+  5  Check conformity of what will be supplied       product-compliance
+  6  Agree and sign                                  contracting-and-signing
+  7  Establish provenance through delivery           supply-chain-traceability
+  8  Clear the border                                customs-and-trade-facilitation
+  9  Goods receipt against specification             quality-assurance
+ 10  Invoice and payment                             invoicing-and-settlement
+ 11  Substantiate the tax position                   tax-administration
+ 12  Retain the audit trail                          records-management
+```
+
+`ifm:position` is ordering only — real stages overlap, and the sequence is a
+reading aid rather than a claim about execution.
+
+### On "finance" and "manufacturing"
+
+People reach for department names when asked which function a use case serves.
+Neither is a function here: **manufacturing** is a *sector* (ISIC section C), and
+**finance** is either a sector (section L) or, as work, the three stages above
+marked finance — credit and risk assessment, invoicing and settlement, tax
+administration. The value stream is what makes that legible: it shows where the
+finance-side and the production-side stages fall inside one sequence, which is
+the thing a department name is reaching for.
 
 ## Why, and how far: the axes on top
 

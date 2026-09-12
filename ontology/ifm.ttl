@@ -106,6 +106,56 @@ ifm:functionHasUseCase a owl:ObjectProperty ;
     owl:inverseOf ifm:executesFunction .
 
 ################################################################
+# Layer 2d - value streams
+#
+# A value stream is an end-to-end sequence of functions producing an outcome.
+# The concept follows ArchiMate's Value Stream element: the what rather than
+# the how. The catalogue is this repository's own, because no openly licensed
+# one exists - APQC publishes end-to-end maps but under its own terms, and the
+# SAP naming is proprietary.
+#
+# Streams compose functions; they do not contain them. One function appears in
+# several streams, which is why this is not a hierarchy over the function layer.
+################################################################
+
+ifm:ValueStream a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Value stream"@en ;
+    rdfs:comment """An ordered sequence of functions delivering an outcome - procure
+to pay, order to cash. Stages are reified rather than listed, so each carries its
+position and its own label."""@en .
+
+ifm:ValueStreamStage a owl:Class ;
+    rdfs:label "Value stream stage"@en ;
+    rdfs:comment "One step of a value stream: a position, a label and the function it exercises."@en .
+
+ifm:hasStage a owl:ObjectProperty ;
+    rdfs:label "has stage"@en ;
+    rdfs:domain ifm:ValueStream ;
+    rdfs:range ifm:ValueStreamStage .
+
+ifm:inValueStream a owl:ObjectProperty ;
+    rdfs:label "in value stream"@en ;
+    owl:inverseOf ifm:hasStage .
+
+ifm:position a owl:DatatypeProperty ;
+    rdfs:label "position"@en ;
+    rdfs:domain ifm:ValueStreamStage ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Where the stage sits in the sequence. Ordering only - stages overlap in practice."@en .
+
+ifm:stageFunction a owl:ObjectProperty ;
+    rdfs:label "stage function"@en ;
+    rdfs:domain ifm:ValueStreamStage ;
+    rdfs:range ifm:BusinessFunction .
+
+ifm:valueStream a owl:ObjectProperty ;
+    rdfs:label "value stream"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:ValueStream ;
+    rdfs:comment "The end-to-end sequence this use case sits inside. Optional, and a use case may sit in more than one."@en .
+
+################################################################
 # Layer 3a - why it is worth doing, and how far it changes things
 #
 # Sector and function say where a use case sits. They say nothing about why

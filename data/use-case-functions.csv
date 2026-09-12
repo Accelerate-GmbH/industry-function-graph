@@ -28,3 +28,8 @@ healthcare-patient-identification,records-management,supporting
 egov-service-access,access-management,primary
 egov-service-access,identity-proofing,supporting
 egov-service-access,service-delivery,supporting
+pharma-supplier-qualification,sourcing-and-procurement,primary
+pharma-supplier-qualification,audit-and-assurance,supporting
+pharma-supplier-qualification,product-compliance,supporting
+pharma-supplier-qualification,quality-assurance,supporting
+pharma-supplier-qualification,identity-proofing,supporting

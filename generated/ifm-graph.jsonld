@@ -9,6 +9,8 @@
     "uc": "https://didas-swiss.github.io/industry-function-graph/id/use-case/",
     "driver": "https://didas-swiss.github.io/industry-function-graph/id/value-driver/",
     "mode": "https://didas-swiss.github.io/industry-function-graph/id/transformation-mode/",
+    "stream": "https://didas-swiss.github.io/industry-function-graph/id/value-stream/",
+    "stage": "https://didas-swiss.github.io/industry-function-graph/id/value-stream-stage/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "schema": "https://schema.org/",
     "dct": "http://purl.org/dc/terms/",
@@ -123,6 +125,23 @@
       }
     },
     {
+      "@id": "scheme:ifm-value-streams",
+      "@type": [
+        "skos:ConceptScheme"
+      ],
+      "dct:title": {
+        "@value": "Value streams",
+        "@language": "en"
+      },
+      "dct:description": {
+        "@value": "End-to-end sequences of functions that produce an outcome for a customer or the organisation. The concept follows ArchiMate's Value Stream element - the what rather than the how - and the catalogue is this repository's own, because no openly licensed one exists. A function appears in several streams.",
+        "@language": "en"
+      },
+      "dct:source": {
+        "@id": "https://pubs.opengroup.org/architecture/archimate32-doc/"
+      }
+    },
+    {
       "@id": "scheme:ifm-functions",
       "@type": [
         "skos:ConceptScheme"
@@ -210,9 +229,14 @@
       "skos:notation": {
         "@value": "C"
       },
-      "skos:narrower": {
-        "@id": "sector:ISIC-30"
-      },
+      "skos:narrower": [
+        {
+          "@id": "sector:ISIC-21"
+        },
+        {
+          "@id": "sector:ISIC-30"
+        }
+      ],
       "ifm:naceRev21Code": {
         "@value": "C"
       },
@@ -741,6 +765,59 @@
       }
     },
     {
+      "@id": "sector:ISIC-21",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Manufacture of basic pharmaceutical products and pharmaceutical preparations",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "21"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-C"
+      },
+      "skos:narrower": {
+        "@id": "sector:ISIC-2100"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      },
+      "skos:scopeNote": {
+        "@value": "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "sector:ISIC-2100",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "2100"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-21"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
       "@id": "sector:ISIC-30",
       "@type": [
         "ifm:Sector",
@@ -771,6 +848,29 @@
       }
     },
     {
+      "@id": "sector:ISIC-3030",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Manufacture of air and spacecraft and related machinery",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "3030"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-30"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
       "@id": "sector:ISIC-47",
       "@type": [
         "ifm:Sector",
@@ -794,6 +894,29 @@
       },
       "ifm:naceRev21Code": {
         "@value": "47"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-4711",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Non-specialized retail sale with food, beverages or tobacco predominating",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "4711"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-47"
       },
       "ifm:codeStatus": {
         "@value": "verified"
@@ -827,6 +950,29 @@
       "skos:scopeNote": {
         "@value": "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.",
         "@language": "en"
+      }
+    },
+    {
+      "@id": "sector:ISIC-5610",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Restaurants and mobile food service activities",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "5610"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-56"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
       }
     },
     {
@@ -886,6 +1032,33 @@
       }
     },
     {
+      "@id": "sector:ISIC-6419",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Other monetary intermediation",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "6419"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-64"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      },
+      "skos:scopeNote": {
+        "@value": "Covers deposit-taking retail and commercial banking.",
+        "@language": "en"
+      }
+    },
+    {
       "@id": "sector:ISIC-65",
       "@type": [
         "ifm:Sector",
@@ -909,6 +1082,29 @@
       },
       "ifm:naceRev21Code": {
         "@value": "65"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-6512",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Non-life insurance",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "6512"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-65"
       },
       "ifm:codeStatus": {
         "@value": "verified"
@@ -944,6 +1140,29 @@
       }
     },
     {
+      "@id": "sector:ISIC-8411",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "General public administration activities",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "8411"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-84"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
       "@id": "sector:ISIC-85",
       "@type": [
         "ifm:Sector",
@@ -972,177 +1191,6 @@
       ],
       "ifm:naceRev21Code": {
         "@value": "85"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-86",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev5"
-      },
-      "skos:prefLabel": {
-        "@value": "Human health activities",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "86"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-R"
-      },
-      "skos:narrower": {
-        "@id": "sector:ISIC-8610"
-      },
-      "ifm:naceRev21Code": {
-        "@value": "86"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-3030",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev5"
-      },
-      "skos:prefLabel": {
-        "@value": "Manufacture of air and spacecraft and related machinery",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "3030"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-30"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-4711",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev5"
-      },
-      "skos:prefLabel": {
-        "@value": "Non-specialized retail sale with food, beverages or tobacco predominating",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "4711"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-47"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-5610",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev5"
-      },
-      "skos:prefLabel": {
-        "@value": "Restaurants and mobile food service activities",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "5610"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-56"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-6419",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev5"
-      },
-      "skos:prefLabel": {
-        "@value": "Other monetary intermediation",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "6419"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-64"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      },
-      "skos:scopeNote": {
-        "@value": "Covers deposit-taking retail and commercial banking.",
-        "@language": "en"
-      }
-    },
-    {
-      "@id": "sector:ISIC-6512",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev5"
-      },
-      "skos:prefLabel": {
-        "@value": "Non-life insurance",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "6512"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-65"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-8411",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev5"
-      },
-      "skos:prefLabel": {
-        "@value": "General public administration activities",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "8411"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-84"
       },
       "ifm:codeStatus": {
         "@value": "verified"
@@ -1200,6 +1248,35 @@
       "skos:scopeNote": {
         "@value": "ISIC Rev. 4 called this 8530, \"Higher education\".",
         "@language": "en"
+      }
+    },
+    {
+      "@id": "sector:ISIC-86",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Human health activities",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "86"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-R"
+      },
+      "skos:narrower": {
+        "@id": "sector:ISIC-8610"
+      },
+      "ifm:naceRev21Code": {
+        "@value": "86"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
       }
     },
     {
@@ -2591,6 +2668,714 @@
       }
     },
     {
+      "@id": "stream:procure-to-pay",
+      "@type": [
+        "ifm:ValueStream",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-streams"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-streams"
+      },
+      "skos:prefLabel": {
+        "@value": "Procure to pay",
+        "@language": "en"
+      },
+      "skos:altLabel": [
+        {
+          "@value": "source-to-pay",
+          "@language": "en"
+        },
+        {
+          "@value": "purchase-to-pay",
+          "@language": "en"
+        }
+      ],
+      "skos:definition": {
+        "@value": "From identifying a need for goods or services through to settling the supplier invoice and retaining the evidence.",
+        "@language": "en"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      },
+      "ifm:hasStage": [
+        {
+          "@id": "stage:procure-to-pay-01"
+        },
+        {
+          "@id": "stage:procure-to-pay-02"
+        },
+        {
+          "@id": "stage:procure-to-pay-03"
+        },
+        {
+          "@id": "stage:procure-to-pay-04"
+        },
+        {
+          "@id": "stage:procure-to-pay-05"
+        },
+        {
+          "@id": "stage:procure-to-pay-06"
+        },
+        {
+          "@id": "stage:procure-to-pay-07"
+        },
+        {
+          "@id": "stage:procure-to-pay-08"
+        },
+        {
+          "@id": "stage:procure-to-pay-09"
+        },
+        {
+          "@id": "stage:procure-to-pay-10"
+        },
+        {
+          "@id": "stage:procure-to-pay-11"
+        },
+        {
+          "@id": "stage:procure-to-pay-12"
+        }
+      ]
+    },
+    {
+      "@id": "stage:procure-to-pay-01",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "1",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Source and qualify",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:sourcing-and-procurement"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-02",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "2",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Establish the supplier is a real legal entity",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:identity-proofing"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-03",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "3",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Assess counterparty and financial risk",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:credit-and-risk-assessment"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-04",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "4",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Check accreditations and audit reports",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:audit-and-assurance"
+      },
+      "skos:scopeNote": {
+        "@value": "Where ISO 9001 and GMP certificates are presented.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-05",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "5",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Check conformity of what will be supplied",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:product-compliance"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-06",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "6",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Agree and sign",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:contracting-and-signing"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-07",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "7",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Establish provenance through delivery",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:supply-chain-traceability"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-08",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "8",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Clear the border",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:customs-and-trade-facilitation"
+      },
+      "skos:scopeNote": {
+        "@value": "Only when the supply crosses one.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-09",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "9",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Goods receipt against specification",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:quality-assurance"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-10",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "10",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Invoice and payment",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:invoicing-and-settlement"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-11",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "11",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Substantiate the tax position",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:tax-administration"
+      }
+    },
+    {
+      "@id": "stage:procure-to-pay-12",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:procure-to-pay"
+      },
+      "ifm:position": {
+        "@value": "12",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Retain the audit trail",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:records-management"
+      }
+    },
+    {
+      "@id": "stream:order-to-cash",
+      "@type": [
+        "ifm:ValueStream",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-streams"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-streams"
+      },
+      "skos:prefLabel": {
+        "@value": "Order to cash",
+        "@language": "en"
+      },
+      "skos:altLabel": [
+        {
+          "@value": "lead-to-cash",
+          "@language": "en"
+        },
+        {
+          "@value": "quote-to-cash",
+          "@language": "en"
+        }
+      ],
+      "skos:definition": {
+        "@value": "From a customer order through to collected payment and the record of it.",
+        "@language": "en"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      },
+      "ifm:hasStage": [
+        {
+          "@id": "stage:order-to-cash-01"
+        },
+        {
+          "@id": "stage:order-to-cash-02"
+        },
+        {
+          "@id": "stage:order-to-cash-03"
+        },
+        {
+          "@id": "stage:order-to-cash-04"
+        },
+        {
+          "@id": "stage:order-to-cash-05"
+        },
+        {
+          "@id": "stage:order-to-cash-06"
+        },
+        {
+          "@id": "stage:order-to-cash-07"
+        },
+        {
+          "@id": "stage:order-to-cash-08"
+        }
+      ]
+    },
+    {
+      "@id": "stage:order-to-cash-01",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:order-to-cash"
+      },
+      "ifm:position": {
+        "@value": "1",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Establish the customer relationship",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:customer-onboarding"
+      }
+    },
+    {
+      "@id": "stage:order-to-cash-02",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:order-to-cash"
+      },
+      "ifm:position": {
+        "@value": "2",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Establish who the customer is",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:identity-proofing"
+      }
+    },
+    {
+      "@id": "stage:order-to-cash-03",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:order-to-cash"
+      },
+      "ifm:position": {
+        "@value": "3",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Decide the terms to offer",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:credit-and-risk-assessment"
+      }
+    },
+    {
+      "@id": "stage:order-to-cash-04",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:order-to-cash"
+      },
+      "ifm:position": {
+        "@value": "4",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Agree and sign",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:contracting-and-signing"
+      }
+    },
+    {
+      "@id": "stage:order-to-cash-05",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:order-to-cash"
+      },
+      "ifm:position": {
+        "@value": "5",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Deliver",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:service-delivery"
+      }
+    },
+    {
+      "@id": "stage:order-to-cash-06",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:order-to-cash"
+      },
+      "ifm:position": {
+        "@value": "6",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Invoice and collect",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:invoicing-and-settlement"
+      }
+    },
+    {
+      "@id": "stage:order-to-cash-07",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:order-to-cash"
+      },
+      "ifm:position": {
+        "@value": "7",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Handle what goes wrong",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:customer-service"
+      }
+    },
+    {
+      "@id": "stage:order-to-cash-08",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:order-to-cash"
+      },
+      "ifm:position": {
+        "@value": "8",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Retain the audit trail",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:records-management"
+      }
+    },
+    {
+      "@id": "stream:hire-to-retire",
+      "@type": [
+        "ifm:ValueStream",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-value-streams"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-value-streams"
+      },
+      "skos:prefLabel": {
+        "@value": "Hire to retire",
+        "@language": "en"
+      },
+      "skos:altLabel": {
+        "@value": "recruit-to-retire",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "From an open role through to a former employee whose entitlements and records are closed out.",
+        "@language": "en"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      },
+      "ifm:hasStage": [
+        {
+          "@id": "stage:hire-to-retire-01"
+        },
+        {
+          "@id": "stage:hire-to-retire-02"
+        },
+        {
+          "@id": "stage:hire-to-retire-03"
+        },
+        {
+          "@id": "stage:hire-to-retire-04"
+        },
+        {
+          "@id": "stage:hire-to-retire-05"
+        },
+        {
+          "@id": "stage:hire-to-retire-06"
+        }
+      ]
+    },
+    {
+      "@id": "stage:hire-to-retire-01",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:hire-to-retire"
+      },
+      "ifm:position": {
+        "@value": "1",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Recruit and employ",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:human-capital-management"
+      }
+    },
+    {
+      "@id": "stage:hire-to-retire-02",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:hire-to-retire"
+      },
+      "ifm:position": {
+        "@value": "2",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Establish who the candidate is",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:identity-proofing"
+      }
+    },
+    {
+      "@id": "stage:hire-to-retire-03",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:hire-to-retire"
+      },
+      "ifm:position": {
+        "@value": "3",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Check right to work and qualifications",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:eligibility-verification"
+      }
+    },
+    {
+      "@id": "stage:hire-to-retire-04",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:hire-to-retire"
+      },
+      "ifm:position": {
+        "@value": "4",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Agree and sign the employment contract",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:contracting-and-signing"
+      }
+    },
+    {
+      "@id": "stage:hire-to-retire-05",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:hire-to-retire"
+      },
+      "ifm:position": {
+        "@value": "5",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Provision and later revoke access",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:access-management"
+      }
+    },
+    {
+      "@id": "stage:hire-to-retire-06",
+      "@type": [
+        "ifm:ValueStreamStage"
+      ],
+      "ifm:inValueStream": {
+        "@id": "stream:hire-to-retire"
+      },
+      "ifm:position": {
+        "@value": "6",
+        "@type": "http://www.w3.org/2001/XMLSchema#integer"
+      },
+      "rdfs:label": {
+        "@value": "Retain the employment record",
+        "@language": "en"
+      },
+      "ifm:stageFunction": {
+        "@id": "func:records-management"
+      }
+    },
+    {
       "@id": "uc:banking-kyc-onboarding",
       "@type": [
         "ifm:UseCase",
@@ -2640,6 +3425,9 @@
           "@id": "driver:data-quality"
         }
       ],
+      "ifm:valueStream": {
+        "@id": "stream:order-to-cash"
+      },
       "ifm:transformationMode": {
         "@id": "mode:redesign"
       },
@@ -3012,6 +3800,9 @@
           "@id": "driver:data-quality"
         }
       ],
+      "ifm:valueStream": {
+        "@id": "stream:hire-to-retire"
+      },
       "ifm:transformationMode": {
         "@id": "mode:optimise"
       },
@@ -3067,6 +3858,9 @@
           "@id": "driver:fraud-prevention"
         }
       ],
+      "ifm:valueStream": {
+        "@id": "stream:procure-to-pay"
+      },
       "ifm:transformationMode": {
         "@id": "mode:redesign"
       },
@@ -3171,6 +3965,70 @@
           "@id": "driver:reach-and-inclusion"
         }
       ],
+      "ifm:transformationMode": {
+        "@id": "mode:redesign"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
+      },
+      "ifm:maturity": {
+        "@id": "ifm:Exploratory"
+      }
+    },
+    {
+      "@id": "uc:pharma-supplier-qualification",
+      "@type": [
+        "ifm:UseCase",
+        "schema:Action"
+      ],
+      "schema:name": {
+        "@value": "Qualification of a pharmaceutical supplier",
+        "@language": "en"
+      },
+      "schema:description": {
+        "@value": "A manufacturer qualifies an API or excipient supplier: that it legally exists, that its GMP certification and quality accreditations are current, and that what it will supply conforms.",
+        "@language": "en"
+      },
+      "ifm:appliesToSector": {
+        "@id": "sector:ISIC-2100"
+      },
+      "ifm:primaryFunction": {
+        "@id": "func:sourcing-and-procurement"
+      },
+      "ifm:executesFunction": [
+        {
+          "@id": "func:audit-and-assurance"
+        },
+        {
+          "@id": "func:product-compliance"
+        },
+        {
+          "@id": "func:quality-assurance"
+        },
+        {
+          "@id": "func:identity-proofing"
+        }
+      ],
+      "ifm:sectorScope": {
+        "@id": "ifm:SectorSpecific"
+      },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:compliance-assurance"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        },
+        {
+          "@id": "driver:data-quality"
+        },
+        {
+          "@id": "driver:friction-reduction"
+        }
+      ],
+      "ifm:valueStream": {
+        "@id": "stream:procure-to-pay"
+      },
       "ifm:transformationMode": {
         "@id": "mode:redesign"
       },

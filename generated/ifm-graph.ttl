@@ -1,6 +1,6 @@
 # Industry-Function Mapping - generated knowledge graph.
 # DO NOT EDIT: regenerate with `python3 build/build.py` from data/*.csv.
-# 11 use cases, 40 sector concepts, 28 function concepts.
+# 12 use cases, 42 sector concepts, 28 function concepts.
 # SPDX-License-Identifier: CC-BY-4.0
 
 @prefix ifm: <https://didas-swiss.github.io/industry-function-graph/ontology#> .
@@ -12,6 +12,8 @@
 @prefix uc: <https://didas-swiss.github.io/industry-function-graph/id/use-case/> .
 @prefix driver: <https://didas-swiss.github.io/industry-function-graph/id/value-driver/> .
 @prefix mode: <https://didas-swiss.github.io/industry-function-graph/id/transformation-mode/> .
+@prefix stream: <https://didas-swiss.github.io/industry-function-graph/id/value-stream/> .
+@prefix stage: <https://didas-swiss.github.io/industry-function-graph/id/value-stream-stage/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix schema: <https://schema.org/> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -60,6 +62,12 @@ scheme:ifm-transformation-modes
     dct:description "How far the process changes. The first two are run - improving a process that already exists. The last two are change - reorganising it, or doing something that was not viable before. A use case has exactly one."@en ;
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
+scheme:ifm-value-streams
+    a skos:ConceptScheme ;
+    dct:title "Value streams"@en ;
+    dct:description "End-to-end sequences of functions that produce an outcome for a customer or the organisation. The concept follows ArchiMate's Value Stream element - the what rather than the how - and the catalogue is this repository's own, because no openly licensed one exists. A function appears in several streams."@en ;
+    dct:source <https://pubs.opengroup.org/architecture/archimate32-doc/> .
+
 scheme:ifm-functions
     a skos:ConceptScheme ;
     dct:title "IFM operational business functions"@en ;
@@ -94,7 +102,7 @@ sector:ISIC-C
     skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Manufacturing"@en ;
     skos:notation "C" ;
-    skos:narrower sector:ISIC-30 ;
+    skos:narrower sector:ISIC-21, sector:ISIC-30 ;
     ifm:naceRev21Code "C" ;
     ifm:codeStatus "verified" .
 
@@ -276,6 +284,24 @@ sector:ISIC-V
     ifm:naceRev21Code "V" ;
     ifm:codeStatus "verified" .
 
+sector:ISIC-21
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Manufacture of basic pharmaceutical products and pharmaceutical preparations"@en ;
+    skos:notation "21" ;
+    skos:broader sector:ISIC-C ;
+    skos:narrower sector:ISIC-2100 ;
+    ifm:codeStatus "verified" ;
+    skos:scopeNote "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check."@en .
+
+sector:ISIC-2100
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Manufacture of pharmaceuticals, medicinal chemical and botanical products"@en ;
+    skos:notation "2100" ;
+    skos:broader sector:ISIC-21 ;
+    ifm:codeStatus "verified" .
+
 sector:ISIC-30
     a ifm:Sector, skos:Concept ;
     skos:inScheme scheme:isic-rev5 ;
@@ -285,6 +311,14 @@ sector:ISIC-30
     skos:narrower sector:ISIC-3030 ;
     ifm:codeStatus "verified" ;
     skos:scopeNote "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check."@en .
+
+sector:ISIC-3030
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Manufacture of air and spacecraft and related machinery"@en ;
+    skos:notation "3030" ;
+    skos:broader sector:ISIC-30 ;
+    ifm:codeStatus "verified" .
 
 sector:ISIC-47
     a ifm:Sector, skos:Concept ;
@@ -296,6 +330,14 @@ sector:ISIC-47
     ifm:naceRev21Code "47" ;
     ifm:codeStatus "verified" .
 
+sector:ISIC-4711
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Non-specialized retail sale with food, beverages or tobacco predominating"@en ;
+    skos:notation "4711" ;
+    skos:broader sector:ISIC-47 ;
+    ifm:codeStatus "verified" .
+
 sector:ISIC-56
     a ifm:Sector, skos:Concept ;
     skos:inScheme scheme:isic-rev5 ;
@@ -305,6 +347,14 @@ sector:ISIC-56
     skos:narrower sector:ISIC-5610 ;
     ifm:codeStatus "verified" ;
     skos:scopeNote "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check."@en .
+
+sector:ISIC-5610
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Restaurants and mobile food service activities"@en ;
+    skos:notation "5610" ;
+    skos:broader sector:ISIC-56 ;
+    ifm:codeStatus "verified" .
 
 sector:ISIC-62
     a ifm:Sector, skos:Concept ;
@@ -325,6 +375,15 @@ sector:ISIC-64
     ifm:naceRev21Code "64" ;
     ifm:codeStatus "verified" .
 
+sector:ISIC-6419
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Other monetary intermediation"@en ;
+    skos:notation "6419" ;
+    skos:broader sector:ISIC-64 ;
+    ifm:codeStatus "verified" ;
+    skos:scopeNote "Covers deposit-taking retail and commercial banking."@en .
+
 sector:ISIC-65
     a ifm:Sector, skos:Concept ;
     skos:inScheme scheme:isic-rev5 ;
@@ -333,6 +392,14 @@ sector:ISIC-65
     skos:broader sector:ISIC-L ;
     skos:narrower sector:ISIC-6512 ;
     ifm:naceRev21Code "65" ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-6512
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Non-life insurance"@en ;
+    skos:notation "6512" ;
+    skos:broader sector:ISIC-65 ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-84
@@ -345,6 +412,14 @@ sector:ISIC-84
     ifm:naceRev21Code "84" ;
     ifm:codeStatus "verified" .
 
+sector:ISIC-8411
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "General public administration activities"@en ;
+    skos:notation "8411" ;
+    skos:broader sector:ISIC-84 ;
+    ifm:codeStatus "verified" .
+
 sector:ISIC-85
     a ifm:Sector, skos:Concept ;
     skos:inScheme scheme:isic-rev5 ;
@@ -353,65 +428,6 @@ sector:ISIC-85
     skos:broader sector:ISIC-Q ;
     skos:narrower sector:ISIC-8531, sector:ISIC-8540 ;
     ifm:naceRev21Code "85" ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-86
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev5 ;
-    skos:prefLabel "Human health activities"@en ;
-    skos:notation "86" ;
-    skos:broader sector:ISIC-R ;
-    skos:narrower sector:ISIC-8610 ;
-    ifm:naceRev21Code "86" ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-3030
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev5 ;
-    skos:prefLabel "Manufacture of air and spacecraft and related machinery"@en ;
-    skos:notation "3030" ;
-    skos:broader sector:ISIC-30 ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-4711
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev5 ;
-    skos:prefLabel "Non-specialized retail sale with food, beverages or tobacco predominating"@en ;
-    skos:notation "4711" ;
-    skos:broader sector:ISIC-47 ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-5610
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev5 ;
-    skos:prefLabel "Restaurants and mobile food service activities"@en ;
-    skos:notation "5610" ;
-    skos:broader sector:ISIC-56 ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-6419
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev5 ;
-    skos:prefLabel "Other monetary intermediation"@en ;
-    skos:notation "6419" ;
-    skos:broader sector:ISIC-64 ;
-    ifm:codeStatus "verified" ;
-    skos:scopeNote "Covers deposit-taking retail and commercial banking."@en .
-
-sector:ISIC-6512
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev5 ;
-    skos:prefLabel "Non-life insurance"@en ;
-    skos:notation "6512" ;
-    skos:broader sector:ISIC-65 ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-8411
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev5 ;
-    skos:prefLabel "General public administration activities"@en ;
-    skos:notation "8411" ;
-    skos:broader sector:ISIC-84 ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-8531
@@ -431,6 +447,16 @@ sector:ISIC-8540
     skos:broader sector:ISIC-85 ;
     ifm:codeStatus "verified" ;
     skos:scopeNote "ISIC Rev. 4 called this 8530, \"Higher education\"."@en .
+
+sector:ISIC-86
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Human health activities"@en ;
+    skos:notation "86" ;
+    skos:broader sector:ISIC-R ;
+    skos:narrower sector:ISIC-8610 ;
+    ifm:naceRev21Code "86" ;
+    ifm:codeStatus "verified" .
 
 sector:ISIC-8610
     a ifm:Sector, skos:Concept ;
@@ -919,6 +945,224 @@ mode:enable
     ifm:changeMode ifm:Change .
 
 ######################################################################
+# Layer 2d - Value streams (ordered compositions of functions)
+######################################################################
+
+stream:procure-to-pay
+    a ifm:ValueStream, skos:Concept ;
+    skos:inScheme scheme:ifm-value-streams ;
+    skos:topConceptOf scheme:ifm-value-streams ;
+    skos:prefLabel "Procure to pay"@en ;
+    skos:altLabel "source-to-pay"@en, "purchase-to-pay"@en ;
+    skos:definition "From identifying a need for goods or services through to settling the supplier invoice and retaining the evidence."@en ;
+    ifm:codeStatus "provisional" ;
+    ifm:hasStage stage:procure-to-pay-01, stage:procure-to-pay-02, stage:procure-to-pay-03, stage:procure-to-pay-04, stage:procure-to-pay-05, stage:procure-to-pay-06, stage:procure-to-pay-07, stage:procure-to-pay-08, stage:procure-to-pay-09, stage:procure-to-pay-10, stage:procure-to-pay-11, stage:procure-to-pay-12 .
+
+stage:procure-to-pay-01
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "1"^^xsd:integer ;
+    rdfs:label "Source and qualify"@en ;
+    ifm:stageFunction func:sourcing-and-procurement .
+
+stage:procure-to-pay-02
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "2"^^xsd:integer ;
+    rdfs:label "Establish the supplier is a real legal entity"@en ;
+    ifm:stageFunction func:identity-proofing .
+
+stage:procure-to-pay-03
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "3"^^xsd:integer ;
+    rdfs:label "Assess counterparty and financial risk"@en ;
+    ifm:stageFunction func:credit-and-risk-assessment .
+
+stage:procure-to-pay-04
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "4"^^xsd:integer ;
+    rdfs:label "Check accreditations and audit reports"@en ;
+    ifm:stageFunction func:audit-and-assurance ;
+    skos:scopeNote "Where ISO 9001 and GMP certificates are presented."@en .
+
+stage:procure-to-pay-05
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "5"^^xsd:integer ;
+    rdfs:label "Check conformity of what will be supplied"@en ;
+    ifm:stageFunction func:product-compliance .
+
+stage:procure-to-pay-06
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "6"^^xsd:integer ;
+    rdfs:label "Agree and sign"@en ;
+    ifm:stageFunction func:contracting-and-signing .
+
+stage:procure-to-pay-07
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "7"^^xsd:integer ;
+    rdfs:label "Establish provenance through delivery"@en ;
+    ifm:stageFunction func:supply-chain-traceability .
+
+stage:procure-to-pay-08
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "8"^^xsd:integer ;
+    rdfs:label "Clear the border"@en ;
+    ifm:stageFunction func:customs-and-trade-facilitation ;
+    skos:scopeNote "Only when the supply crosses one."@en .
+
+stage:procure-to-pay-09
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "9"^^xsd:integer ;
+    rdfs:label "Goods receipt against specification"@en ;
+    ifm:stageFunction func:quality-assurance .
+
+stage:procure-to-pay-10
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "10"^^xsd:integer ;
+    rdfs:label "Invoice and payment"@en ;
+    ifm:stageFunction func:invoicing-and-settlement .
+
+stage:procure-to-pay-11
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "11"^^xsd:integer ;
+    rdfs:label "Substantiate the tax position"@en ;
+    ifm:stageFunction func:tax-administration .
+
+stage:procure-to-pay-12
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "12"^^xsd:integer ;
+    rdfs:label "Retain the audit trail"@en ;
+    ifm:stageFunction func:records-management .
+
+stream:order-to-cash
+    a ifm:ValueStream, skos:Concept ;
+    skos:inScheme scheme:ifm-value-streams ;
+    skos:topConceptOf scheme:ifm-value-streams ;
+    skos:prefLabel "Order to cash"@en ;
+    skos:altLabel "lead-to-cash"@en, "quote-to-cash"@en ;
+    skos:definition "From a customer order through to collected payment and the record of it."@en ;
+    ifm:codeStatus "provisional" ;
+    ifm:hasStage stage:order-to-cash-01, stage:order-to-cash-02, stage:order-to-cash-03, stage:order-to-cash-04, stage:order-to-cash-05, stage:order-to-cash-06, stage:order-to-cash-07, stage:order-to-cash-08 .
+
+stage:order-to-cash-01
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "1"^^xsd:integer ;
+    rdfs:label "Establish the customer relationship"@en ;
+    ifm:stageFunction func:customer-onboarding .
+
+stage:order-to-cash-02
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "2"^^xsd:integer ;
+    rdfs:label "Establish who the customer is"@en ;
+    ifm:stageFunction func:identity-proofing .
+
+stage:order-to-cash-03
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "3"^^xsd:integer ;
+    rdfs:label "Decide the terms to offer"@en ;
+    ifm:stageFunction func:credit-and-risk-assessment .
+
+stage:order-to-cash-04
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "4"^^xsd:integer ;
+    rdfs:label "Agree and sign"@en ;
+    ifm:stageFunction func:contracting-and-signing .
+
+stage:order-to-cash-05
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "5"^^xsd:integer ;
+    rdfs:label "Deliver"@en ;
+    ifm:stageFunction func:service-delivery .
+
+stage:order-to-cash-06
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "6"^^xsd:integer ;
+    rdfs:label "Invoice and collect"@en ;
+    ifm:stageFunction func:invoicing-and-settlement .
+
+stage:order-to-cash-07
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "7"^^xsd:integer ;
+    rdfs:label "Handle what goes wrong"@en ;
+    ifm:stageFunction func:customer-service .
+
+stage:order-to-cash-08
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "8"^^xsd:integer ;
+    rdfs:label "Retain the audit trail"@en ;
+    ifm:stageFunction func:records-management .
+
+stream:hire-to-retire
+    a ifm:ValueStream, skos:Concept ;
+    skos:inScheme scheme:ifm-value-streams ;
+    skos:topConceptOf scheme:ifm-value-streams ;
+    skos:prefLabel "Hire to retire"@en ;
+    skos:altLabel "recruit-to-retire"@en ;
+    skos:definition "From an open role through to a former employee whose entitlements and records are closed out."@en ;
+    ifm:codeStatus "provisional" ;
+    ifm:hasStage stage:hire-to-retire-01, stage:hire-to-retire-02, stage:hire-to-retire-03, stage:hire-to-retire-04, stage:hire-to-retire-05, stage:hire-to-retire-06 .
+
+stage:hire-to-retire-01
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "1"^^xsd:integer ;
+    rdfs:label "Recruit and employ"@en ;
+    ifm:stageFunction func:human-capital-management .
+
+stage:hire-to-retire-02
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "2"^^xsd:integer ;
+    rdfs:label "Establish who the candidate is"@en ;
+    ifm:stageFunction func:identity-proofing .
+
+stage:hire-to-retire-03
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "3"^^xsd:integer ;
+    rdfs:label "Check right to work and qualifications"@en ;
+    ifm:stageFunction func:eligibility-verification .
+
+stage:hire-to-retire-04
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "4"^^xsd:integer ;
+    rdfs:label "Agree and sign the employment contract"@en ;
+    ifm:stageFunction func:contracting-and-signing .
+
+stage:hire-to-retire-05
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "5"^^xsd:integer ;
+    rdfs:label "Provision and later revoke access"@en ;
+    ifm:stageFunction func:access-management .
+
+stage:hire-to-retire-06
+    a ifm:ValueStreamStage ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "6"^^xsd:integer ;
+    rdfs:label "Retain the employment record"@en ;
+    ifm:stageFunction func:records-management .
+
+######################################################################
 # Layer 3 - Use cases (sector x function intersection nodes)
 ######################################################################
 
@@ -931,6 +1175,7 @@ uc:banking-kyc-onboarding
     ifm:executesFunction func:identity-proofing, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
     ifm:valueDriver driver:friction-reduction, driver:fraud-prevention, driver:compliance-assurance, driver:data-quality ;
+    ifm:valueStream stream:order-to-cash ;
     ifm:transformationMode mode:redesign ;
     ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Modelled ;
@@ -1028,6 +1273,7 @@ uc:employment-identity-proofing
     ifm:executesFunction func:identity-proofing, func:eligibility-verification ;
     ifm:sectorScope ifm:CrossSector ;
     ifm:valueDriver driver:friction-reduction, driver:fraud-prevention, driver:data-quality ;
+    ifm:valueStream stream:hire-to-retire ;
     ifm:transformationMode mode:optimise ;
     ifm:changeMode ifm:Run ;
     ifm:maturity ifm:Exploratory .
@@ -1041,6 +1287,7 @@ uc:aerospace-supplier-onboarding
     ifm:executesFunction func:supply-chain-traceability, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
     ifm:valueDriver driver:friction-reduction, driver:compliance-assurance, driver:data-quality, driver:fraud-prevention ;
+    ifm:valueStream stream:procure-to-pay ;
     ifm:transformationMode mode:redesign ;
     ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Exploratory .
@@ -1067,6 +1314,20 @@ uc:egov-service-access
     ifm:executesFunction func:identity-proofing, func:service-delivery ;
     ifm:sectorScope ifm:SectorSpecific ;
     ifm:valueDriver driver:friction-reduction, driver:data-minimisation, driver:reach-and-inclusion ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change ;
+    ifm:maturity ifm:Exploratory .
+
+uc:pharma-supplier-qualification
+    a ifm:UseCase, schema:Action ;
+    schema:name "Qualification of a pharmaceutical supplier"@en ;
+    schema:description "A manufacturer qualifies an API or excipient supplier: that it legally exists, that its GMP certification and quality accreditations are current, and that what it will supply conforms."@en ;
+    ifm:appliesToSector sector:ISIC-2100 ;
+    ifm:primaryFunction func:sourcing-and-procurement ;
+    ifm:executesFunction func:audit-and-assurance, func:product-compliance, func:quality-assurance, func:identity-proofing ;
+    ifm:sectorScope ifm:SectorSpecific ;
+    ifm:valueDriver driver:compliance-assurance, driver:fraud-prevention, driver:data-quality, driver:friction-reduction ;
+    ifm:valueStream stream:procure-to-pay ;
     ifm:transformationMode mode:redesign ;
     ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Exploratory .

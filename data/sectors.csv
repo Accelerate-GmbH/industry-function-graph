@@ -21,21 +21,23 @@ ISIC-S,section,S,"Arts, sports and recreation",,S,verified,
 ISIC-T,section,T,Other service activities,,T,verified,
 ISIC-U,section,U,Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use,,U,verified,
 ISIC-V,section,V,Activities of extraterritorial organizations and bodies,,V,verified,
+ISIC-21,division,21,Manufacture of basic pharmaceutical products and pharmaceutical preparations,ISIC-C,,verified,NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.
+ISIC-2100,class,2100,"Manufacture of pharmaceuticals, medicinal chemical and botanical products",ISIC-21,,verified,
 ISIC-30,division,30,Manufacture of other transport equipment,ISIC-C,,verified,NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.
+ISIC-3030,class,3030,Manufacture of air and spacecraft and related machinery,ISIC-30,,verified,
 ISIC-47,division,47,Retail trade,ISIC-G,47,verified,
+ISIC-4711,class,4711,"Non-specialized retail sale with food, beverages or tobacco predominating",ISIC-47,,verified,
 ISIC-56,division,56,Food and beverage service activities,ISIC-I,,verified,NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.
+ISIC-5610,class,5610,Restaurants and mobile food service activities,ISIC-56,,verified,
 ISIC-62,division,62,"Computer programming, consultancy and related activities",ISIC-K,,verified,NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.
 ISIC-64,division,64,"Financial service activities, except insurance and pension funding",ISIC-L,64,verified,
-ISIC-65,division,65,"Insurance, reinsurance and pension funding, except compulsory social security",ISIC-L,65,verified,
-ISIC-84,division,84,Public administration and defence; compulsory social security,ISIC-P,84,verified,
-ISIC-85,division,85,Education,ISIC-Q,85,verified,
-ISIC-86,division,86,Human health activities,ISIC-R,86,verified,
-ISIC-3030,class,3030,Manufacture of air and spacecraft and related machinery,ISIC-30,,verified,
-ISIC-4711,class,4711,"Non-specialized retail sale with food, beverages or tobacco predominating",ISIC-47,,verified,
-ISIC-5610,class,5610,Restaurants and mobile food service activities,ISIC-56,,verified,
 ISIC-6419,class,6419,Other monetary intermediation,ISIC-64,,verified,Covers deposit-taking retail and commercial banking.
+ISIC-65,division,65,"Insurance, reinsurance and pension funding, except compulsory social security",ISIC-L,65,verified,
 ISIC-6512,class,6512,Non-life insurance,ISIC-65,,verified,
+ISIC-84,division,84,Public administration and defence; compulsory social security,ISIC-P,84,verified,
 ISIC-8411,class,8411,General public administration activities,ISIC-84,,verified,
+ISIC-85,division,85,Education,ISIC-Q,85,verified,
 ISIC-8531,class,8531,General secondary education,ISIC-85,,verified,Swiss gymnasiale Maturitaet sits here. ISIC Rev. 4 numbered this 8521.
 ISIC-8540,class,8540,Tertiary education,ISIC-85,,verified,"ISIC Rev. 4 called this 8530, ""Higher education""."
+ISIC-86,division,86,Human health activities,ISIC-R,86,verified,
 ISIC-8610,class,8610,Hospital activities,ISIC-86,,verified,

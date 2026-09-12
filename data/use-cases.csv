@@ -10,3 +10,4 @@ employment-identity-proofing,Employee identity proofing and onboarding,"An emplo
 aerospace-supplier-onboarding,Automated aerospace supplier onboarding,"A manufacturer qualifies a new supplier by checking its legal existence, its signatories and its quality accreditations.",redesign,Exploratory,
 healthcare-patient-identification,Patient identification at admission,A hospital identifies a patient at admission and links them to the right record.,optimise,Exploratory,
 egov-service-access,Access to an online government service,A resident authenticates to a public-administration service portal and proves the attributes the service is entitled to see.,redesign,Exploratory,
+pharma-supplier-qualification,Qualification of a pharmaceutical supplier,"A manufacturer qualifies an API or excipient supplier: that it legally exists, that its GMP certification and quality accreditations are current, and that what it will supply conforms.",redesign,Exploratory,

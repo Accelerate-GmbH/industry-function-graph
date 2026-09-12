@@ -68,6 +68,15 @@ SCHEMES = {
                        "A use case has exactly one.",
         "source": BASE,
     },
+    "ifm-value-streams": {
+        "title": "Value streams",
+        "description": "End-to-end sequences of functions that produce an outcome for "
+                       "a customer or the organisation. The concept follows ArchiMate's "
+                       "Value Stream element - the what rather than the how - and the "
+                       "catalogue is this repository's own, because no openly licensed "
+                       "one exists. A function appears in several streams.",
+        "source": "https://pubs.opengroup.org/architecture/archimate32-doc/",
+    },
     "ifm-functions": {
         "title": "IFM operational business functions",
         "description": "The function vocabulary this repository actually maps use cases "
@@ -93,11 +102,22 @@ class Model:
         self.functions = {r["id"]: r for r in _read("functions.csv")}
         self.alignments = _read("function-alignments.csv")
         self.value_drivers = {r["id"]: r for r in _read("value-drivers.csv")}
+        self.value_streams = {r["id"]: r for r in _read("value-streams.csv")}
+        self.stream_stages = sorted(_read("value-stream-functions.csv"),
+                                    key=lambda r: (r["value_stream_id"], int(r["position"])))
         self.modes = {r["id"]: r for r in _read("transformation-modes.csv")}
         self.use_cases = {r["id"]: r for r in _read("use-cases.csv")}
         self.uc_sectors = _read("use-case-sectors.csv")
         self.uc_functions = _read("use-case-functions.csv")
         self.uc_value_drivers = _read("use-case-value-drivers.csv")
+        self.uc_value_streams = _read("use-case-value-streams.csv")
+
+        self.streams_of = {uc: [] for uc in self.use_cases}
+        for row in self.uc_value_streams:
+            self.streams_of.setdefault(row["use_case_id"], []).append(row["value_stream_id"])
+        self.stages_of = {vs: [] for vs in self.value_streams}
+        for row in self.stream_stages:
+            self.stages_of.setdefault(row["value_stream_id"], []).append(row)
 
         self.value_drivers_of = {uc: [] for uc in self.use_cases}
         for row in self.uc_value_drivers:
@@ -176,7 +196,8 @@ class Model:
     def label(self, kind, ident):
         table = {"sector": self.sectors, "function": self.functions,
                  "cbf": self.cbf, "apqc-pcf": self.apqc,
-                 "driver": self.value_drivers, "mode": self.modes}[kind]
+                 "driver": self.value_drivers, "mode": self.modes,
+                 "stream": self.value_streams}[kind]
         row = table.get(ident, {})
         return row.get("pref_label_en", ident)
 
