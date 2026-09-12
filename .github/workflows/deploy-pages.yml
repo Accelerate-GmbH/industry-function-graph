@@ -4,7 +4,8 @@
 # ontology are fetchable under the namespace the concepts are minted in,
 # https://didas-swiss.github.io/industry-function-graph/.
 #
-# Requires: Settings > Pages > Source = "GitHub Actions" (not "Deploy from a branch")
+# The configure-pages step enables Pages itself (enablement: true), so no manual
+# Settings > Pages change is needed; the job's pages: write permission covers it.
 
 name: Deploy Pages
 
@@ -31,6 +32,9 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        with:
+          # create the Pages site on first run instead of failing when it is absent
+          enablement: true
 
       - name: Assemble static output
         run: |
