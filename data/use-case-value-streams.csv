@@ -1,5 +1,4 @@
 use_case_id,value_stream_id
-aerospace-supplier-onboarding,procure-to-pay
-pharma-supplier-qualification,procure-to-pay
 employment-identity-proofing,hire-to-retire
 banking-kyc-onboarding,order-to-cash
+supplier-qualification,procure-to-pay

@@ -5,12 +5,12 @@ Rows are ISIC Rev. 5 sections, columns are business functions. `#` marks a use c
 
 | Sector | Identity proofing | Customer onboarding | Identity lifecycle management | Eligibility verification | Access management | Certification and attestation | Regulatory compliance | Sourcing and procurement | Supply chain traceability | Human capital management | Customer service | Service delivery | Records management | Quality assurance | Audit and assurance | Product compliance |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **C** Manufacturing | .. |  |  | . |  |  | . | ## | . | # |  |  |  | . | . | . |
+| **C** Manufacturing | .. |  |  | . |  |  | . | # | . | # |  |  |  | . | . | . |
 | **G** Wholesale and retail trade |  |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |
 | **I** Accommodation and food service activities |  |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |
 | **K** Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities | . |  |  | . |  |  |  |  |  | # |  |  |  |  |  |  |
 | **L** Financial and insurance activities | .. | # | ##. | . | . |  | #.. |  |  | # | . |  |  |  |  |  |
-| **P** Public administration and defence; compulsory social security | . |  |  |  | # |  |  |  |  |  |  | . |  |  |  |  |
+| **P** Public administration and defence; compulsory social security | .. |  |  |  | # | # | . |  |  |  |  | . | . |  |  |  |
 | **Q** Education | .. | # |  | .. |  | # |  |  |  | # |  |  | . |  |  |  |
 | **R** Human health and social work activities | .. |  |  | . |  |  |  |  |  | # |  | # | . |  |  |  |
 
@@ -22,10 +22,11 @@ This is the point of keeping functions independent of sectors: a function that a
 - **Customer onboarding** — 2 sections (L, Q)
 - **Eligibility verification** — 7 sections (C, G, I, K, L, Q, R)
 - **Access management** — 2 sections (L, P)
-- **Regulatory compliance** — 4 sections (C, G, I, L)
+- **Certification and attestation** — 2 sections (P, Q)
+- **Regulatory compliance** — 5 sections (C, G, I, L, P)
 - **Human capital management** — 5 sections (C, K, L, Q, R)
 - **Service delivery** — 2 sections (P, R)
-- **Records management** — 2 sections (Q, R)
+- **Records management** — 3 sections (P, Q, R)
 
 ## Use cases
 
@@ -107,15 +108,6 @@ An employer identifies a new hire and checks the qualifications the role require
 - Supporting functions: Identity proofing, Eligibility verification
 - Scope: cross-sector · Maturity: exploratory
 
-### Automated aerospace supplier onboarding
-
-A manufacturer qualifies a new supplier by checking its legal existence, its signatories and its quality accreditations.
-
-- Sectors: 3030 Manufacture of air and spacecraft and related machinery
-- Primary function: Sourcing and procurement
-- Supporting functions: Supply chain traceability, Regulatory compliance
-- Scope: sector-specific · Maturity: exploratory
-
 ### Patient identification at admission
 
 A hospital identifies a patient at admission and links them to the right record.
@@ -134,11 +126,21 @@ A resident authenticates to a public-administration service portal and proves th
 - Supporting functions: Identity proofing, Service delivery
 - Scope: sector-specific · Maturity: exploratory
 
-### Qualification of a pharmaceutical supplier
+### Supplier qualification
 
-A manufacturer qualifies an API or excipient supplier: that it legally exists, that its GMP certification and quality accreditations are current, and that what it will supply conforms.
+A buying organisation qualifies a supplier: that it legally exists, that its quality and conformity accreditations are current, and that what it will supply conforms. Instantiated by any sector that qualifies suppliers against accreditations.
 
-- Sectors: 2100 Manufacture of pharmaceuticals, medicinal chemical and botanical products
+- Sectors: 3030 Manufacture of air and spacecraft and related machinery, 2100 Manufacture of pharmaceuticals, medicinal chemical and botanical products
 - Primary function: Sourcing and procurement
-- Supporting functions: Audit and assurance, Product compliance, Quality assurance, Identity proofing
+- Supporting functions: Identity proofing, Audit and assurance, Product compliance, Quality assurance, Supply chain traceability, Regulatory compliance
 - Scope: sector-specific · Maturity: exploratory
+
+### Issuance of the electronic identity
+
+The issuing authority identifies a resident and issues the state electronic identity into their wallet. It is the root of the ecosystem: most other use cases here cannot start until this one has.
+
+- Sectors: 8411 General public administration activities
+- Primary function: Certification and attestation
+- Supporting functions: Identity proofing, Records management, Regulatory compliance
+- Scope: sector-specific · Maturity: modelled
+- Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow)

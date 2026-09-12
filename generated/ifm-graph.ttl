@@ -1267,71 +1267,6 @@ part:employment-identity-proofing-verifier
     ifm:bearsCost "false"^^xsd:boolean ;
     ifm:gainsValue "direct" .
 
-part:aerospace-supplier-onboarding-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:aerospace-supplier-onboarding ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Accredited certification body"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Certification is its business, so the issuing cost is already paid for."@en .
-
-part:aerospace-supplier-onboarding-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:aerospace-supplier-onboarding ;
-    ifm:trustRole role:holder ;
-    ifm:party "Supplier"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:aerospace-supplier-onboarding-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:aerospace-supplier-onboarding ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Manufacturer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:aerospace-supplier-onboarding-trust-anchor
-    a ifm:Participation ;
-    ifm:inUseCase uc:aerospace-supplier-onboarding ;
-    ifm:trustRole role:trust-anchor ;
-    ifm:party "Accreditation body"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "indirect" .
-
-part:pharma-supplier-qualification-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:pharma-supplier-qualification ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Certification body or regulator"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:pharma-supplier-qualification-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:pharma-supplier-qualification ;
-    ifm:trustRole role:holder ;
-    ifm:party "Supplier"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:pharma-supplier-qualification-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:pharma-supplier-qualification ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Manufacturer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:pharma-supplier-qualification-trust-anchor
-    a ifm:Participation ;
-    ifm:inUseCase uc:pharma-supplier-qualification ;
-    ifm:trustRole role:trust-anchor ;
-    ifm:party "Accreditation body"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "indirect" .
-
 part:healthcare-patient-identification-issuer
     a ifm:Participation ;
     ifm:inUseCase uc:healthcare-patient-identification ;
@@ -1380,6 +1315,72 @@ part:egov-service-access-verifier
     ifm:party "Public administration"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
     ifm:gainsValue "direct" .
+
+part:supplier-qualification-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:supplier-qualification ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Certification body, accreditor or regulator"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Certification is its business, so the issuing cost is already paid for. GMP for pharmaceuticals, quality accreditations for aerospace."@en .
+
+part:supplier-qualification-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:supplier-qualification ;
+    ifm:trustRole role:holder ;
+    ifm:party "Supplier"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:supplier-qualification-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:supplier-qualification ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:supplier-qualification-trust-anchor
+    a ifm:Participation ;
+    ifm:inUseCase uc:supplier-qualification ;
+    ifm:trustRole role:trust-anchor ;
+    ifm:party "Accreditation body"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" .
+
+part:eid-issuance-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:eid-issuance ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Federal e-ID issuer"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" ;
+    skos:scopeNote "Carries the cost of the credential every other use case depends on, while the value lands on the parties verifying it. The asymmetry at the root of the ecosystem."@en .
+
+part:eid-issuance-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:eid-issuance ;
+    ifm:trustRole role:holder ;
+    ifm:party "Resident"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:eid-issuance-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:eid-issuance ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Any relying party"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:eid-issuance-trust-anchor
+    a ifm:Participation ;
+    ifm:inUseCase uc:eid-issuance ;
+    ifm:trustRole role:trust-anchor ;
+    ifm:party "Federal trust registry"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" .
 
 ######################################################################
 # Layer 3a - Value drivers and transformation modes
@@ -1846,25 +1847,6 @@ uc:employment-identity-proofing
     ifm:changeMode ifm:Run ;
     ifm:maturity ifm:Exploratory .
 
-uc:aerospace-supplier-onboarding
-    a ifm:UseCase, schema:Action ;
-    schema:name "Automated aerospace supplier onboarding"@en ;
-    schema:description "A manufacturer qualifies a new supplier by checking its legal existence, its signatories and its quality accreditations."@en ;
-    ifm:appliesToSector sector:ISIC-3030 ;
-    ifm:primaryFunction func:sourcing-and-procurement ;
-    ifm:executesFunction func:supply-chain-traceability, func:regulatory-compliance ;
-    ifm:sectorScope ifm:SectorSpecific ;
-    ifm:participation part:aerospace-supplier-onboarding-issuer, part:aerospace-supplier-onboarding-holder, part:aerospace-supplier-onboarding-verifier, part:aerospace-supplier-onboarding-trust-anchor ;
-    ifm:replaces evidence:pdf-attachment, evidence:self-declaration ;
-    ifm:precondition state:supplier-accreditation-held ;
-    ifm:postcondition state:supplier-qualified ;
-    ifm:costValueAsymmetry "true"^^xsd:boolean ;
-    ifm:valueDriver driver:friction-reduction, driver:compliance-assurance, driver:data-quality, driver:fraud-prevention ;
-    ifm:valueStream stream:procure-to-pay ;
-    ifm:transformationMode mode:redesign ;
-    ifm:changeMode ifm:Change ;
-    ifm:maturity ifm:Exploratory .
-
 uc:healthcare-patient-identification
     a ifm:UseCase, schema:Action ;
     schema:name "Patient identification at admission"@en ;
@@ -1901,21 +1883,40 @@ uc:egov-service-access
     ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Exploratory .
 
-uc:pharma-supplier-qualification
+uc:supplier-qualification
     a ifm:UseCase, schema:Action ;
-    schema:name "Qualification of a pharmaceutical supplier"@en ;
-    schema:description "A manufacturer qualifies an API or excipient supplier: that it legally exists, that its GMP certification and quality accreditations are current, and that what it will supply conforms."@en ;
-    ifm:appliesToSector sector:ISIC-2100 ;
+    schema:name "Supplier qualification"@en ;
+    schema:description "A buying organisation qualifies a supplier: that it legally exists, that its quality and conformity accreditations are current, and that what it will supply conforms. Instantiated by any sector that qualifies suppliers against accreditations."@en ;
+    ifm:appliesToSector sector:ISIC-3030, sector:ISIC-2100 ;
     ifm:primaryFunction func:sourcing-and-procurement ;
-    ifm:executesFunction func:audit-and-assurance, func:product-compliance, func:quality-assurance, func:identity-proofing ;
+    ifm:executesFunction func:identity-proofing, func:audit-and-assurance, func:product-compliance, func:quality-assurance, func:supply-chain-traceability, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
-    ifm:participation part:pharma-supplier-qualification-issuer, part:pharma-supplier-qualification-holder, part:pharma-supplier-qualification-verifier, part:pharma-supplier-qualification-trust-anchor ;
-    ifm:replaces evidence:pdf-attachment, evidence:phone-or-email-check ;
+    ifm:participation part:supplier-qualification-issuer, part:supplier-qualification-holder, part:supplier-qualification-verifier, part:supplier-qualification-trust-anchor ;
+    ifm:replaces evidence:pdf-attachment, evidence:self-declaration, evidence:phone-or-email-check ;
     ifm:precondition state:supplier-accreditation-held ;
     ifm:postcondition state:supplier-qualified ;
     ifm:costValueAsymmetry "true"^^xsd:boolean ;
-    ifm:valueDriver driver:compliance-assurance, driver:fraud-prevention, driver:data-quality, driver:friction-reduction ;
+    ifm:valueDriver driver:friction-reduction, driver:compliance-assurance, driver:data-quality, driver:fraud-prevention ;
     ifm:valueStream stream:procure-to-pay ;
     ifm:transformationMode mode:redesign ;
     ifm:changeMode ifm:Change ;
     ifm:maturity ifm:Exploratory .
+
+uc:eid-issuance
+    a ifm:UseCase, schema:Action ;
+    schema:name "Issuance of the electronic identity"@en ;
+    schema:description "The issuing authority identifies a resident and issues the state electronic identity into their wallet. It is the root of the ecosystem: most other use cases here cannot start until this one has."@en ;
+    ifm:appliesToSector sector:ISIC-8411 ;
+    ifm:primaryFunction func:certification-and-attestation ;
+    ifm:executesFunction func:identity-proofing, func:records-management, func:regulatory-compliance ;
+    ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:eid-issuance-issuer, part:eid-issuance-holder, part:eid-issuance-verifier, part:eid-issuance-trust-anchor ;
+    ifm:replaces evidence:in-person-check, evidence:paper-document ;
+    ifm:postcondition state:eid-held ;
+    ifm:enables uc:banking-age-of-majority-reidentification, uc:banking-kyc-onboarding, uc:banking-reidentification-password-reset, uc:education-maturitaetszeugnis-issuance, uc:education-university-immatriculation, uc:egov-service-access, uc:employment-identity-proofing, uc:healthcare-patient-identification, uc:retail-hospitality-age-verification ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
+    ifm:valueDriver driver:reach-and-inclusion, driver:fraud-prevention, driver:data-minimisation, driver:friction-reduction ;
+    ifm:transformationMode mode:enable ;
+    ifm:changeMode ifm:Change ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow> .

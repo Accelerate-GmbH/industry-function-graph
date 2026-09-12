@@ -13,7 +13,8 @@ employment-identity-proofing,ISIC-K
 employment-identity-proofing,ISIC-L
 employment-identity-proofing,ISIC-Q
 employment-identity-proofing,ISIC-R
-aerospace-supplier-onboarding,ISIC-3030
 healthcare-patient-identification,ISIC-8610
 egov-service-access,ISIC-8411
-pharma-supplier-qualification,ISIC-2100
+supplier-qualification,ISIC-3030
+supplier-qualification,ISIC-2100
+eid-issuance,ISIC-8411

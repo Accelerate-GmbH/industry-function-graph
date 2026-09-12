@@ -1,5 +1,5 @@
 use_case_id,role_id,party,bears_cost,gains_value,note
-banking-kyc-onboarding,issuer,Bank,yes,direct,"Issues the reusable attestation and is also a verifier of it later."
+banking-kyc-onboarding,issuer,Bank,yes,direct,Issues the reusable attestation and is also a verifier of it later.
 banking-kyc-onboarding,holder,Customer,no,direct,
 banking-kyc-onboarding,verifier,Another regulated institution,no,direct,
 banking-re-kyc,issuer,Bank,yes,direct,
@@ -11,10 +11,10 @@ banking-reidentification-password-reset,verifier,Bank,no,direct,
 banking-age-of-majority-reidentification,issuer,Federal e-ID issuer,yes,none,
 banking-age-of-majority-reidentification,holder,Customer,no,direct,
 banking-age-of-majority-reidentification,verifier,Bank,no,direct,
-education-maturitaetszeugnis-issuance,issuer,Upper-secondary school,yes,indirect,"Bears the issuing cost; gets back only fewer duplicate-copy requests."
+education-maturitaetszeugnis-issuance,issuer,Upper-secondary school,yes,indirect,Bears the issuing cost; gets back only fewer duplicate-copy requests.
 education-maturitaetszeugnis-issuance,holder,Graduate,no,direct,
 education-maturitaetszeugnis-issuance,verifier,University or employer,no,direct,
-education-university-immatriculation,issuer,Upper-secondary school,yes,none,"Already carried the cost in the issuance use case and gains nothing here."
+education-university-immatriculation,issuer,Upper-secondary school,yes,none,Already carried the cost in the issuance use case and gains nothing here.
 education-university-immatriculation,holder,Applicant,no,direct,
 education-university-immatriculation,verifier,University,no,direct,
 retail-hospitality-age-verification,issuer,Federal e-ID issuer,yes,none,
@@ -23,17 +23,17 @@ retail-hospitality-age-verification,verifier,Merchant or restaurant,no,direct,
 employment-identity-proofing,issuer,E-ID issuer and awarding institutions,yes,none,
 employment-identity-proofing,holder,Candidate,no,direct,
 employment-identity-proofing,verifier,Employer,no,direct,
-aerospace-supplier-onboarding,issuer,Accredited certification body,yes,direct,"Certification is its business, so the issuing cost is already paid for."
-aerospace-supplier-onboarding,holder,Supplier,no,direct,
-aerospace-supplier-onboarding,verifier,Manufacturer,no,direct,
-aerospace-supplier-onboarding,trust-anchor,Accreditation body,yes,indirect,
-pharma-supplier-qualification,issuer,Certification body or regulator,yes,direct,
-pharma-supplier-qualification,holder,Supplier,no,direct,
-pharma-supplier-qualification,verifier,Manufacturer,no,direct,
-pharma-supplier-qualification,trust-anchor,Accreditation body,yes,indirect,
 healthcare-patient-identification,issuer,Federal e-ID issuer,yes,none,
 healthcare-patient-identification,holder,Patient,no,direct,
 healthcare-patient-identification,verifier,Hospital,no,direct,
 egov-service-access,issuer,Federal e-ID issuer,yes,direct,"Issuer and verifier are both the state, so the investment returns to the party making it."
 egov-service-access,holder,Resident,no,direct,
 egov-service-access,verifier,Public administration,no,direct,
+supplier-qualification,issuer,"Certification body, accreditor or regulator",yes,direct,"Certification is its business, so the issuing cost is already paid for. GMP for pharmaceuticals, quality accreditations for aerospace."
+supplier-qualification,holder,Supplier,no,direct,
+supplier-qualification,verifier,Buying organisation,no,direct,
+supplier-qualification,trust-anchor,Accreditation body,yes,indirect,
+eid-issuance,issuer,Federal e-ID issuer,yes,indirect,"Carries the cost of the credential every other use case depends on, while the value lands on the parties verifying it. The asymmetry at the root of the ecosystem."
+eid-issuance,holder,Resident,no,direct,
+eid-issuance,verifier,Any relying party,no,direct,
+eid-issuance,trust-anchor,Federal trust registry,yes,indirect,

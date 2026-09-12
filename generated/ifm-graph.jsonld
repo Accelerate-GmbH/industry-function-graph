@@ -3594,194 +3594,6 @@
       }
     },
     {
-      "@id": "part:aerospace-supplier-onboarding-issuer",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:aerospace-supplier-onboarding"
-      },
-      "ifm:trustRole": {
-        "@id": "role:issuer"
-      },
-      "ifm:party": {
-        "@value": "Accredited certification body",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      },
-      "skos:scopeNote": {
-        "@value": "Certification is its business, so the issuing cost is already paid for.",
-        "@language": "en"
-      }
-    },
-    {
-      "@id": "part:aerospace-supplier-onboarding-holder",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:aerospace-supplier-onboarding"
-      },
-      "ifm:trustRole": {
-        "@id": "role:holder"
-      },
-      "ifm:party": {
-        "@value": "Supplier",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      }
-    },
-    {
-      "@id": "part:aerospace-supplier-onboarding-verifier",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:aerospace-supplier-onboarding"
-      },
-      "ifm:trustRole": {
-        "@id": "role:verifier"
-      },
-      "ifm:party": {
-        "@value": "Manufacturer",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      }
-    },
-    {
-      "@id": "part:aerospace-supplier-onboarding-trust-anchor",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:aerospace-supplier-onboarding"
-      },
-      "ifm:trustRole": {
-        "@id": "role:trust-anchor"
-      },
-      "ifm:party": {
-        "@value": "Accreditation body",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "indirect"
-      }
-    },
-    {
-      "@id": "part:pharma-supplier-qualification-issuer",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:pharma-supplier-qualification"
-      },
-      "ifm:trustRole": {
-        "@id": "role:issuer"
-      },
-      "ifm:party": {
-        "@value": "Certification body or regulator",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      }
-    },
-    {
-      "@id": "part:pharma-supplier-qualification-holder",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:pharma-supplier-qualification"
-      },
-      "ifm:trustRole": {
-        "@id": "role:holder"
-      },
-      "ifm:party": {
-        "@value": "Supplier",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      }
-    },
-    {
-      "@id": "part:pharma-supplier-qualification-verifier",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:pharma-supplier-qualification"
-      },
-      "ifm:trustRole": {
-        "@id": "role:verifier"
-      },
-      "ifm:party": {
-        "@value": "Manufacturer",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      }
-    },
-    {
-      "@id": "part:pharma-supplier-qualification-trust-anchor",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:pharma-supplier-qualification"
-      },
-      "ifm:trustRole": {
-        "@id": "role:trust-anchor"
-      },
-      "ifm:party": {
-        "@value": "Accreditation body",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "indirect"
-      }
-    },
-    {
       "@id": "part:healthcare-patient-identification-issuer",
       "@type": [
         "ifm:Participation"
@@ -3921,6 +3733,198 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:supplier-qualification-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Certification body, accreditor or regulator",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Certification is its business, so the issuing cost is already paid for. GMP for pharmaceuticals, quality accreditations for aerospace.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:supplier-qualification-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Supplier",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:supplier-qualification-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Buying organisation",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:supplier-qualification-trust-anchor",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:trust-anchor"
+      },
+      "ifm:party": {
+        "@value": "Accreditation body",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "indirect"
+      }
+    },
+    {
+      "@id": "part:eid-issuance-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:eid-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Federal e-ID issuer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "indirect"
+      },
+      "skos:scopeNote": {
+        "@value": "Carries the cost of the credential every other use case depends on, while the value lands on the parties verifying it. The asymmetry at the root of the ecosystem.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:eid-issuance-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:eid-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Resident",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:eid-issuance-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:eid-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Any relying party",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:eid-issuance-trust-anchor",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:eid-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:trust-anchor"
+      },
+      "ifm:party": {
+        "@value": "Federal trust registry",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "indirect"
       }
     },
     {
@@ -5581,96 +5585,6 @@
       }
     },
     {
-      "@id": "uc:aerospace-supplier-onboarding",
-      "@type": [
-        "ifm:UseCase",
-        "schema:Action"
-      ],
-      "schema:name": {
-        "@value": "Automated aerospace supplier onboarding",
-        "@language": "en"
-      },
-      "schema:description": {
-        "@value": "A manufacturer qualifies a new supplier by checking its legal existence, its signatories and its quality accreditations.",
-        "@language": "en"
-      },
-      "ifm:appliesToSector": {
-        "@id": "sector:ISIC-3030"
-      },
-      "ifm:primaryFunction": {
-        "@id": "func:sourcing-and-procurement"
-      },
-      "ifm:executesFunction": [
-        {
-          "@id": "func:supply-chain-traceability"
-        },
-        {
-          "@id": "func:regulatory-compliance"
-        }
-      ],
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
-      },
-      "ifm:participation": [
-        {
-          "@id": "part:aerospace-supplier-onboarding-issuer"
-        },
-        {
-          "@id": "part:aerospace-supplier-onboarding-holder"
-        },
-        {
-          "@id": "part:aerospace-supplier-onboarding-verifier"
-        },
-        {
-          "@id": "part:aerospace-supplier-onboarding-trust-anchor"
-        }
-      ],
-      "ifm:replaces": [
-        {
-          "@id": "evidence:pdf-attachment"
-        },
-        {
-          "@id": "evidence:self-declaration"
-        }
-      ],
-      "ifm:precondition": {
-        "@id": "state:supplier-accreditation-held"
-      },
-      "ifm:postcondition": {
-        "@id": "state:supplier-qualified"
-      },
-      "ifm:costValueAsymmetry": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:valueDriver": [
-        {
-          "@id": "driver:friction-reduction"
-        },
-        {
-          "@id": "driver:compliance-assurance"
-        },
-        {
-          "@id": "driver:data-quality"
-        },
-        {
-          "@id": "driver:fraud-prevention"
-        }
-      ],
-      "ifm:valueStream": {
-        "@id": "stream:procure-to-pay"
-      },
-      "ifm:transformationMode": {
-        "@id": "mode:redesign"
-      },
-      "ifm:changeMode": {
-        "@id": "ifm:Change"
-      },
-      "ifm:maturity": {
-        "@id": "ifm:Exploratory"
-      }
-    },
-    {
       "@id": "uc:healthcare-patient-identification",
       "@type": [
         "ifm:UseCase",
@@ -5823,26 +5737,34 @@
       }
     },
     {
-      "@id": "uc:pharma-supplier-qualification",
+      "@id": "uc:supplier-qualification",
       "@type": [
         "ifm:UseCase",
         "schema:Action"
       ],
       "schema:name": {
-        "@value": "Qualification of a pharmaceutical supplier",
+        "@value": "Supplier qualification",
         "@language": "en"
       },
       "schema:description": {
-        "@value": "A manufacturer qualifies an API or excipient supplier: that it legally exists, that its GMP certification and quality accreditations are current, and that what it will supply conforms.",
+        "@value": "A buying organisation qualifies a supplier: that it legally exists, that its quality and conformity accreditations are current, and that what it will supply conforms. Instantiated by any sector that qualifies suppliers against accreditations.",
         "@language": "en"
       },
-      "ifm:appliesToSector": {
-        "@id": "sector:ISIC-2100"
-      },
+      "ifm:appliesToSector": [
+        {
+          "@id": "sector:ISIC-3030"
+        },
+        {
+          "@id": "sector:ISIC-2100"
+        }
+      ],
       "ifm:primaryFunction": {
         "@id": "func:sourcing-and-procurement"
       },
       "ifm:executesFunction": [
+        {
+          "@id": "func:identity-proofing"
+        },
         {
           "@id": "func:audit-and-assurance"
         },
@@ -5853,7 +5775,10 @@
           "@id": "func:quality-assurance"
         },
         {
-          "@id": "func:identity-proofing"
+          "@id": "func:supply-chain-traceability"
+        },
+        {
+          "@id": "func:regulatory-compliance"
         }
       ],
       "ifm:sectorScope": {
@@ -5861,21 +5786,24 @@
       },
       "ifm:participation": [
         {
-          "@id": "part:pharma-supplier-qualification-issuer"
+          "@id": "part:supplier-qualification-issuer"
         },
         {
-          "@id": "part:pharma-supplier-qualification-holder"
+          "@id": "part:supplier-qualification-holder"
         },
         {
-          "@id": "part:pharma-supplier-qualification-verifier"
+          "@id": "part:supplier-qualification-verifier"
         },
         {
-          "@id": "part:pharma-supplier-qualification-trust-anchor"
+          "@id": "part:supplier-qualification-trust-anchor"
         }
       ],
       "ifm:replaces": [
         {
           "@id": "evidence:pdf-attachment"
+        },
+        {
+          "@id": "evidence:self-declaration"
         },
         {
           "@id": "evidence:phone-or-email-check"
@@ -5893,16 +5821,16 @@
       },
       "ifm:valueDriver": [
         {
-          "@id": "driver:compliance-assurance"
+          "@id": "driver:friction-reduction"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:compliance-assurance"
         },
         {
           "@id": "driver:data-quality"
         },
         {
-          "@id": "driver:friction-reduction"
+          "@id": "driver:fraud-prevention"
         }
       ],
       "ifm:valueStream": {
@@ -5916,6 +5844,125 @@
       },
       "ifm:maturity": {
         "@id": "ifm:Exploratory"
+      }
+    },
+    {
+      "@id": "uc:eid-issuance",
+      "@type": [
+        "ifm:UseCase",
+        "schema:Action"
+      ],
+      "schema:name": {
+        "@value": "Issuance of the electronic identity",
+        "@language": "en"
+      },
+      "schema:description": {
+        "@value": "The issuing authority identifies a resident and issues the state electronic identity into their wallet. It is the root of the ecosystem: most other use cases here cannot start until this one has.",
+        "@language": "en"
+      },
+      "ifm:appliesToSector": {
+        "@id": "sector:ISIC-8411"
+      },
+      "ifm:primaryFunction": {
+        "@id": "func:certification-and-attestation"
+      },
+      "ifm:executesFunction": [
+        {
+          "@id": "func:identity-proofing"
+        },
+        {
+          "@id": "func:records-management"
+        },
+        {
+          "@id": "func:regulatory-compliance"
+        }
+      ],
+      "ifm:sectorScope": {
+        "@id": "ifm:SectorSpecific"
+      },
+      "ifm:participation": [
+        {
+          "@id": "part:eid-issuance-issuer"
+        },
+        {
+          "@id": "part:eid-issuance-holder"
+        },
+        {
+          "@id": "part:eid-issuance-verifier"
+        },
+        {
+          "@id": "part:eid-issuance-trust-anchor"
+        }
+      ],
+      "ifm:replaces": [
+        {
+          "@id": "evidence:in-person-check"
+        },
+        {
+          "@id": "evidence:paper-document"
+        }
+      ],
+      "ifm:postcondition": {
+        "@id": "state:eid-held"
+      },
+      "ifm:enables": [
+        {
+          "@id": "uc:banking-age-of-majority-reidentification"
+        },
+        {
+          "@id": "uc:banking-kyc-onboarding"
+        },
+        {
+          "@id": "uc:banking-reidentification-password-reset"
+        },
+        {
+          "@id": "uc:education-maturitaetszeugnis-issuance"
+        },
+        {
+          "@id": "uc:education-university-immatriculation"
+        },
+        {
+          "@id": "uc:egov-service-access"
+        },
+        {
+          "@id": "uc:employment-identity-proofing"
+        },
+        {
+          "@id": "uc:healthcare-patient-identification"
+        },
+        {
+          "@id": "uc:retail-hospitality-age-verification"
+        }
+      ],
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:valueDriver": [
+        {
+          "@id": "driver:reach-and-inclusion"
+        },
+        {
+          "@id": "driver:fraud-prevention"
+        },
+        {
+          "@id": "driver:data-minimisation"
+        },
+        {
+          "@id": "driver:friction-reduction"
+        }
+      ],
+      "ifm:transformationMode": {
+        "@id": "mode:enable"
+      },
+      "ifm:changeMode": {
+        "@id": "ifm:Change"
+      },
+      "ifm:maturity": {
+        "@id": "ifm:Modelled"
+      },
+      "ifm:documentedBy": {
+        "@id": "https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow"
       }
     }
   ]

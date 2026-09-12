@@ -8,7 +8,7 @@ education-maturitaetszeugnis-issuance,secondary-education-credential-held
 education-university-immatriculation,tertiary-enrolment-established
 retail-hospitality-age-verification,age-attribute-proven
 employment-identity-proofing,employment-relationship-open
-aerospace-supplier-onboarding,supplier-qualified
-pharma-supplier-qualification,supplier-qualified
 healthcare-patient-identification,patient-record-linked
 egov-service-access,service-entitlement-established
+supplier-qualification,supplier-qualified
+eid-issuance,eid-held

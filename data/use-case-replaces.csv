@@ -11,9 +11,10 @@ education-university-immatriculation,paper-document
 retail-hospitality-age-verification,in-person-check
 employment-identity-proofing,pdf-attachment
 employment-identity-proofing,phone-or-email-check
-aerospace-supplier-onboarding,pdf-attachment
-aerospace-supplier-onboarding,self-declaration
-pharma-supplier-qualification,pdf-attachment
-pharma-supplier-qualification,phone-or-email-check
 healthcare-patient-identification,in-person-check
 egov-service-access,registry-lookup
+supplier-qualification,pdf-attachment
+supplier-qualification,self-declaration
+supplier-qualification,phone-or-email-check
+eid-issuance,in-person-check
+eid-issuance,paper-document

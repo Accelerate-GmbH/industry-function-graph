@@ -368,28 +368,43 @@ Three things fall out that a taxonomy alone cannot give you.
 socket: either a use case nobody has written down, or a dependency on something
 outside the repository. Today there are two:
 
-| Open socket | Needed by |
-|---|---|
-| `eid-held` | 9 of 12 use cases |
-| `supplier-accreditation-held` | 2 |
+`eid-held` was the first one found — needed by nine of twelve use cases and
+produced by none of them. It is now `eid-issuance`, the root the whole chain
+hangs from:
 
-The first is the whole ecosystem's root dependency, and the graph makes it
-visible as a hole rather than an assumption.
+```
+eid-issuance
+  → banking-kyc-onboarding                    via eid-held
+      → banking-re-kyc                        via customer-relationship-open
+      → banking-reidentification-…            via customer-relationship-open
+      → banking-age-of-majority-…             via customer-relationship-open
+  → education-maturitaetszeugnis-issuance     via eid-held
+      → education-university-immatriculation  via secondary-education-credential-held
+      → employment-identity-proofing          via secondary-education-credential-held
+  → egov-service-access, healthcare-patient-identification,
+    retail-hospitality-age-verification       via eid-held
+```
+
+It is also the only use case classified `enable` and the clearest asymmetry in
+the graph: the issuer bears the cost of the credential every other use case
+depends on, while the value lands on the parties verifying it.
+
+One socket remains — `supplier-accreditation-held`, needed by supplier
+qualification and produced by nothing here. That is a real gap: accreditation
+bodies issuing verifiable certificates is a use case nobody in this repository
+has written down.
 
 **The duplicates.** Two use cases with the same precondition set, postcondition
-set and primary function are, on the evidence, one use case. The validator says
-so — and it already caught a pair I had written separately:
+set and primary function are, on the evidence, one use case. The check caught a
+pair written separately here — `aerospace-supplier-onboarding` and
+`pharma-supplier-qualification` had identical interfaces and differed only by
+sector — and they have since been collapsed into one `supplier-qualification`
+that both sectors instantiate. The sector-specific detail that mattered (GMP for
+pharmaceuticals, quality accreditation for aerospace) survives as a note on the
+issuing participation, which is where it belonged.
 
-```
-aerospace-supplier-onboarding  ==  pharma-supplier-qualification
-    pre  [supplier-accreditation-held]
-    post [supplier-qualified]
-    function sourcing-and-procurement
-```
-
-Same interface, different sector. That is the minimal-overlap check working: the
-two are candidates for collapsing into one sector-agnostic use case that both
-sectors instantiate.
+That is the minimal-overlap goal working as a check rather than an aspiration,
+and the first thing it did was find a duplicate in its own author's data.
 
 ### Why states are coarse
 
