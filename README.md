@@ -9,9 +9,20 @@ regulation around it differs. If the function layer is kept independent of the
 sector layer, a pattern worked out once in banking is visibly reusable in
 education, and the matrix shows you where.
 
-**👉 Generated matrix: [`generated/index.html`](./generated/index.html)** ·
-graph: [`generated/ifm-graph.ttl`](./generated/ifm-graph.ttl) ·
-[`generated/ifm-graph.jsonld`](./generated/ifm-graph.jsonld)
+**👉 Live matrix: https://didas-swiss.github.io/industry-function-graph/**
+
+The graph is published at the same place the concepts are named, so the IRIs and
+the download are the same URLs:
+[Turtle](https://didas-swiss.github.io/industry-function-graph/ifm-graph.ttl) ·
+[JSON-LD](https://didas-swiss.github.io/industry-function-graph/ifm-graph.jsonld) ·
+[ontology](https://didas-swiss.github.io/industry-function-graph/ontology)
+
+```bash
+curl -sO https://didas-swiss.github.io/industry-function-graph/ifm-graph.ttl
+```
+
+The same files are committed under [`generated/`](./generated) and
+[`ontology/`](./ontology) if you would rather read them in the repository.
 
 ## The four layers
 
@@ -76,7 +87,7 @@ still runs.
 
 Concepts are minted under
 `https://didas-swiss.github.io/industry-function-graph/`, the GitHub Pages
-URL of this repository. With Pages switched on, the matrix, the graph and the
+URL of this repository. Pages is enabled, so the matrix, the graph and the
 ontology are all fetchable there; the individual concept IRIs
 (`…/id/sector/ISIC-C`) are identifiers rather than dereferenceable documents,
 which is fine for a vocabulary this size but is the thing a `w3id.org` redirect
