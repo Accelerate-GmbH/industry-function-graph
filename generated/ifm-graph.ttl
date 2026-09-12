@@ -938,9 +938,10 @@ cred:age-attestation
     skos:inScheme scheme:ifm-credential-types ;
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Age attestation"@en ;
-    skos:definition "A predicate proof that the subject is over a threshold age, disclosing nothing else. In swiyu this is a selective disclosure of the electronic identity rather than a separately issued credential."@en ;
+    skos:definition "A statement that the subject is over a threshold age. Not a predicate proof: SD-JWT discloses a claim or withholds it and cannot prove a property of a withheld claim. In swiyu the electronic identity carries an age_over_18 claim of its own, which the holder discloses instead of the date of birth, so no separate credential is issued."@en ;
     ifm:evidences state:age-attribute-proven ;
     ifm:credentialFormat "SD-JWT VC" ;
+    ifm:ecosystem "swiyu" ;
     ifm:codeStatus "provisional" .
 
 cred:secondary-education-certificate
@@ -948,9 +949,9 @@ cred:secondary-education-certificate
     skos:inScheme scheme:ifm-credential-types ;
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Secondary education certificate"@en ;
-    skos:definition "A school-leaving certificate as a verifiable credential. The European Learning Model is the schema family to align with."@en ;
+    skos:definition "A school-leaving certificate as a verifiable credential. The European Learning Model is the schema family to align with; ELM extends the W3C data model, and which version of it the European Digital Credentials infrastructure requires is not settled here."@en ;
     ifm:evidences state:secondary-education-credential-held ;
-    ifm:credentialFormat "W3C VCDM 2.0" ;
+    ifm:credentialFormat "W3C VCDM" ;
     ifm:ecosystem "ELM" ;
     ifm:codeStatus "provisional" .
 
@@ -961,7 +962,7 @@ cred:tertiary-enrolment-attestation
     skos:prefLabel "Tertiary enrolment attestation"@en ;
     skos:definition "A statement that the subject is enrolled at a higher education institution."@en ;
     ifm:evidences state:tertiary-enrolment-established ;
-    ifm:credentialFormat "W3C VCDM 2.0" ;
+    ifm:credentialFormat "W3C VCDM" ;
     ifm:ecosystem "ELM" ;
     ifm:codeStatus "provisional" .
 
@@ -972,7 +973,7 @@ cred:employment-attestation
     skos:prefLabel "Employment attestation"@en ;
     skos:definition "A statement that an employment contract is in force between the subject and a named employer."@en ;
     ifm:evidences state:employment-relationship-open ;
-    ifm:credentialFormat "W3C VCDM 2.0" ;
+    ifm:credentialFormat "W3C VCDM" ;
     ifm:ecosystem "ELM" ;
     ifm:codeStatus "provisional" .
 

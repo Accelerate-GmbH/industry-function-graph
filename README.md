@@ -52,7 +52,7 @@ Nothing in the model is invented where a standard exists:
 | 3c · Interface | own vocabulary | Pre- and postconditions over a shared state vocabulary. Composition, gaps and duplicates are **derived** from these. |
 | 3b · Who and what for | own vocabularies | Trust roles with who bears cost and who gains value, what evidence the credential replaces, and which use cases must work first. |
 | 3a · Why and how far | own vocabularies | Value drivers (what it removes, prevents or makes possible) and one transformation mode (how far the process changes). |
-| 4 · Credential | W3C VCDM 2.0, EBSI, DCC/ELM, UN/CEFACT | **Not implemented yet** — see [Layer 4](#layer-4--deferred). |
+| 4 · Credential | SD-JWT VC (swiyu), W3C VCDM (ELM, UN/CEFACT) | Credential types hung off the trust roles, each evidencing one state — see [Layer 4](#layer-4--credential-types). |
 
 ## Layout
 
@@ -545,11 +545,25 @@ holding the credential is the condition that satisfies the state, and states are
 what use cases compose against. Credentials explain an existing composition
 without altering it.
 
-Recorded per type: the format (`SD-JWT VC`, `W3C VCDM 2.0`), the ecosystem whose
-schemas apply (`swiyu`, `ELM` for education and labour, `UN/CEFACT` for trade),
-and the state it evidences. The schemas themselves are not copied here; they
-belong to those ecosystems. Every type is `provisional` — none has been checked
-against a published schema registry.
+Recorded per type: the format, the ecosystem whose schemas apply, and the state
+it evidences. The schemas themselves are not copied here; they belong to those
+ecosystems. Every type is `provisional` — none has been checked against a
+published schema registry.
+
+Where the format and ecosystem values come from:
+
+| Value | Basis |
+|---|---|
+| `SD-JWT VC` + `swiyu` | `swiss-profile-vc:1.0.0` is an SD-JWT VC profile; the media type is `application/dc+sd-jwt` and ISO mdoc and W3C VCDM are not supported by it. Read from the Swiss Profile conformance record in [`digital-health_swiyu`](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/spec-conformance.md), not from the profile text, which is unreachable from the environment this was built in. |
+| `W3C VCDM 2.0` + `UN/CEFACT` | The UN Transparency Protocol states that its credentials, the Digital Conformity Credential among them, conform to W3C VCDM v2.0. |
+| `W3C VCDM` + `ELM` | The European Learning Model extends the W3C data model. Which version the European Digital Credentials infrastructure requires is **not settled here**, so no version is recorded. |
+
+The `age-attestation` type is worth reading before reusing it. SD-JWT discloses a
+claim or withholds it and cannot prove a property of a withheld claim, so there
+are no predicate proofs in this profile. Over-18 works in swiyu because the
+electronic identity carries an `age_over_18` claim of its own that the holder can
+disclose in place of the date of birth. That is a property of the credential's
+claim set, not of the format.
 
 ### Two checks that earn their place
 
@@ -565,18 +579,20 @@ customer relationship is established from the bank's own records, with no
 credential presented. Some states are established without a credential, and the
 model allows for that.
 
-The verifiable credential layer is intentionally left out for now. When it is
-added, nothing in layers 1–3 has to change; the extension point is:
+### What this layer still does not carry
 
-- a `ifm:CredentialSchema` class for W3C VCDM 2.0 credential types, in its own
-  file under `data/`;
-- an `ifm:requiresCredential` property from `ifm:UseCase` to it — the use case
-  node is already the right place to hang it, because what a credential has to
-  prove is a property of the *use case*, not of the sector or the function;
+Credential *types* are here. Credential *schemas* are not, and adding them does
+not disturb layers 1–3:
+
+- an `ifm:CredentialSchema` class in its own file under `data/`, with the claim
+  set each type carries;
 - ecosystem-specific schema anchors alongside it (EBSI conformance frameworks
-  for cross-sector governance, DCC/ELM for education and labour, UN/CEFACT or
-  GS1 for supply chain and trade), mapped the same way the function alignments
-  are — as mapping relations with a recorded `codeStatus`, not as a fork.
+  for cross-sector governance, ELM for education and labour, UN/CEFACT or GS1
+  for supply chain and trade), mapped the way the function alignments are — as
+  mapping relations with a recorded `code_status`, not as a fork.
+
+Until then the `format` and `ecosystem` columns say which schema family a type
+should be resolved against, and nothing resolves it.
 
 ## Licence
 

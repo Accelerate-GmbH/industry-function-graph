@@ -232,7 +232,8 @@ ifm:evidences a owl:ObjectProperty ;
 ifm:credentialFormat a owl:DatatypeProperty ;
     rdfs:label "credential format"@en ;
     rdfs:domain ifm:CredentialType ;
-    rdfs:comment "SD-JWT VC, W3C VCDM 2.0, and so on."@en .
+    rdfs:comment """The credential's wire format: SD-JWT VC, W3C VCDM, and so on.
+A version is recorded only where the ecosystem states one."""@en .
 
 ifm:ecosystem a owl:DatatypeProperty ;
     rdfs:label "ecosystem"@en ;

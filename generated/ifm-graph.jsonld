@@ -2637,7 +2637,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A predicate proof that the subject is over a threshold age, disclosing nothing else. In swiyu this is a selective disclosure of the electronic identity rather than a separately issued credential.",
+        "@value": "A statement that the subject is over a threshold age. Not a predicate proof: SD-JWT discloses a claim or withholds it and cannot prove a property of a withheld claim. In swiyu the electronic identity carries an age_over_18 claim of its own, which the holder discloses instead of the date of birth, so no separate credential is issued.",
         "@language": "en"
       },
       "ifm:evidences": {
@@ -2645,6 +2645,9 @@
       },
       "ifm:credentialFormat": {
         "@value": "SD-JWT VC"
+      },
+      "ifm:ecosystem": {
+        "@value": "swiyu"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -2667,14 +2670,14 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A school-leaving certificate as a verifiable credential. The European Learning Model is the schema family to align with.",
+        "@value": "A school-leaving certificate as a verifiable credential. The European Learning Model is the schema family to align with; ELM extends the W3C data model, and which version of it the European Digital Credentials infrastructure requires is not settled here.",
         "@language": "en"
       },
       "ifm:evidences": {
         "@id": "state:secondary-education-credential-held"
       },
       "ifm:credentialFormat": {
-        "@value": "W3C VCDM 2.0"
+        "@value": "W3C VCDM"
       },
       "ifm:ecosystem": {
         "@value": "ELM"
@@ -2707,7 +2710,7 @@
         "@id": "state:tertiary-enrolment-established"
       },
       "ifm:credentialFormat": {
-        "@value": "W3C VCDM 2.0"
+        "@value": "W3C VCDM"
       },
       "ifm:ecosystem": {
         "@value": "ELM"
@@ -2740,7 +2743,7 @@
         "@id": "state:employment-relationship-open"
       },
       "ifm:credentialFormat": {
-        "@value": "W3C VCDM 2.0"
+        "@value": "W3C VCDM"
       },
       "ifm:ecosystem": {
         "@value": "ELM"
