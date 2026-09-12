@@ -462,6 +462,39 @@ are the sequencing plan: university immatriculation cannot work before schools
 issue, and employment qualification checks depend on awarding institutions doing
 the same.
 
+## Reconciling with the Trust Flow Diagram Repository
+
+Both repositories classify the same flows: this one as use cases, the
+[Trust Flow Diagram Repository](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository)
+as families in `sector.yaml`. Two descriptions of one flow that never meet will
+drift apart.
+
+```bash
+python3 build/reconcile.py --source ../Trust-Flow-Diagram-Repository
+```
+
+It joins on `documented_by` and compares the state interfaces and the primary
+function. It reports rather than fails: the two repositories are allowed to
+disagree, but not to disagree unnoticed. It needs both checkouts, so it is a
+local tool rather than a CI job.
+
+The first run found two disagreements, and both have the same cause:
+
+| Family | Disagreement |
+|---|---|
+| `banking/kyc-credential` | The graph splits it into onboarding and re-KYC, which have different interfaces. The family declares onboarding's, so `kyc-attestation-current` and the `customer-relationship-open` requirement are missing from it. |
+| `education/certificates-and-enrolment` | The graph splits it into issuance and immatriculation. The family declares only `eid-held`, missing immatriculation's need for `secondary-education-credential-held`. |
+
+Both are families that bundle two flows with different interfaces. The
+education one was already suspected — its own pull request raised the question
+of splitting it. The banking one was not, and reconciliation is what surfaced
+it.
+
+A family whose member flows have different preconditions cannot state a single
+honest interface, which makes "do these flows share an interface?" a sharper
+test for what belongs in one family than "do they share a trigger and a set of
+actors?"
+
 ## What belongs in the function layer
 
 The first draft of this vocabulary read like a list of electronic-identity use
