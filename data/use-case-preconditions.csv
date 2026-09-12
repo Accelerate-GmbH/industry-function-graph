@@ -1,0 +1,17 @@
+use_case_id,state_id
+banking-kyc-onboarding,eid-held
+banking-re-kyc,customer-relationship-open
+banking-reidentification-password-reset,customer-relationship-open
+banking-reidentification-password-reset,eid-held
+banking-age-of-majority-reidentification,customer-relationship-open
+banking-age-of-majority-reidentification,eid-held
+education-maturitaetszeugnis-issuance,eid-held
+education-university-immatriculation,eid-held
+education-university-immatriculation,secondary-education-credential-held
+retail-hospitality-age-verification,eid-held
+employment-identity-proofing,eid-held
+employment-identity-proofing,secondary-education-credential-held
+aerospace-supplier-onboarding,supplier-accreditation-held
+pharma-supplier-qualification,supplier-accreditation-held
+healthcare-patient-identification,eid-held
+egov-service-access,eid-held

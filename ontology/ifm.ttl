@@ -202,6 +202,47 @@ ifm:changeMode a owl:ObjectProperty ;
     rdfs:comment "Run or change. Derived from the transformation mode, never typed in."@en .
 
 ################################################################
+# Layer 3c - states, and why use cases compose
+#
+# A use case is not a leaf in a taxonomy. It is a component with two ends: what
+# must already be true for it to run, and what is true once it has. Type both
+# ends against a shared state vocabulary and composition stops being drawn by
+# hand and starts being computed - B follows A exactly when something A leaves
+# true is something B needs.
+#
+# Three things fall out of that, none of which a taxonomy alone can give you:
+# the chain, the gaps (states everything needs and nothing produces), and the
+# duplicates (two use cases with the same interface are one use case).
+################################################################
+
+ifm:State a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "State"@en ;
+    rdfs:comment """Something that is true, or something a party holds. States are
+deliberately coarse: they are an interface, and an interface with one implementor
+is not an interface."""@en .
+
+ifm:precondition a owl:ObjectProperty ;
+    rdfs:label "precondition"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:State ;
+    rdfs:comment "What must already be true. A use case with none starts from nothing."@en .
+
+ifm:postcondition a owl:ObjectProperty ;
+    rdfs:label "postcondition"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:State ;
+    rdfs:comment "What is true afterwards. A use case that leaves nothing true is not one."@en .
+
+ifm:enables a owl:ObjectProperty ;
+    rdfs:label "enables"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:UseCase ;
+    rdfs:comment """Derived: this use case produces a state that one needs. Never
+typed in - if the arrow is wrong, the interfaces are wrong, and that is the
+thing worth fixing."""@en .
+
+################################################################
 # Layer 3b - who does what, at whose cost, replacing what
 #
 # The reason credential ecosystems stall is almost never technical. It is that
@@ -276,8 +317,10 @@ ifm:requiresUseCase a owl:ObjectProperty ;
     rdfs:label "requires use case"@en ;
     rdfs:domain ifm:UseCase ;
     rdfs:range ifm:UseCase ;
-    rdfs:comment """Another use case that must work first. There is nothing to
-present until somebody issues, so the dependency edges are the sequencing plan."""@en .
+    rdfs:comment """An asserted dependency, kept because a modeller may know
+something the interfaces do not yet say. It is checked against them: if A
+requires B, then something B leaves true must be something A needs, or one of
+the two is wrong. Prefer ifm:enables, which is derived."""@en .
 
 ################################################################
 # Use case attributes

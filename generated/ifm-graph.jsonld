@@ -14,6 +14,7 @@
     "role": "https://didas-swiss.github.io/industry-function-graph/id/trust-role/",
     "evidence": "https://didas-swiss.github.io/industry-function-graph/id/replaced-evidence/",
     "part": "https://didas-swiss.github.io/industry-function-graph/id/participation/",
+    "state": "https://didas-swiss.github.io/industry-function-graph/id/state/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "schema": "https://schema.org/",
     "dct": "http://purl.org/dc/terms/",
@@ -121,6 +122,23 @@
       },
       "dct:description": {
         "@value": "How far the process changes. The first two are run - improving a process that already exists. The last two are change - reorganising it, or doing something that was not viable before. A use case has exactly one.",
+        "@language": "en"
+      },
+      "dct:source": {
+        "@id": "https://didas-swiss.github.io/industry-function-graph/"
+      }
+    },
+    {
+      "@id": "scheme:ifm-states",
+      "@type": [
+        "skos:ConceptScheme"
+      ],
+      "dct:title": {
+        "@value": "States",
+        "@language": "en"
+      },
+      "dct:description": {
+        "@value": "What is true, or what a party holds, before and after a use case runs. States are the interface that makes use cases composable: one use case's postcondition is another's precondition, so the chain is computed rather than declared.",
         "@language": "en"
       },
       "dct:source": {
@@ -2462,6 +2480,321 @@
       }
     },
     {
+      "@id": "state:eid-held",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Electronic identity held",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject holds a government-issued electronic identity credential.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:identity-verified",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Identity verified",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject's identity has been established to a stated level of assurance by the relying party.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:kyc-attestation-held",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "KYC attestation held",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject holds a reusable attestation that customer due diligence was completed.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:kyc-attestation-current",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "KYC attestation current",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The due diligence behind the attestation has been re-evaluated within its validity period.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:customer-relationship-open",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Customer relationship open",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A contractual relationship exists between the subject and the organisation.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:legal-capacity-established",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Legal capacity established",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject's capacity to contract in their own right has been established.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:access-granted",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Access granted",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject can reach the service or premises the relationship entitles them to.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:age-attribute-proven",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Age attribute proven",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A threshold age has been demonstrated without disclosing identity.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:secondary-education-credential-held",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Secondary education credential held",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject holds a verifiable school-leaving certificate.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:tertiary-enrolment-established",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Tertiary enrolment established",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject is enrolled at a higher education institution.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:employment-relationship-open",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Employment relationship open",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "An employment contract is in force between the subject and an employer.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:supplier-accreditation-held",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Supplier accreditation held",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The supplier holds current quality, conformity or sector accreditations in verifiable form.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:supplier-qualified",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Supplier qualified",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The buying organisation has accepted the supplier as eligible to be contracted.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:patient-record-linked",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Patient record linked",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The person in front of the clinician is bound to the correct medical record.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "state:service-entitlement-established",
+      "@type": [
+        "ifm:State",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-states"
+      },
+      "skos:prefLabel": {
+        "@value": "Service entitlement established",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject's entitlement to a public service has been demonstrated.",
+        "@language": "en"
+      }
+    },
+    {
       "@id": "role:issuer",
       "@type": [
         "ifm:TrustRole",
@@ -4596,6 +4929,28 @@
           "@id": "evidence:notarised-copy"
         }
       ],
+      "ifm:precondition": {
+        "@id": "state:eid-held"
+      },
+      "ifm:postcondition": [
+        {
+          "@id": "state:kyc-attestation-held"
+        },
+        {
+          "@id": "state:customer-relationship-open"
+        }
+      ],
+      "ifm:enables": [
+        {
+          "@id": "uc:banking-age-of-majority-reidentification"
+        },
+        {
+          "@id": "uc:banking-re-kyc"
+        },
+        {
+          "@id": "uc:banking-reidentification-password-reset"
+        }
+      ],
       "ifm:costValueAsymmetry": {
         "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
@@ -4675,6 +5030,12 @@
           "@id": "evidence:pdf-attachment"
         }
       ],
+      "ifm:precondition": {
+        "@id": "state:customer-relationship-open"
+      },
+      "ifm:postcondition": {
+        "@id": "state:kyc-attestation-current"
+      },
       "ifm:requiresUseCase": {
         "@id": "uc:banking-kyc-onboarding"
       },
@@ -4748,6 +5109,17 @@
       "ifm:replaces": {
         "@id": "evidence:in-person-check"
       },
+      "ifm:precondition": [
+        {
+          "@id": "state:customer-relationship-open"
+        },
+        {
+          "@id": "state:eid-held"
+        }
+      ],
+      "ifm:postcondition": {
+        "@id": "state:access-granted"
+      },
       "ifm:costValueAsymmetry": {
         "@value": "true",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
@@ -4815,6 +5187,17 @@
       ],
       "ifm:replaces": {
         "@id": "evidence:in-person-check"
+      },
+      "ifm:precondition": [
+        {
+          "@id": "state:customer-relationship-open"
+        },
+        {
+          "@id": "state:eid-held"
+        }
+      ],
+      "ifm:postcondition": {
+        "@id": "state:legal-capacity-established"
       },
       "ifm:requiresUseCase": {
         "@id": "uc:banking-kyc-onboarding"
@@ -4884,6 +5267,20 @@
       "ifm:replaces": {
         "@id": "evidence:paper-document"
       },
+      "ifm:precondition": {
+        "@id": "state:eid-held"
+      },
+      "ifm:postcondition": {
+        "@id": "state:secondary-education-credential-held"
+      },
+      "ifm:enables": [
+        {
+          "@id": "uc:education-university-immatriculation"
+        },
+        {
+          "@id": "uc:employment-identity-proofing"
+        }
+      ],
       "ifm:costValueAsymmetry": {
         "@value": "true",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
@@ -4959,6 +5356,17 @@
           "@id": "evidence:paper-document"
         }
       ],
+      "ifm:precondition": [
+        {
+          "@id": "state:eid-held"
+        },
+        {
+          "@id": "state:secondary-education-credential-held"
+        }
+      ],
+      "ifm:postcondition": {
+        "@id": "state:tertiary-enrolment-established"
+      },
       "ifm:requiresUseCase": {
         "@id": "uc:education-maturitaetszeugnis-issuance"
       },
@@ -5034,6 +5442,12 @@
       ],
       "ifm:replaces": {
         "@id": "evidence:in-person-check"
+      },
+      "ifm:precondition": {
+        "@id": "state:eid-held"
+      },
+      "ifm:postcondition": {
+        "@id": "state:age-attribute-proven"
       },
       "ifm:costValueAsymmetry": {
         "@value": "true",
@@ -5124,6 +5538,17 @@
           "@id": "evidence:phone-or-email-check"
         }
       ],
+      "ifm:precondition": [
+        {
+          "@id": "state:eid-held"
+        },
+        {
+          "@id": "state:secondary-education-credential-held"
+        }
+      ],
+      "ifm:postcondition": {
+        "@id": "state:employment-relationship-open"
+      },
       "ifm:requiresUseCase": {
         "@id": "uc:education-maturitaetszeugnis-issuance"
       },
@@ -5208,6 +5633,12 @@
           "@id": "evidence:self-declaration"
         }
       ],
+      "ifm:precondition": {
+        "@id": "state:supplier-accreditation-held"
+      },
+      "ifm:postcondition": {
+        "@id": "state:supplier-qualified"
+      },
       "ifm:costValueAsymmetry": {
         "@value": "true",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
@@ -5284,6 +5715,12 @@
       "ifm:replaces": {
         "@id": "evidence:in-person-check"
       },
+      "ifm:precondition": {
+        "@id": "state:eid-held"
+      },
+      "ifm:postcondition": {
+        "@id": "state:patient-record-linked"
+      },
       "ifm:costValueAsymmetry": {
         "@value": "true",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
@@ -5353,6 +5790,12 @@
       ],
       "ifm:replaces": {
         "@id": "evidence:registry-lookup"
+      },
+      "ifm:precondition": {
+        "@id": "state:eid-held"
+      },
+      "ifm:postcondition": {
+        "@id": "state:service-entitlement-established"
       },
       "ifm:costValueAsymmetry": {
         "@value": "false",
@@ -5438,6 +5881,12 @@
           "@id": "evidence:phone-or-email-check"
         }
       ],
+      "ifm:precondition": {
+        "@id": "state:supplier-accreditation-held"
+      },
+      "ifm:postcondition": {
+        "@id": "state:supplier-qualified"
+      },
       "ifm:costValueAsymmetry": {
         "@value": "true",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"

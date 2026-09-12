@@ -49,6 +49,7 @@ Nothing in the model is invented where a standard exists:
 | 2 · Function | UNECE/Eurostat CBF, APQC PCF | A local function scheme mapped onto both with SKOS mapping relations. |
 | 3 · Use case | `schema:Action` | The bridge: each use case links ≥1 sector and exactly one primary function. |
 | 2d · Value stream | ArchiMate `Value Stream` | An ordered composition of functions delivering an outcome — procure to pay, order to cash. Catalogue is our own; no openly licensed one exists. |
+| 3c · Interface | own vocabulary | Pre- and postconditions over a shared state vocabulary. Composition, gaps and duplicates are **derived** from these. |
 | 3b · Who and what for | own vocabularies | Trust roles with who bears cost and who gains value, what evidence the credential replaces, and which use cases must work first. |
 | 3a · Why and how far | own vocabularies | Value drivers (what it removes, prevents or makes possible) and one transformation mode (how far the process changes). |
 | 4 · Credential | W3C VCDM 2.0, EBSI, DCC/ELM, UN/CEFACT | **Not implemented yet** — see [Layer 4](#layer-4--deferred). |
@@ -333,6 +334,71 @@ It is also a coverage check on the repository. Of the eleven seeded use cases,
 every one improves or reorganises something organisations already do. That is a
 fair reflection of where Swiss e-ID practice currently is, and the graph says so
 out loud rather than implying a breadth it does not have.
+
+## Composability: the point of the classification
+
+A use case is not a leaf in a taxonomy. It is a **component with two ends** —
+what must already be true for it to run, and what is true once it has. Type both
+ends against a shared state vocabulary and composition stops being drawn by hand
+and starts being computed: **B follows A exactly when something A leaves true is
+something B needs.**
+
+```
+education-maturitaetszeugnis-issuance
+    → education-university-immatriculation   via secondary-education-credential-held
+    → employment-identity-proofing           via secondary-education-credential-held
+
+banking-kyc-onboarding
+    → banking-re-kyc                         via customer-relationship-open
+    → banking-reidentification-…             via customer-relationship-open
+    → banking-age-of-majority-…              via customer-relationship-open
+```
+
+Those arrows are `ifm:enables`, and nobody typed them. Change a postcondition and
+the chain changes with it. `ifm:requiresUseCase` survives for dependencies a
+modeller knows and the interfaces do not yet say, but it is **checked against
+them**: assert that A requires B and the validator insists something B leaves
+true is something A needs, or one of the two is wrong.
+
+Three things fall out that a taxonomy alone cannot give you.
+
+**The chain** — above.
+
+**The gaps.** A state everything needs and nothing here produces is an open
+socket: either a use case nobody has written down, or a dependency on something
+outside the repository. Today there are two:
+
+| Open socket | Needed by |
+|---|---|
+| `eid-held` | 9 of 12 use cases |
+| `supplier-accreditation-held` | 2 |
+
+The first is the whole ecosystem's root dependency, and the graph makes it
+visible as a hole rather than an assumption.
+
+**The duplicates.** Two use cases with the same precondition set, postcondition
+set and primary function are, on the evidence, one use case. The validator says
+so — and it already caught a pair I had written separately:
+
+```
+aerospace-supplier-onboarding  ==  pharma-supplier-qualification
+    pre  [supplier-accreditation-held]
+    post [supplier-qualified]
+    function sourcing-and-procurement
+```
+
+Same interface, different sector. That is the minimal-overlap check working: the
+two are candidates for collapsing into one sector-agnostic use case that both
+sectors instantiate.
+
+### Why states are coarse
+
+An interface with one implementor is not an interface. States are deliberately
+blunt — `secondary-education-credential-held`, not
+`gymnasiale-maturitaet-2026-held` — because the point is that flows nobody has
+written yet should plug into the same sockets. As the ecosystem iterates and new
+credentials arrive, they fall into place by matching states, not by being added
+to a list.
 
 ## Who pays, who benefits
 

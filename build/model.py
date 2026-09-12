@@ -68,6 +68,14 @@ SCHEMES = {
                        "A use case has exactly one.",
         "source": BASE,
     },
+    "ifm-states": {
+        "title": "States",
+        "description": "What is true, or what a party holds, before and after a use "
+                       "case runs. States are the interface that makes use cases "
+                       "composable: one use case's postcondition is another's "
+                       "precondition, so the chain is computed rather than declared.",
+        "source": BASE,
+    },
     "ifm-trust-roles": {
         "title": "Trust roles",
         "description": "Who does what in a credential exchange: issuer, holder, "
@@ -118,6 +126,7 @@ class Model:
         self.alignments = _read("function-alignments.csv")
         self.value_drivers = {r["id"]: r for r in _read("value-drivers.csv")}
         self.value_streams = {r["id"]: r for r in _read("value-streams.csv")}
+        self.states = {r["id"]: r for r in _read("states.csv")}
         self.trust_roles = {r["id"]: r for r in _read("trust-roles.csv")}
         self.evidence = {r["id"]: r for r in _read("replaced-evidence.csv")}
         self.stream_stages = sorted(_read("value-stream-functions.csv"),
@@ -128,7 +137,16 @@ class Model:
         self.uc_functions = _read("use-case-functions.csv")
         self.uc_value_drivers = _read("use-case-value-drivers.csv")
         self.uc_value_streams = _read("use-case-value-streams.csv")
+        self.preconditions = _read("use-case-preconditions.csv")
+        self.postconditions = _read("use-case-postconditions.csv")
         self.participants = _read("use-case-participants.csv")
+
+        self.pre_of = {uc: [] for uc in self.use_cases}
+        for row in self.preconditions:
+            self.pre_of.setdefault(row["use_case_id"], []).append(row["state_id"])
+        self.post_of = {uc: [] for uc in self.use_cases}
+        for row in self.postconditions:
+            self.post_of.setdefault(row["use_case_id"], []).append(row["state_id"])
         self.uc_replaces = _read("use-case-replaces.csv")
         self.dependencies = _read("use-case-dependencies.csv")
 
@@ -193,6 +211,41 @@ class Model:
         mode = self.modes.get(self.use_cases[uc_id]["transformation_mode"])
         return mode["change_mode"] if mode else None
 
+    # -- composition ----------------------------------------------------
+    def enables(self, uc_id):
+        """Use cases that can start because this one finished.
+
+        Derived from the interfaces, never declared: B follows A when something
+        A leaves true is something B needs. This is the whole point of typing
+        the ends of a use case rather than drawing arrows between them by hand.
+        """
+        produced = set(self.post_of.get(uc_id, []))
+        return sorted(other for other in self.use_cases
+                      if other != uc_id and produced & set(self.pre_of.get(other, [])))
+
+    def unproduced_states(self):
+        """States something needs and nothing here produces.
+
+        Each one is an open socket: either a use case the ecosystem has not
+        written down yet, or a dependency on something outside it.
+        """
+        produced = {s for states in self.post_of.values() for s in states}
+        needed = {s for states in self.pre_of.values() for s in states}
+        return sorted(needed - produced)
+
+    def interface(self, uc_id):
+        """The signature two use cases would have to share to be the same one."""
+        return (frozenset(self.pre_of.get(uc_id, [])),
+                frozenset(self.post_of.get(uc_id, [])),
+                self.primary_function(uc_id))
+
+    def overlaps(self):
+        """Groups of use cases with the same interface - candidates for merging."""
+        groups = {}
+        for uc_id in self.use_cases:
+            groups.setdefault(self.interface(uc_id), []).append(uc_id)
+        return [members for members in groups.values() if len(members) > 1]
+
     def bears_cost_without_value(self, uc_id):
         """Participants who pay for a use case without getting direct value back.
 
@@ -242,7 +295,7 @@ class Model:
                  "cbf": self.cbf, "apqc-pcf": self.apqc,
                  "driver": self.value_drivers, "mode": self.modes,
                  "stream": self.value_streams, "role": self.trust_roles,
-                 "evidence": self.evidence}[kind]
+                 "evidence": self.evidence, "state": self.states}[kind]
         row = table.get(ident, {})
         return row.get("pref_label_en", ident)
 

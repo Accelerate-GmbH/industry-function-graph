@@ -36,6 +36,7 @@ PREFIXES = [
     ("role", ID_BASE + "trust-role/"),
     ("evidence", ID_BASE + "replaced-evidence/"),
     ("part", ID_BASE + "participation/"),
+    ("state", ID_BASE + "state/"),
     ("skos", "http://www.w3.org/2004/02/skos/core#"),
     ("schema", "https://schema.org/"),
     ("dct", "http://purl.org/dc/terms/"),
@@ -95,6 +96,7 @@ PREFIX_OF_KIND = {
     "role": "role",
     "evidence": "evidence",
     "participation": "part",
+    "state": "state",
 }
 
 
@@ -197,6 +199,16 @@ def graph_blocks(model):
         pairs.append(("skos:editorialNote", notes))
         blocks.append((heading, Ref(concept_ref("function", function_id)), pairs))
 
+    heading = "Layer 3c - States: the interface that makes use cases composable"
+    for state_id, row in model.states.items():
+        blocks.append((heading, Ref(concept_ref("state", state_id)), [
+            ("a", [Ref("ifm:State"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-states"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-states"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+        ]))
+
     heading = "Layer 3b - Trust roles and what the credential replaces"
     for role_id, row in model.trust_roles.items():
         blocks.append((heading, Ref(concept_ref("role", role_id)), [
@@ -293,6 +305,12 @@ def graph_blocks(model):
                 for p in model.participants_of[uc_id]]),
             ("ifm:replaces", [Ref(concept_ref("evidence", e))
                               for e in model.replaces_of[uc_id]]),
+            ("ifm:precondition", [Ref(concept_ref("state", st))
+                                  for st in model.pre_of[uc_id]]),
+            ("ifm:postcondition", [Ref(concept_ref("state", st))
+                                   for st in model.post_of[uc_id]]),
+            ("ifm:enables", [Ref(concept_ref("use-case", other))
+                             for other in model.enables(uc_id)]),
             ("ifm:requiresUseCase", [Ref(concept_ref("use-case", r))
                                      for r in model.requires_of[uc_id]]),
             ("ifm:costValueAsymmetry", [Lit(

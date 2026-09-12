@@ -210,6 +210,52 @@ def check_value_streams(model):
              f"in them yet: {', '.join(empty)}")
 
 
+def check_states(model):
+    for state_id, row in model.states.items():
+        if not SLUG.match(state_id):
+            error(f"states.csv[{state_id}]: id must be a lower-case slug")
+        if not row["definition"].strip():
+            error(f"states.csv[{state_id}]: needs a definition. A state nobody can "
+                  f"test for is not an interface")
+
+    for table, name in ((model.preconditions, "use-case-preconditions.csv"),
+                        (model.postconditions, "use-case-postconditions.csv")):
+        for index, row in enumerate(table, start=2):
+            where = f"{name}:{index}"
+            if row["use_case_id"] not in model.use_cases:
+                error(f"{where}: unknown use case {row['use_case_id']!r}")
+            if row["state_id"] not in model.states:
+                error(f"{where}: unknown state {row['state_id']!r}")
+
+    for uc_id in model.use_cases:
+        if not model.post_of.get(uc_id):
+            error(f"use-cases.csv[{uc_id}]: no postcondition. A use case that leaves "
+                  f"nothing true cannot be composed with anything")
+        overlap = set(model.pre_of.get(uc_id, [])) & set(model.post_of.get(uc_id, []))
+        if overlap:
+            warn(f"use-cases.csv[{uc_id}]: {', '.join(sorted(overlap))} is both a pre- "
+                 f"and a postcondition. Deliberate for a refresh, a mistake otherwise")
+
+    # An asserted dependency has to be justified by the interfaces, or one of
+    # the two is wrong and it is worth knowing which.
+    for index, row in enumerate(model.dependencies, start=2):
+        a, b = row["use_case_id"], row["requires_use_case_id"]
+        if a in model.use_cases and b in model.use_cases:
+            if not (set(model.post_of.get(b, [])) & set(model.pre_of.get(a, []))):
+                error(f"use-case-dependencies.csv:{index}: {a} is declared to require "
+                      f"{b}, but nothing {b} leaves true is anything {a} needs. Either "
+                      f"the dependency is wrong or the states are")
+
+    unproduced = model.unproduced_states()
+    if unproduced:
+        warn(f"{len(unproduced)} state(s) are needed but produced by no use case here - "
+             f"open sockets for the ecosystem to fill: {', '.join(unproduced)}")
+
+    for group in model.overlaps():
+        warn(f"same interface, so possibly one use case rather than "
+             f"{len(group)}: {', '.join(group)}")
+
+
 def check_trust_roles(model):
     for table, name in ((model.trust_roles, "trust-roles.csv"),
                         (model.evidence, "replaced-evidence.csv")):
@@ -398,6 +444,7 @@ def main():
     check_alignments(model)
     check_axes(model)
     check_value_streams(model)
+    check_states(model)
     check_trust_roles(model)
     check_dependencies(model)
     check_use_cases(model)
@@ -413,7 +460,8 @@ def main():
               f"{len(model.functions)} functions, {len(model.alignments)} alignments, "
               f"{len(model.value_drivers)} value drivers, "
               f"{len(model.value_streams)} value streams, "
-              f"{len(model.participants)} participations")
+              f"{len(model.participants)} participations, "
+              f"{len(model.states)} states")
     if errors:
         print(f"\nFAILED: {len(errors)} error(s) in {counts}", file=sys.stderr)
         return 1
