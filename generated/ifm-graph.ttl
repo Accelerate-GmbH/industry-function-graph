@@ -1,6 +1,6 @@
 # Industry-Function Mapping - generated knowledge graph.
 # DO NOT EDIT: regenerate with `python3 build/build.py` from data/*.csv.
-# 11 use cases, 39 sector concepts, 13 function concepts.
+# 11 use cases, 40 sector concepts, 13 function concepts.
 # SPDX-License-Identifier: CC-BY-4.0
 
 @prefix ifm: <https://didas-swiss.github.io/industry-function-graph/ontology#> .
@@ -28,10 +28,10 @@
     dct:creator "Daniel Saeuberli" ;
     dct:license <https://creativecommons.org/licenses/by/4.0/> .
 
-scheme:isic-rev4
+scheme:isic-rev5
     a skos:ConceptScheme ;
-    dct:title "ISIC Rev. 4 (sectors used by this repository)"@en ;
-    dct:description "Local SKOS rendering of the International Standard Industrial Classification of All Economic Activities, Revision 4. All 21 sections, plus the divisions and classes the mapped use cases actually reach."@en ;
+    dct:title "ISIC Rev. 5 (sectors used by this repository)"@en ;
+    dct:description "Local SKOS rendering of the International Standard Industrial Classification of All Economic Activities, Revision 5. All 22 sections, plus the divisions and classes the mapped use cases actually reach. ISIC is the primary scheme here. It is de facto equivalent to NOGA 2025 at section and division level: checked against the NOGA subset codified in the DIDAS Trust Flow Diagram Repository, all 22 section letters and all 23 of its divisions agree, with three section titles differing in spelling only. A division number is therefore a usable join key between this graph and a NOGA-classified sector. The equivalence does not extend below division level."@en ;
     dct:source <https://unstats.un.org/unsd/classifications/Econ/isic> .
 
 scheme:cbf
@@ -53,368 +53,377 @@ scheme:ifm-functions
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 ######################################################################
-# Layer 1 - Sectors (ISIC Rev. 4)
+# Layer 1 - Sectors (ISIC Rev. 5)
 ######################################################################
 
 sector:ISIC-A
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Agriculture, forestry and fishing"@en ;
     skos:notation "A" ;
-    ifm:naceRev2Code "A" ;
+    ifm:naceRev21Code "A" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-B
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Mining and quarrying"@en ;
     skos:notation "B" ;
-    ifm:naceRev2Code "B" ;
+    ifm:naceRev21Code "B" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-C
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Manufacturing"@en ;
     skos:notation "C" ;
-    skos:narrower sector:ISIC-C-30 ;
-    ifm:naceRev2Code "C" ;
+    skos:narrower sector:ISIC-30 ;
+    ifm:naceRev21Code "C" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-D
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Electricity, gas, steam and air conditioning supply"@en ;
     skos:notation "D" ;
-    ifm:naceRev2Code "D" ;
+    ifm:naceRev21Code "D" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-E
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Water supply; sewerage, waste management and remediation activities"@en ;
     skos:notation "E" ;
-    ifm:naceRev2Code "E" ;
+    ifm:naceRev21Code "E" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-F
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Construction"@en ;
     skos:notation "F" ;
-    ifm:naceRev2Code "F" ;
+    ifm:naceRev21Code "F" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-G
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Wholesale and retail trade; repair of motor vehicles and motorcycles"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Wholesale and retail trade"@en ;
     skos:notation "G" ;
-    skos:narrower sector:ISIC-G-47 ;
-    ifm:naceRev2Code "G" ;
+    skos:narrower sector:ISIC-47 ;
+    ifm:naceRev21Code "G" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-H
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Transportation and storage"@en ;
     skos:notation "H" ;
-    ifm:naceRev2Code "H" ;
+    ifm:naceRev21Code "H" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-I
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
     skos:prefLabel "Accommodation and food service activities"@en ;
     skos:notation "I" ;
-    skos:narrower sector:ISIC-I-56 ;
-    ifm:naceRev2Code "I" ;
+    skos:narrower sector:ISIC-56 ;
+    ifm:naceRev21Code "I" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-J
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Information and communication"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Publishing, broadcasting, and content production and distribution activities"@en ;
     skos:notation "J" ;
-    skos:narrower sector:ISIC-J-62 ;
-    ifm:naceRev2Code "J" ;
+    ifm:naceRev21Code "J" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-K
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Financial and insurance activities"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities"@en ;
     skos:notation "K" ;
-    skos:narrower sector:ISIC-K-64, sector:ISIC-K-65 ;
-    ifm:naceRev2Code "K" ;
+    skos:narrower sector:ISIC-62 ;
+    ifm:naceRev21Code "K" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-L
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Real estate activities"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Financial and insurance activities"@en ;
     skos:notation "L" ;
-    ifm:naceRev2Code "L" ;
+    skos:narrower sector:ISIC-64, sector:ISIC-65 ;
+    ifm:naceRev21Code "L" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-M
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Professional, scientific and technical activities"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Real estate activities"@en ;
     skos:notation "M" ;
-    ifm:naceRev2Code "M" ;
+    ifm:naceRev21Code "M" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-N
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Administrative and support service activities"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Professional, scientific and technical activities"@en ;
     skos:notation "N" ;
-    ifm:naceRev2Code "N" ;
+    ifm:naceRev21Code "N" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-O
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Public administration and defence; compulsory social security"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Administrative and support service activities"@en ;
     skos:notation "O" ;
-    skos:narrower sector:ISIC-O-84 ;
-    ifm:naceRev2Code "O" ;
+    ifm:naceRev21Code "O" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-P
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Education"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Public administration and defence; compulsory social security"@en ;
     skos:notation "P" ;
-    skos:narrower sector:ISIC-P-85 ;
-    ifm:naceRev2Code "P" ;
+    skos:narrower sector:ISIC-84 ;
+    ifm:naceRev21Code "P" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-Q
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Human health and social work activities"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Education"@en ;
     skos:notation "Q" ;
-    skos:narrower sector:ISIC-Q-86 ;
-    ifm:naceRev2Code "Q" ;
+    skos:narrower sector:ISIC-85 ;
+    ifm:naceRev21Code "Q" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-R
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Arts, entertainment and recreation"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Human health and social work activities"@en ;
     skos:notation "R" ;
-    ifm:naceRev2Code "R" ;
+    skos:narrower sector:ISIC-86 ;
+    ifm:naceRev21Code "R" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-S
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Other service activities"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Arts, sports and recreation"@en ;
     skos:notation "S" ;
-    ifm:naceRev2Code "S" ;
+    ifm:naceRev21Code "S" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-T
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Other service activities"@en ;
     skos:notation "T" ;
-    ifm:naceRev2Code "T" ;
+    ifm:naceRev21Code "T" ;
     ifm:codeStatus "verified" .
 
 sector:ISIC-U
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:topConceptOf scheme:isic-rev4 ;
-    skos:prefLabel "Activities of extraterritorial organizations and bodies"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"@en ;
     skos:notation "U" ;
-    ifm:naceRev2Code "U" ;
+    ifm:naceRev21Code "U" ;
     ifm:codeStatus "verified" .
 
-sector:ISIC-C-30
+sector:ISIC-V
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:topConceptOf scheme:isic-rev5 ;
+    skos:prefLabel "Activities of extraterritorial organizations and bodies"@en ;
+    skos:notation "V" ;
+    ifm:naceRev21Code "V" ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-30
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "Manufacture of other transport equipment"@en ;
     skos:notation "30" ;
     skos:broader sector:ISIC-C ;
-    skos:narrower sector:ISIC-C-3030 ;
-    ifm:naceRev2Code "30" ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-C-3030
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Manufacture of air and spacecraft and related machinery"@en ;
-    skos:notation "3030" ;
-    skos:broader sector:ISIC-C-30 ;
+    skos:narrower sector:ISIC-3030 ;
     ifm:codeStatus "verified" ;
-    skos:scopeNote "NACE code not asserted: ISIC and NACE diverge below division level."@en .
+    skos:scopeNote "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check."@en .
 
-sector:ISIC-G-47
+sector:ISIC-47
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Retail trade, except of motor vehicles and motorcycles"@en ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Retail trade"@en ;
     skos:notation "47" ;
     skos:broader sector:ISIC-G ;
-    skos:narrower sector:ISIC-G-4711 ;
-    ifm:naceRev2Code "47" ;
+    skos:narrower sector:ISIC-4711 ;
+    ifm:naceRev21Code "47" ;
     ifm:codeStatus "verified" .
 
-sector:ISIC-G-4711
+sector:ISIC-56
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Retail sale in non-specialised stores with food, beverages or tobacco predominating"@en ;
-    skos:notation "4711" ;
-    skos:broader sector:ISIC-G-47 ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-I-56
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "Food and beverage service activities"@en ;
     skos:notation "56" ;
     skos:broader sector:ISIC-I ;
-    skos:narrower sector:ISIC-I-5610 ;
-    ifm:naceRev2Code "56" ;
-    ifm:codeStatus "verified" .
+    skos:narrower sector:ISIC-5610 ;
+    ifm:codeStatus "verified" ;
+    skos:scopeNote "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check."@en .
 
-sector:ISIC-I-5610
+sector:ISIC-62
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Restaurants and mobile food service activities"@en ;
-    skos:notation "5610" ;
-    skos:broader sector:ISIC-I-56 ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-J-62
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "Computer programming, consultancy and related activities"@en ;
     skos:notation "62" ;
-    skos:broader sector:ISIC-J ;
-    ifm:naceRev2Code "62" ;
-    ifm:codeStatus "verified" .
+    skos:broader sector:ISIC-K ;
+    ifm:codeStatus "verified" ;
+    skos:scopeNote "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check."@en .
 
-sector:ISIC-K-64
+sector:ISIC-64
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "Financial service activities, except insurance and pension funding"@en ;
     skos:notation "64" ;
-    skos:broader sector:ISIC-K ;
-    skos:narrower sector:ISIC-K-6419 ;
-    ifm:naceRev2Code "64" ;
+    skos:broader sector:ISIC-L ;
+    skos:narrower sector:ISIC-6419 ;
+    ifm:naceRev21Code "64" ;
     ifm:codeStatus "verified" .
 
-sector:ISIC-K-6419
+sector:ISIC-65
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Insurance, reinsurance and pension funding, except compulsory social security"@en ;
+    skos:notation "65" ;
+    skos:broader sector:ISIC-L ;
+    skos:narrower sector:ISIC-6512 ;
+    ifm:naceRev21Code "65" ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-84
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Public administration and defence; compulsory social security"@en ;
+    skos:notation "84" ;
+    skos:broader sector:ISIC-P ;
+    skos:narrower sector:ISIC-8411 ;
+    ifm:naceRev21Code "84" ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-85
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Education"@en ;
+    skos:notation "85" ;
+    skos:broader sector:ISIC-Q ;
+    skos:narrower sector:ISIC-8531, sector:ISIC-8540 ;
+    ifm:naceRev21Code "85" ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-86
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Human health activities"@en ;
+    skos:notation "86" ;
+    skos:broader sector:ISIC-R ;
+    skos:narrower sector:ISIC-8610 ;
+    ifm:naceRev21Code "86" ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-3030
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Manufacture of air and spacecraft and related machinery"@en ;
+    skos:notation "3030" ;
+    skos:broader sector:ISIC-30 ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-4711
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Non-specialized retail sale with food, beverages or tobacco predominating"@en ;
+    skos:notation "4711" ;
+    skos:broader sector:ISIC-47 ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-5610
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Restaurants and mobile food service activities"@en ;
+    skos:notation "5610" ;
+    skos:broader sector:ISIC-56 ;
+    ifm:codeStatus "verified" .
+
+sector:ISIC-6419
+    a ifm:Sector, skos:Concept ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "Other monetary intermediation"@en ;
     skos:notation "6419" ;
-    skos:broader sector:ISIC-K-64 ;
+    skos:broader sector:ISIC-64 ;
     ifm:codeStatus "verified" ;
     skos:scopeNote "Covers deposit-taking retail and commercial banking."@en .
 
-sector:ISIC-K-65
+sector:ISIC-6512
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Insurance, reinsurance and pension funding, except compulsory social security"@en ;
-    skos:notation "65" ;
-    skos:broader sector:ISIC-K ;
-    skos:narrower sector:ISIC-K-6512 ;
-    ifm:naceRev2Code "65" ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-K-6512
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "Non-life insurance"@en ;
     skos:notation "6512" ;
-    skos:broader sector:ISIC-K-65 ;
+    skos:broader sector:ISIC-65 ;
     ifm:codeStatus "verified" .
 
-sector:ISIC-O-84
+sector:ISIC-8411
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Public administration and defence; compulsory social security"@en ;
-    skos:notation "84" ;
-    skos:broader sector:ISIC-O ;
-    skos:narrower sector:ISIC-O-8411 ;
-    ifm:naceRev2Code "84" ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-O-8411
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "General public administration activities"@en ;
     skos:notation "8411" ;
-    skos:broader sector:ISIC-O-84 ;
+    skos:broader sector:ISIC-84 ;
     ifm:codeStatus "verified" .
 
-sector:ISIC-P-85
+sector:ISIC-8531
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Education"@en ;
-    skos:notation "85" ;
-    skos:broader sector:ISIC-P ;
-    skos:narrower sector:ISIC-P-8521, sector:ISIC-P-8530 ;
-    ifm:naceRev2Code "85" ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-P-8521
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "General secondary education"@en ;
-    skos:notation "8521" ;
-    skos:broader sector:ISIC-P-85 ;
+    skos:notation "8531" ;
+    skos:broader sector:ISIC-85 ;
     ifm:codeStatus "verified" ;
-    skos:scopeNote "Swiss gymnasiale Maturität sits here."@en .
+    skos:scopeNote "Swiss gymnasiale Maturitaet sits here. ISIC Rev. 4 numbered this 8521."@en .
 
-sector:ISIC-P-8530
+sector:ISIC-8540
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Higher education"@en ;
-    skos:notation "8530" ;
-    skos:broader sector:ISIC-P-85 ;
-    ifm:codeStatus "verified" .
+    skos:inScheme scheme:isic-rev5 ;
+    skos:prefLabel "Tertiary education"@en ;
+    skos:notation "8540" ;
+    skos:broader sector:ISIC-85 ;
+    ifm:codeStatus "verified" ;
+    skos:scopeNote "ISIC Rev. 4 called this 8530, \"Higher education\"."@en .
 
-sector:ISIC-Q-86
+sector:ISIC-8610
     a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
-    skos:prefLabel "Human health activities"@en ;
-    skos:notation "86" ;
-    skos:broader sector:ISIC-Q ;
-    skos:narrower sector:ISIC-Q-8610 ;
-    ifm:naceRev2Code "86" ;
-    ifm:codeStatus "verified" .
-
-sector:ISIC-Q-8610
-    a ifm:Sector, skos:Concept ;
-    skos:inScheme scheme:isic-rev4 ;
+    skos:inScheme scheme:isic-rev5 ;
     skos:prefLabel "Hospital activities"@en ;
     skos:notation "8610" ;
-    skos:broader sector:ISIC-Q-86 ;
+    skos:broader sector:ISIC-86 ;
     ifm:codeStatus "verified" .
 
 ######################################################################
@@ -663,7 +672,7 @@ uc:banking-kyc-onboarding
     a ifm:UseCase, schema:Action ;
     schema:name "Online onboarding and KYC credential issuance"@en ;
     schema:description "A prospective customer opens a bank account remotely. The bank identifies them against the e-ID and issues a reusable KYC attestation."@en ;
-    ifm:appliesToSector sector:ISIC-K-6419, sector:ISIC-K-6512 ;
+    ifm:appliesToSector sector:ISIC-6419, sector:ISIC-6512 ;
     ifm:primaryFunction func:customer-onboarding ;
     ifm:executesFunction func:identity-proofing, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
@@ -674,7 +683,7 @@ uc:banking-re-kyc
     a ifm:UseCase, schema:Action ;
     schema:name "Periodic KYC re-evaluation"@en ;
     schema:description "The bank re-runs customer due diligence on an existing relationship at the interval its supervisor requires, reusing the identity already established."@en ;
-    ifm:appliesToSector sector:ISIC-K-6419 ;
+    ifm:appliesToSector sector:ISIC-6419 ;
     ifm:primaryFunction func:regulatory-compliance ;
     ifm:executesFunction func:identity-lifecycle-management ;
     ifm:sectorScope ifm:SectorSpecific ;
@@ -685,7 +694,7 @@ uc:banking-reidentification-password-reset
     a ifm:UseCase, schema:Action ;
     schema:name "Re-identification after a forgotten password"@en ;
     schema:description "An existing e-banking customer who has lost their credentials is re-identified before access is restored, without a branch visit."@en ;
-    ifm:appliesToSector sector:ISIC-K-6419 ;
+    ifm:appliesToSector sector:ISIC-6419 ;
     ifm:primaryFunction func:identity-lifecycle-management ;
     ifm:executesFunction func:customer-service, func:access-management ;
     ifm:sectorScope ifm:SectorSpecific ;
@@ -696,7 +705,7 @@ uc:banking-age-of-majority-reidentification
     a ifm:UseCase, schema:Action ;
     schema:name "Re-identification at the age of majority"@en ;
     schema:description "A customer onboarded as a minor turns 18. The relationship is re-established at full legal capacity, with a qualified electronic signature."@en ;
-    ifm:appliesToSector sector:ISIC-K-6419 ;
+    ifm:appliesToSector sector:ISIC-6419 ;
     ifm:primaryFunction func:identity-lifecycle-management ;
     ifm:executesFunction func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
@@ -707,7 +716,7 @@ uc:education-maturitaetszeugnis-issuance
     a ifm:UseCase, schema:Action ;
     schema:name "Issuance of a Maturitätszeugnis"@en ;
     schema:description "An upper-secondary school issues the school-leaving certificate to the graduate as a digital attestation."@en ;
-    ifm:appliesToSector sector:ISIC-P-8521 ;
+    ifm:appliesToSector sector:ISIC-8531 ;
     ifm:primaryFunction func:certification-and-attestation ;
     ifm:executesFunction func:records-management ;
     ifm:sectorScope ifm:SectorSpecific ;
@@ -718,7 +727,7 @@ uc:education-university-immatriculation
     a ifm:UseCase, schema:Action ;
     schema:name "University immatriculation"@en ;
     schema:description "A university admits a student on the strength of the e-ID and the Maturitätszeugnis, without re-collecting or re-checking paper documents."@en ;
-    ifm:appliesToSector sector:ISIC-P-8530 ;
+    ifm:appliesToSector sector:ISIC-8540 ;
     ifm:primaryFunction func:customer-onboarding ;
     ifm:executesFunction func:eligibility-verification, func:identity-proofing ;
     ifm:sectorScope ifm:SectorSpecific ;
@@ -729,7 +738,7 @@ uc:retail-hospitality-age-verification
     a ifm:UseCase, schema:Action ;
     schema:name "Age verification at the point of sale"@en ;
     schema:description "A merchant or a restaurant checks that a customer is over the legal age for a restricted product, learning nothing else about them."@en ;
-    ifm:appliesToSector sector:ISIC-G-4711, sector:ISIC-I-5610 ;
+    ifm:appliesToSector sector:ISIC-4711, sector:ISIC-5610 ;
     ifm:primaryFunction func:eligibility-verification ;
     ifm:executesFunction func:regulatory-compliance ;
     ifm:sectorScope ifm:CrossSector ;
@@ -739,7 +748,7 @@ uc:employment-identity-proofing
     a ifm:UseCase, schema:Action ;
     schema:name "Employee identity proofing and onboarding"@en ;
     schema:description "An employer identifies a new hire and checks the qualifications the role requires, before provisioning any account."@en ;
-    ifm:appliesToSector sector:ISIC-C, sector:ISIC-J, sector:ISIC-K, sector:ISIC-P, sector:ISIC-Q ;
+    ifm:appliesToSector sector:ISIC-C, sector:ISIC-K, sector:ISIC-L, sector:ISIC-Q, sector:ISIC-R ;
     ifm:primaryFunction func:human-capital-management ;
     ifm:executesFunction func:identity-proofing, func:eligibility-verification ;
     ifm:sectorScope ifm:CrossSector ;
@@ -749,7 +758,7 @@ uc:aerospace-supplier-onboarding
     a ifm:UseCase, schema:Action ;
     schema:name "Automated aerospace supplier onboarding"@en ;
     schema:description "A manufacturer qualifies a new supplier by checking its legal existence, its signatories and its quality accreditations."@en ;
-    ifm:appliesToSector sector:ISIC-C-3030 ;
+    ifm:appliesToSector sector:ISIC-3030 ;
     ifm:primaryFunction func:sourcing-and-procurement ;
     ifm:executesFunction func:supply-chain-traceability, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
@@ -759,7 +768,7 @@ uc:healthcare-patient-identification
     a ifm:UseCase, schema:Action ;
     schema:name "Patient identification at admission"@en ;
     schema:description "A hospital identifies a patient at admission and links them to the right record."@en ;
-    ifm:appliesToSector sector:ISIC-Q-8610 ;
+    ifm:appliesToSector sector:ISIC-8610 ;
     ifm:primaryFunction func:service-delivery ;
     ifm:executesFunction func:identity-proofing, func:records-management ;
     ifm:sectorScope ifm:SectorSpecific ;
@@ -769,7 +778,7 @@ uc:egov-service-access
     a ifm:UseCase, schema:Action ;
     schema:name "Access to an online government service"@en ;
     schema:description "A resident authenticates to a public-administration service portal and proves the attributes the service is entitled to see."@en ;
-    ifm:appliesToSector sector:ISIC-O-8411 ;
+    ifm:appliesToSector sector:ISIC-8411 ;
     ifm:primaryFunction func:access-management ;
     ifm:executesFunction func:identity-proofing, func:service-delivery ;
     ifm:sectorScope ifm:SectorSpecific ;

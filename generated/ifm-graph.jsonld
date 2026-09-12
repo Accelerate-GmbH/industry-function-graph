@@ -36,16 +36,16 @@
       }
     },
     {
-      "@id": "scheme:isic-rev4",
+      "@id": "scheme:isic-rev5",
       "@type": [
         "skos:ConceptScheme"
       ],
       "dct:title": {
-        "@value": "ISIC Rev. 4 (sectors used by this repository)",
+        "@value": "ISIC Rev. 5 (sectors used by this repository)",
         "@language": "en"
       },
       "dct:description": {
-        "@value": "Local SKOS rendering of the International Standard Industrial Classification of All Economic Activities, Revision 4. All 21 sections, plus the divisions and classes the mapped use cases actually reach.",
+        "@value": "Local SKOS rendering of the International Standard Industrial Classification of All Economic Activities, Revision 5. All 22 sections, plus the divisions and classes the mapped use cases actually reach. ISIC is the primary scheme here. It is de facto equivalent to NOGA 2025 at section and division level: checked against the NOGA subset codified in the DIDAS Trust Flow Diagram Repository, all 22 section letters and all 23 of its divisions agree, with three section titles differing in spelling only. A division number is therefore a usable join key between this graph and a NOGA-classified sector. The equivalence does not extend below division level.",
         "@language": "en"
       },
       "dct:source": {
@@ -110,10 +110,10 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Agriculture, forestry and fishing",
@@ -122,7 +122,7 @@
       "skos:notation": {
         "@value": "A"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "A"
       },
       "ifm:codeStatus": {
@@ -136,10 +136,10 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Mining and quarrying",
@@ -148,7 +148,7 @@
       "skos:notation": {
         "@value": "B"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "B"
       },
       "ifm:codeStatus": {
@@ -162,10 +162,10 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Manufacturing",
@@ -175,9 +175,9 @@
         "@value": "C"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-C-30"
+        "@id": "sector:ISIC-30"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "C"
       },
       "ifm:codeStatus": {
@@ -191,10 +191,10 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Electricity, gas, steam and air conditioning supply",
@@ -203,7 +203,7 @@
       "skos:notation": {
         "@value": "D"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "D"
       },
       "ifm:codeStatus": {
@@ -217,10 +217,10 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Water supply; sewerage, waste management and remediation activities",
@@ -229,7 +229,7 @@
       "skos:notation": {
         "@value": "E"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "E"
       },
       "ifm:codeStatus": {
@@ -243,10 +243,10 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Construction",
@@ -255,7 +255,7 @@
       "skos:notation": {
         "@value": "F"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "F"
       },
       "ifm:codeStatus": {
@@ -269,22 +269,22 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Wholesale and retail trade; repair of motor vehicles and motorcycles",
+        "@value": "Wholesale and retail trade",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "G"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-G-47"
+        "@id": "sector:ISIC-47"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "G"
       },
       "ifm:codeStatus": {
@@ -298,10 +298,10 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Transportation and storage",
@@ -310,7 +310,7 @@
       "skos:notation": {
         "@value": "H"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "H"
       },
       "ifm:codeStatus": {
@@ -324,10 +324,10 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Accommodation and food service activities",
@@ -337,9 +337,9 @@
         "@value": "I"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-I-56"
+        "@id": "sector:ISIC-56"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "I"
       },
       "ifm:codeStatus": {
@@ -353,22 +353,19 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Information and communication",
+        "@value": "Publishing, broadcasting, and content production and distribution activities",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "J"
       },
-      "skos:narrower": {
-        "@id": "sector:ISIC-J-62"
-      },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "J"
       },
       "ifm:codeStatus": {
@@ -382,27 +379,22 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Financial and insurance activities",
+        "@value": "Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "K"
       },
-      "skos:narrower": [
-        {
-          "@id": "sector:ISIC-K-64"
-        },
-        {
-          "@id": "sector:ISIC-K-65"
-        }
-      ],
-      "ifm:naceRev2Code": {
+      "skos:narrower": {
+        "@id": "sector:ISIC-62"
+      },
+      "ifm:naceRev21Code": {
         "@value": "K"
       },
       "ifm:codeStatus": {
@@ -416,19 +408,27 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Real estate activities",
+        "@value": "Financial and insurance activities",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "L"
       },
-      "ifm:naceRev2Code": {
+      "skos:narrower": [
+        {
+          "@id": "sector:ISIC-64"
+        },
+        {
+          "@id": "sector:ISIC-65"
+        }
+      ],
+      "ifm:naceRev21Code": {
         "@value": "L"
       },
       "ifm:codeStatus": {
@@ -442,19 +442,19 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Professional, scientific and technical activities",
+        "@value": "Real estate activities",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "M"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "M"
       },
       "ifm:codeStatus": {
@@ -468,19 +468,19 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Administrative and support service activities",
+        "@value": "Professional, scientific and technical activities",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "N"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "N"
       },
       "ifm:codeStatus": {
@@ -494,22 +494,19 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Public administration and defence; compulsory social security",
+        "@value": "Administrative and support service activities",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "O"
       },
-      "skos:narrower": {
-        "@id": "sector:ISIC-O-84"
-      },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "O"
       },
       "ifm:codeStatus": {
@@ -523,22 +520,22 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Education",
+        "@value": "Public administration and defence; compulsory social security",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "P"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-P-85"
+        "@id": "sector:ISIC-84"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "P"
       },
       "ifm:codeStatus": {
@@ -552,22 +549,22 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Human health and social work activities",
+        "@value": "Education",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "Q"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-Q-86"
+        "@id": "sector:ISIC-85"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "Q"
       },
       "ifm:codeStatus": {
@@ -581,19 +578,22 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Arts, entertainment and recreation",
+        "@value": "Human health and social work activities",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "R"
       },
-      "ifm:naceRev2Code": {
+      "skos:narrower": {
+        "@id": "sector:ISIC-86"
+      },
+      "ifm:naceRev21Code": {
         "@value": "R"
       },
       "ifm:codeStatus": {
@@ -607,19 +607,19 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Other service activities",
+        "@value": "Arts, sports and recreation",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "S"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "S"
       },
       "ifm:codeStatus": {
@@ -633,19 +633,19 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use",
+        "@value": "Other service activities",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "T"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "T"
       },
       "ifm:codeStatus": {
@@ -659,19 +659,19 @@
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Activities of extraterritorial organizations and bodies",
+        "@value": "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use",
         "@language": "en"
       },
       "skos:notation": {
         "@value": "U"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "U"
       },
       "ifm:codeStatus": {
@@ -679,13 +679,39 @@
       }
     },
     {
-      "@id": "sector:ISIC-C-30",
+      "@id": "sector:ISIC-V",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Activities of extraterritorial organizations and bodies",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "V"
+      },
+      "ifm:naceRev21Code": {
+        "@value": "V"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-30",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Manufacture of other transport equipment",
@@ -698,53 +724,27 @@
         "@id": "sector:ISIC-C"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-C-3030"
-      },
-      "ifm:naceRev2Code": {
-        "@value": "30"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-C-3030",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
-      },
-      "skos:prefLabel": {
-        "@value": "Manufacture of air and spacecraft and related machinery",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "3030"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-C-30"
+        "@id": "sector:ISIC-3030"
       },
       "ifm:codeStatus": {
         "@value": "verified"
       },
       "skos:scopeNote": {
-        "@value": "NACE code not asserted: ISIC and NACE diverge below division level.",
+        "@value": "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.",
         "@language": "en"
       }
     },
     {
-      "@id": "sector:ISIC-G-47",
+      "@id": "sector:ISIC-47",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Retail trade, except of motor vehicles and motorcycles",
+        "@value": "Retail trade",
         "@language": "en"
       },
       "skos:notation": {
@@ -754,9 +754,9 @@
         "@id": "sector:ISIC-G"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-G-4711"
+        "@id": "sector:ISIC-4711"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "47"
       },
       "ifm:codeStatus": {
@@ -764,36 +764,13 @@
       }
     },
     {
-      "@id": "sector:ISIC-G-4711",
+      "@id": "sector:ISIC-56",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
-      },
-      "skos:prefLabel": {
-        "@value": "Retail sale in non-specialised stores with food, beverages or tobacco predominating",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "4711"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-G-47"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-I-56",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Food and beverage service activities",
@@ -806,46 +783,24 @@
         "@id": "sector:ISIC-I"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-I-5610"
-      },
-      "ifm:naceRev2Code": {
-        "@value": "56"
+        "@id": "sector:ISIC-5610"
       },
       "ifm:codeStatus": {
         "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-I-5610",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
       },
-      "skos:prefLabel": {
-        "@value": "Restaurants and mobile food service activities",
+      "skos:scopeNote": {
+        "@value": "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.",
         "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "5610"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-I-56"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
       }
     },
     {
-      "@id": "sector:ISIC-J-62",
+      "@id": "sector:ISIC-62",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Computer programming, consultancy and related activities",
@@ -855,23 +810,24 @@
         "@value": "62"
       },
       "skos:broader": {
-        "@id": "sector:ISIC-J"
-      },
-      "ifm:naceRev2Code": {
-        "@value": "62"
+        "@id": "sector:ISIC-K"
       },
       "ifm:codeStatus": {
         "@value": "verified"
+      },
+      "skos:scopeNote": {
+        "@value": "NACE alignment not asserted: this division is absent from the NOGA 2025 subset used to cross-check.",
+        "@language": "en"
       }
     },
     {
-      "@id": "sector:ISIC-K-64",
+      "@id": "sector:ISIC-64",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Financial service activities, except insurance and pension funding",
@@ -881,12 +837,12 @@
         "@value": "64"
       },
       "skos:broader": {
-        "@id": "sector:ISIC-K"
+        "@id": "sector:ISIC-L"
       },
       "skos:narrower": {
-        "@id": "sector:ISIC-K-6419"
+        "@id": "sector:ISIC-6419"
       },
-      "ifm:naceRev2Code": {
+      "ifm:naceRev21Code": {
         "@value": "64"
       },
       "ifm:codeStatus": {
@@ -894,13 +850,203 @@
       }
     },
     {
-      "@id": "sector:ISIC-K-6419",
+      "@id": "sector:ISIC-65",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Insurance, reinsurance and pension funding, except compulsory social security",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "65"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-L"
+      },
+      "skos:narrower": {
+        "@id": "sector:ISIC-6512"
+      },
+      "ifm:naceRev21Code": {
+        "@value": "65"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-84",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Public administration and defence; compulsory social security",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "84"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-P"
+      },
+      "skos:narrower": {
+        "@id": "sector:ISIC-8411"
+      },
+      "ifm:naceRev21Code": {
+        "@value": "84"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-85",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Education",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "85"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-Q"
+      },
+      "skos:narrower": [
+        {
+          "@id": "sector:ISIC-8531"
+        },
+        {
+          "@id": "sector:ISIC-8540"
+        }
+      ],
+      "ifm:naceRev21Code": {
+        "@value": "85"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-86",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Human health activities",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "86"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-R"
+      },
+      "skos:narrower": {
+        "@id": "sector:ISIC-8610"
+      },
+      "ifm:naceRev21Code": {
+        "@value": "86"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-3030",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Manufacture of air and spacecraft and related machinery",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "3030"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-30"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-4711",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Non-specialized retail sale with food, beverages or tobacco predominating",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "4711"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-47"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-5610",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
+      },
+      "skos:prefLabel": {
+        "@value": "Restaurants and mobile food service activities",
+        "@language": "en"
+      },
+      "skos:notation": {
+        "@value": "5610"
+      },
+      "skos:broader": {
+        "@id": "sector:ISIC-56"
+      },
+      "ifm:codeStatus": {
+        "@value": "verified"
+      }
+    },
+    {
+      "@id": "sector:ISIC-6419",
+      "@type": [
+        "ifm:Sector",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Other monetary intermediation",
@@ -910,7 +1056,7 @@
         "@value": "6419"
       },
       "skos:broader": {
-        "@id": "sector:ISIC-K-64"
+        "@id": "sector:ISIC-64"
       },
       "ifm:codeStatus": {
         "@value": "verified"
@@ -921,42 +1067,13 @@
       }
     },
     {
-      "@id": "sector:ISIC-K-65",
+      "@id": "sector:ISIC-6512",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
-      },
-      "skos:prefLabel": {
-        "@value": "Insurance, reinsurance and pension funding, except compulsory social security",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "65"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-K"
-      },
-      "skos:narrower": {
-        "@id": "sector:ISIC-K-6512"
-      },
-      "ifm:naceRev2Code": {
-        "@value": "65"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-K-6512",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Non-life insurance",
@@ -966,49 +1083,20 @@
         "@value": "6512"
       },
       "skos:broader": {
-        "@id": "sector:ISIC-K-65"
+        "@id": "sector:ISIC-65"
       },
       "ifm:codeStatus": {
         "@value": "verified"
       }
     },
     {
-      "@id": "sector:ISIC-O-84",
+      "@id": "sector:ISIC-8411",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
-      },
-      "skos:prefLabel": {
-        "@value": "Public administration and defence; compulsory social security",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "84"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-O"
-      },
-      "skos:narrower": {
-        "@id": "sector:ISIC-O-8411"
-      },
-      "ifm:naceRev2Code": {
-        "@value": "84"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-O-8411",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "General public administration activities",
@@ -1018,133 +1106,74 @@
         "@value": "8411"
       },
       "skos:broader": {
-        "@id": "sector:ISIC-O-84"
+        "@id": "sector:ISIC-84"
       },
       "ifm:codeStatus": {
         "@value": "verified"
       }
     },
     {
-      "@id": "sector:ISIC-P-85",
+      "@id": "sector:ISIC-8531",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
-      },
-      "skos:prefLabel": {
-        "@value": "Education",
-        "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "85"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-P"
-      },
-      "skos:narrower": [
-        {
-          "@id": "sector:ISIC-P-8521"
-        },
-        {
-          "@id": "sector:ISIC-P-8530"
-        }
-      ],
-      "ifm:naceRev2Code": {
-        "@value": "85"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-P-8521",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "General secondary education",
         "@language": "en"
       },
       "skos:notation": {
-        "@value": "8521"
+        "@value": "8531"
       },
       "skos:broader": {
-        "@id": "sector:ISIC-P-85"
+        "@id": "sector:ISIC-85"
       },
       "ifm:codeStatus": {
         "@value": "verified"
       },
       "skos:scopeNote": {
-        "@value": "Swiss gymnasiale Maturität sits here.",
+        "@value": "Swiss gymnasiale Maturitaet sits here. ISIC Rev. 4 numbered this 8521.",
         "@language": "en"
       }
     },
     {
-      "@id": "sector:ISIC-P-8530",
+      "@id": "sector:ISIC-8540",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
-        "@value": "Higher education",
+        "@value": "Tertiary education",
         "@language": "en"
       },
       "skos:notation": {
-        "@value": "8530"
+        "@value": "8540"
       },
       "skos:broader": {
-        "@id": "sector:ISIC-P-85"
+        "@id": "sector:ISIC-85"
       },
       "ifm:codeStatus": {
         "@value": "verified"
-      }
-    },
-    {
-      "@id": "sector:ISIC-Q-86",
-      "@type": [
-        "ifm:Sector",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
       },
-      "skos:prefLabel": {
-        "@value": "Human health activities",
+      "skos:scopeNote": {
+        "@value": "ISIC Rev. 4 called this 8530, \"Higher education\".",
         "@language": "en"
-      },
-      "skos:notation": {
-        "@value": "86"
-      },
-      "skos:broader": {
-        "@id": "sector:ISIC-Q"
-      },
-      "skos:narrower": {
-        "@id": "sector:ISIC-Q-8610"
-      },
-      "ifm:naceRev2Code": {
-        "@value": "86"
-      },
-      "ifm:codeStatus": {
-        "@value": "verified"
       }
     },
     {
-      "@id": "sector:ISIC-Q-8610",
+      "@id": "sector:ISIC-8610",
       "@type": [
         "ifm:Sector",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:isic-rev4"
+        "@id": "scheme:isic-rev5"
       },
       "skos:prefLabel": {
         "@value": "Hospital activities",
@@ -1154,7 +1183,7 @@
         "@value": "8610"
       },
       "skos:broader": {
-        "@id": "sector:ISIC-Q-86"
+        "@id": "sector:ISIC-86"
       },
       "ifm:codeStatus": {
         "@value": "verified"
@@ -1837,10 +1866,10 @@
       },
       "ifm:appliesToSector": [
         {
-          "@id": "sector:ISIC-K-6419"
+          "@id": "sector:ISIC-6419"
         },
         {
-          "@id": "sector:ISIC-K-6512"
+          "@id": "sector:ISIC-6512"
         }
       ],
       "ifm:primaryFunction": {
@@ -1879,7 +1908,7 @@
         "@language": "en"
       },
       "ifm:appliesToSector": {
-        "@id": "sector:ISIC-K-6419"
+        "@id": "sector:ISIC-6419"
       },
       "ifm:primaryFunction": {
         "@id": "func:regulatory-compliance"
@@ -1912,7 +1941,7 @@
         "@language": "en"
       },
       "ifm:appliesToSector": {
-        "@id": "sector:ISIC-K-6419"
+        "@id": "sector:ISIC-6419"
       },
       "ifm:primaryFunction": {
         "@id": "func:identity-lifecycle-management"
@@ -1950,7 +1979,7 @@
         "@language": "en"
       },
       "ifm:appliesToSector": {
-        "@id": "sector:ISIC-K-6419"
+        "@id": "sector:ISIC-6419"
       },
       "ifm:primaryFunction": {
         "@id": "func:identity-lifecycle-management"
@@ -1983,7 +2012,7 @@
         "@language": "en"
       },
       "ifm:appliesToSector": {
-        "@id": "sector:ISIC-P-8521"
+        "@id": "sector:ISIC-8531"
       },
       "ifm:primaryFunction": {
         "@id": "func:certification-and-attestation"
@@ -2016,7 +2045,7 @@
         "@language": "en"
       },
       "ifm:appliesToSector": {
-        "@id": "sector:ISIC-P-8530"
+        "@id": "sector:ISIC-8540"
       },
       "ifm:primaryFunction": {
         "@id": "func:customer-onboarding"
@@ -2055,10 +2084,10 @@
       },
       "ifm:appliesToSector": [
         {
-          "@id": "sector:ISIC-G-4711"
+          "@id": "sector:ISIC-4711"
         },
         {
-          "@id": "sector:ISIC-I-5610"
+          "@id": "sector:ISIC-5610"
         }
       ],
       "ifm:primaryFunction": {
@@ -2093,16 +2122,16 @@
           "@id": "sector:ISIC-C"
         },
         {
-          "@id": "sector:ISIC-J"
-        },
-        {
           "@id": "sector:ISIC-K"
         },
         {
-          "@id": "sector:ISIC-P"
+          "@id": "sector:ISIC-L"
         },
         {
           "@id": "sector:ISIC-Q"
+        },
+        {
+          "@id": "sector:ISIC-R"
         }
       ],
       "ifm:primaryFunction": {
@@ -2138,7 +2167,7 @@
         "@language": "en"
       },
       "ifm:appliesToSector": {
-        "@id": "sector:ISIC-C-3030"
+        "@id": "sector:ISIC-3030"
       },
       "ifm:primaryFunction": {
         "@id": "func:sourcing-and-procurement"
@@ -2173,7 +2202,7 @@
         "@language": "en"
       },
       "ifm:appliesToSector": {
-        "@id": "sector:ISIC-Q-8610"
+        "@id": "sector:ISIC-8610"
       },
       "ifm:primaryFunction": {
         "@id": "func:service-delivery"
@@ -2208,7 +2237,7 @@
         "@language": "en"
       },
       "ifm:appliesToSector": {
-        "@id": "sector:ISIC-O-8411"
+        "@id": "sector:ISIC-8411"
       },
       "ifm:primaryFunction": {
         "@id": "func:access-management"

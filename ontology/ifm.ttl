@@ -38,17 +38,24 @@ ifm:Sector a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     rdfs:label "Sector"@en ;
     rdfs:comment """An economic activity class. Sectors are not invented here:
-they are a local SKOS rendering of ISIC Rev. 4 (sections, divisions, classes).
-skos:notation carries the official ISIC code."""@en .
+they are a local SKOS rendering of ISIC Rev. 5 (sections, divisions, classes).
+skos:notation carries the official ISIC code.
 
-ifm:naceRev2Code a owl:DatatypeProperty ;
-    rdfs:label "NACE Rev. 2 code"@en ;
+Identifiers for divisions and classes deliberately omit the section letter.
+Letters move between revisions - finance went K to L, education P to Q and human
+health Q to R between Rev. 4 and Rev. 5 - while the division and class numbers
+hold. An identifier keyed on the letter would have to be rewritten at every
+revision."""@en .
+
+ifm:naceRev21Code a owl:DatatypeProperty ;
+    rdfs:label "NACE Rev. 2.1 code"@en ;
     rdfs:domain ifm:Sector ;
     rdfs:range xsd:string ;
-    rdfs:comment """NACE Rev. 2 is derived from ISIC Rev. 4 and identical to it
-at section and division level, so the code is recorded as a literal at those two
-levels only. It is NOT asserted at class level, where the two classifications
-diverge."""@en .
+    rdfs:comment """NACE Rev. 2.1 is the European counterpart of ISIC Rev. 5 and
+identical to it at section and division level, so the code is recorded as a
+literal at those two levels only. It is NOT asserted at class level, where the
+two classifications diverge, nor for divisions the cross-check described in
+../README.md could not cover."""@en .
 
 ################################################################
 # Layer 2 — Function

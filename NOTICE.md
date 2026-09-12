@@ -11,8 +11,9 @@ dataset.** Each remains under the terms of its publisher.
 
 | Source | Terms | Used in |
 |---|---|---|
-| [ISIC Rev. 4](https://unstats.un.org/unsd/classifications/Econ/isic) (United Nations Statistics Division) | UN publication; codes and titles referenced with attribution, not reproduced in full | `data/sectors.csv` — the sector layer (`skos:notation`) |
-| [NACE Rev. 2](https://ec.europa.eu/eurostat/web/nace) (Eurostat) | European Commission / Eurostat; codes referenced with attribution | `data/sectors.csv` — `ifm:naceRev2Code`, at section and division level only |
+| [ISIC Rev. 5](https://unstats.un.org/unsd/classifications/Econ/isic) (United Nations Statistics Division) | UN publication; codes and titles taken from the official structure file and referenced with attribution, not reproduced in full — only the 22 sections plus the divisions and classes the use cases reach | `data/sectors.csv` — the sector layer (`skos:notation`) |
+| [NACE Rev. 2.1](https://ec.europa.eu/eurostat/web/nace) (Eurostat) | European Commission / Eurostat; codes referenced with attribution | `data/sectors.csv` — `ifm:naceRev21Code`, at section and division level only |
+| [NOGA 2025](https://www.kubb-tool.bfs.admin.ch/en) (Swiss Federal Statistical Office) | Referenced for a structural cross-check only; no NOGA code is stored in this repository | The section/division alignment check recorded in README.md |
 | [Classification of Business Functions](https://unece.org/trade/statistics) (UNECE / Eurostat) | Referenced with attribution; labels here are marked `codeStatus "provisional"` until checked against the official publication | `data/cbf.csv` — mapping target for the function layer |
 | [APQC Process Classification Framework](https://www.apqc.org/process-frameworks) (APQC) | Published by APQC under its own terms; **not redistributed here** — only the category numbers and names an alignment references are carried, marked `codeStatus "provisional"` | `data/apqc-pcf.csv` — mapping target for the function layer |
 

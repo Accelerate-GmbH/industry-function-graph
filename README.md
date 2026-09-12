@@ -17,8 +17,8 @@ graph: [`generated/ifm-graph.ttl`](./generated/ifm-graph.ttl) ·
 
 ```
   [ 1. SECTOR ]                          [ 2. FUNCTION ]
-  ISIC Rev. 4 (NACE at section           IFM function scheme,
-  and division level)                    mapped to UN CBF / APQC PCF
+  ISIC Rev. 5 (NACE Rev. 2.1 at         IFM function scheme,
+  section and division level)            mapped to UN CBF / APQC PCF
         ^                                       ^
         | ifm:appliesToSector                   | ifm:executesFunction
         +-------------------+-------------------+
@@ -34,7 +34,7 @@ Nothing in the model is invented where a standard exists:
 
 | Layer | Standard | How it is used here |
 |---|---|---|
-| 1 · Sector | ISIC Rev. 4, NACE Rev. 2 | `skos:ConceptScheme` with the official code in `skos:notation`. All 21 ISIC sections, plus the divisions and classes the use cases actually reach. |
+| 1 · Sector | ISIC Rev. 5, NACE Rev. 2.1 | `skos:ConceptScheme` with the official code in `skos:notation`. All 22 ISIC sections, plus the divisions and classes the use cases actually reach. |
 | 2 · Function | UNECE/Eurostat CBF, APQC PCF | A local function scheme mapped onto both with SKOS mapping relations. |
 | 3 · Use case | `schema:Action` | The bridge: each use case links ≥1 sector and exactly one primary function. |
 | 4 · Credential | W3C VCDM 2.0, EBSI, DCC/ELM, UN/CEFACT | **Not implemented yet** — see [Layer 4](#layer-4--deferred). |
@@ -84,6 +84,45 @@ would fix if these IRIs ever need to outlive this repository.
 
 The namespace is a single constant, `BASE` in `build/model.py` — change it and
 rebuild to move the vocabulary elsewhere. Nothing else hard-codes it.
+
+## Identifiers, and why they drop the section letter
+
+A division or class is `ISIC-64`, `ISIC-6419` — not `ISIC-L-64`. Section letters
+move between revisions while the numbers hold. Between ISIC Rev. 4 and Rev. 5,
+finance went K → L, education P → Q, human health Q → R, and old section J
+("Information and communication") split, with the IT half becoming Rev. 5 K.
+Every division and class number involved stayed put. An identifier keyed on the
+letter would have to be rewritten at every revision, taking every concept IRI
+with it.
+
+Two classes *were* renumbered in Rev. 5 and are worth knowing about, because
+anything mapped under Rev. 4 will be wrong:
+
+| Rev. 4 | Rev. 5 | |
+|---|---|---|
+| 8521 General secondary education | **8531** General secondary education | group 852 → 853 |
+| 8530 Higher education | **8540** Tertiary education | renamed as well as renumbered |
+
+### Cross-check against NOGA 2025
+
+The sector layer was checked against the NOGA 2025 subset codified in the
+[DIDAS Trust Flow Diagram Repository](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository),
+which classifies its flows by NOGA. Comparing the two:
+
+- **22 of 22** section letters present in both, structurally identical
+- **23 of 23** NOGA divisions sit under the same section in ISIC Rev. 5 — zero mismatches
+- 3 section titles differ in spelling only ("organisations"/"organizations",
+  "Telecommunication"/"Telecommunications", one `and` for a `;`)
+
+That is the evidence behind the NACE Rev. 2.1 codes recorded here: NOGA 2025 is
+the Swiss implementation of NACE Rev. 2.1, and it matches ISIC Rev. 5 at section
+and division level, so NACE does too. It also means the **division number is a
+usable join key** between this graph and any NOGA-classified sector — which is
+the point of
+[Trust-Flow-Diagram-Repository#12](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/issues/12).
+
+The three divisions absent from that NOGA subset (30, 56, 62) carry no NACE code
+and say so in their `note`.
 
 ## Adding a use case
 
@@ -165,8 +204,8 @@ concept therefore carries `ifm:codeStatus`:
 
 | Data | `codeStatus` | Basis |
 |---|---|---|
-| ISIC Rev. 4 sections, divisions, classes | `verified` | Codes and titles from the published ISIC Rev. 4 structure. |
-| NACE Rev. 2 codes | — | Recorded as `ifm:naceRev2Code` literals at **section and division level only**, where NACE is identical to ISIC. Deliberately not asserted at class level, where the two diverge. |
+| ISIC Rev. 5 sections, divisions, classes | `verified` | Codes and titles taken from the official ISIC Rev. 5 structure file published by the UN Statistics Division. |
+| NACE Rev. 2.1 codes | — | Recorded as `ifm:naceRev21Code` literals at **section and division level only**, where NACE is identical to ISIC — and only for divisions the cross-check below covers. Deliberately not asserted at class level, where the two diverge. |
 | CBF categories | `provisional` | Category labels following the UNECE/Eurostat Classification of Business Functions. No notations are asserted. Replace with an official extract before relying on them. |
 | APQC PCF categories | `provisional` | Only the cross-industry categories an alignment actually references. The framework is published by APQC and is not redistributed here; get the full version from [apqc.org](https://www.apqc.org/process-frameworks). |
 | Function alignments | `provisional` | Editorial judgement, recorded row by row in `data/function-alignments.csv` with the reasoning. |

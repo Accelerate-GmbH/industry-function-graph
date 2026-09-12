@@ -23,12 +23,19 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data"
 GENERATED_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "generated")
 
 SCHEMES = {
-    "isic-rev4": {
-        "title": "ISIC Rev. 4 (sectors used by this repository)",
+    "isic-rev5": {
+        "title": "ISIC Rev. 5 (sectors used by this repository)",
         "description": "Local SKOS rendering of the International Standard Industrial "
-                       "Classification of All Economic Activities, Revision 4. All 21 "
+                       "Classification of All Economic Activities, Revision 5. All 22 "
                        "sections, plus the divisions and classes the mapped use cases "
-                       "actually reach.",
+                       "actually reach. ISIC is the primary scheme here. It is de facto "
+                       "equivalent to NOGA 2025 at section and division level: checked "
+                       "against the NOGA subset codified in the DIDAS Trust Flow Diagram "
+                       "Repository, all 22 section letters and all 23 of its divisions "
+                       "agree, with three section titles differing in spelling only. A "
+                       "division number is therefore a usable join key between this graph "
+                       "and a NOGA-classified sector. The equivalence does not extend "
+                       "below division level.",
         "source": "https://unstats.un.org/unsd/classifications/Econ/isic",
     },
     "cbf": {

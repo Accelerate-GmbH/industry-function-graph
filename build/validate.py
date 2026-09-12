@@ -22,7 +22,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from model import Model  # noqa: E402
 
-SECTOR_ID = re.compile(r"^ISIC-[A-U](-\d{2}(\d{2})?)?$")
+# Division and class ids deliberately omit the section letter: letters move
+# between ISIC revisions (finance K->L, education P->Q, health Q->R from Rev. 4
+# to Rev. 5) while the numbers hold, so an id keyed on the letter would have to
+# be rewritten every revision.
+SECTOR_ID = re.compile(r"^ISIC-([A-V]|\d{2}|\d{4})$")
 SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 CODE_STATUS = {"verified", "provisional"}
 MATURITY = {"Exploratory", "Modelled", "Live"}
@@ -55,21 +59,21 @@ def check_sectors(model):
             continue
 
         if level == "section":
-            if not re.fullmatch(r"[A-U]", notation):
-                error(f"{where}: a section notation must be one letter A-U, got {notation!r}")
+            if not re.fullmatch(r"[A-V]", notation):
+                error(f"{where}: a section notation must be one letter A-V, got {notation!r}")
             if broader:
                 error(f"{where}: a section must not have a broader concept")
-            if row["nace_rev2"] != notation:
-                error(f"{where}: NACE and ISIC are identical at section level, "
-                      f"expected nace_rev2={notation!r}")
+            if row["nace_rev21"] != notation:
+                error(f"{where}: NACE Rev. 2.1 and ISIC Rev. 5 are identical at section "
+                      f"level, expected nace_rev21={notation!r}")
         elif level == "division":
             if not re.fullmatch(r"\d{2}", notation):
                 error(f"{where}: a division notation must be two digits, got {notation!r}")
             if not broader or model.sectors[broader]["level"] != "section":
                 error(f"{where}: a division must sit directly under a section")
-            if row["nace_rev2"] != notation:
-                error(f"{where}: NACE and ISIC are identical at division level, "
-                      f"expected nace_rev2={notation!r}")
+            if row["nace_rev21"] and row["nace_rev21"] != notation:
+                error(f"{where}: NACE Rev. 2.1 and ISIC Rev. 5 are identical at division "
+                      f"level, expected nace_rev21={notation!r} or empty")
         elif level == "class":
             if not re.fullmatch(r"\d{4}", notation):
                 error(f"{where}: a class notation must be four digits, got {notation!r}")
@@ -78,9 +82,9 @@ def check_sectors(model):
             elif not notation.startswith(model.sectors[broader]["notation"]):
                 error(f"{where}: class {notation} is not inside division "
                       f"{model.sectors[broader]['notation']}")
-            if row["nace_rev2"]:
+            if row["nace_rev21"]:
                 error(f"{where}: ISIC and NACE diverge below division level; "
-                      f"nace_rev2 must be empty at class level")
+                      f"nace_rev21 must be empty at class level")
         else:
             error(f"{where}: unknown level {level!r}")
 
