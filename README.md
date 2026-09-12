@@ -554,7 +554,7 @@ Where the format and ecosystem values come from:
 
 | Value | Basis |
 |---|---|
-| `SD-JWT VC` + `swiyu` | `swiss-profile-vc:1.0.0` is an SD-JWT VC profile; the media type is `application/dc+sd-jwt` and ISO mdoc and W3C VCDM are not supported by it. Read from the Swiss Profile conformance record in [`digital-health_swiyu`](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/spec-conformance.md), not from the profile text, which is unreachable from the environment this was built in. |
+| `SD-JWT VC` + `swiyu` | Read from the profile text. [Swiss Profile VC](https://swiyu-admin-ch.github.io/specifications/swiss-profile-vc/) contains SD-JWT VC Draft 15 over SD-JWT (RFC 9901); [Swiss Profile Issuance](https://swiyu-admin-ch.github.io/specifications/swiss-profile-issuance/) §3.3.1 states that the Credential Format Profiles "ISO mdoc" and "W3C VCDM" are **NOT SUPPORTED**. |
 | `W3C VCDM 2.0` + `UN/CEFACT` | The UN Transparency Protocol states that its credentials, the Digital Conformity Credential among them, conform to W3C VCDM v2.0. |
 | `W3C VCDM` + `ELM` | The European Learning Model extends the W3C data model. Which version the European Digital Credentials infrastructure requires is **not settled here**, so no version is recorded. |
 
@@ -563,7 +563,9 @@ claim or withholds it and cannot prove a property of a withheld claim, so there
 are no predicate proofs in this profile. Over-18 works in swiyu because the
 electronic identity carries an `age_over_18` claim of its own that the holder can
 disclose in place of the date of birth. That is a property of the credential's
-claim set, not of the format.
+claim set, not of the format. The profile itself treats it that way: `swiss-profile-vc`
+§3.2.2.2 gives "Accepting a 'over 18' proof for a expired e-ID" as the example of
+why a credential past its business `expiry_date` may still be worth accepting.
 
 ### Two checks that earn their place
 
