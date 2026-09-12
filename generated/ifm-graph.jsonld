@@ -11,6 +11,9 @@
     "mode": "https://didas-swiss.github.io/industry-function-graph/id/transformation-mode/",
     "stream": "https://didas-swiss.github.io/industry-function-graph/id/value-stream/",
     "stage": "https://didas-swiss.github.io/industry-function-graph/id/value-stream-stage/",
+    "role": "https://didas-swiss.github.io/industry-function-graph/id/trust-role/",
+    "evidence": "https://didas-swiss.github.io/industry-function-graph/id/replaced-evidence/",
+    "part": "https://didas-swiss.github.io/industry-function-graph/id/participation/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "schema": "https://schema.org/",
     "dct": "http://purl.org/dc/terms/",
@@ -118,6 +121,40 @@
       },
       "dct:description": {
         "@value": "How far the process changes. The first two are run - improving a process that already exists. The last two are change - reorganising it, or doing something that was not viable before. A use case has exactly one.",
+        "@language": "en"
+      },
+      "dct:source": {
+        "@id": "https://didas-swiss.github.io/industry-function-graph/"
+      }
+    },
+    {
+      "@id": "scheme:ifm-trust-roles",
+      "@type": [
+        "skos:ConceptScheme"
+      ],
+      "dct:title": {
+        "@value": "Trust roles",
+        "@language": "en"
+      },
+      "dct:description": {
+        "@value": "Who does what in a credential exchange: issuer, holder, verifier, trust anchor. Recorded per use case together with who bears the cost and who gets the value, because those are rarely the same party.",
+        "@language": "en"
+      },
+      "dct:source": {
+        "@id": "https://didas-swiss.github.io/industry-function-graph/"
+      }
+    },
+    {
+      "@id": "scheme:ifm-replaced-evidence",
+      "@type": [
+        "skos:ConceptScheme"
+      ],
+      "dct:title": {
+        "@value": "Replaced evidence",
+        "@language": "en"
+      },
+      "dct:description": {
+        "@value": "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Without this, friction reduction is an assertion with nothing behind it.",
         "@language": "en"
       },
       "dct:source": {
@@ -2425,6 +2462,1135 @@
       }
     },
     {
+      "@id": "role:issuer",
+      "@type": [
+        "ifm:TrustRole",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:prefLabel": {
+        "@value": "Issuer",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Makes a signed statement about a subject, and bears the cost of being able to make it credibly.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "role:holder",
+      "@type": [
+        "ifm:TrustRole",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:prefLabel": {
+        "@value": "Holder",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Keeps the credential and decides when, and to whom, to present it.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "role:verifier",
+      "@type": [
+        "ifm:TrustRole",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:prefLabel": {
+        "@value": "Verifier",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Checks a presented credential and acts on the result.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "role:trust-anchor",
+      "@type": [
+        "ifm:TrustRole",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:prefLabel": {
+        "@value": "Trust anchor",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Publishes the registry or accreditation that lets a verifier decide an issuer is credible.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "evidence:paper-document",
+      "@type": [
+        "ifm:ReplacedEvidence",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:prefLabel": {
+        "@value": "Paper document",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "An original or certified copy handed over, posted or presented in person.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "evidence:pdf-attachment",
+      "@type": [
+        "ifm:ReplacedEvidence",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:prefLabel": {
+        "@value": "PDF or scan",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "An unsigned digital file whose authenticity nobody can check, and which is therefore trusted on appearance.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "evidence:phone-or-email-check",
+      "@type": [
+        "ifm:ReplacedEvidence",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:prefLabel": {
+        "@value": "Phone or email check",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A human contacting the issuing organisation to ask whether a claim is true.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "evidence:registry-lookup",
+      "@type": [
+        "ifm:ReplacedEvidence",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:prefLabel": {
+        "@value": "Registry lookup",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A verifier querying a register directly, which works only where one exists and grants access.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "evidence:in-person-check",
+      "@type": [
+        "ifm:ReplacedEvidence",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:prefLabel": {
+        "@value": "In-person check",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject attending in person so a human can inspect a document or their face.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "evidence:notarised-copy",
+      "@type": [
+        "ifm:ReplacedEvidence",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:prefLabel": {
+        "@value": "Notarised copy",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A third party attesting that a copy matches an original, at a fee and a delay.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "evidence:self-declaration",
+      "@type": [
+        "ifm:ReplacedEvidence",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-replaced-evidence"
+      },
+      "skos:prefLabel": {
+        "@value": "Self-declaration",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The subject asserting something with nothing behind it, accepted because checking costs more than the risk.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:banking-kyc-onboarding-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-kyc-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Issues the reusable attestation and is also a verifier of it later.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:banking-kyc-onboarding-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-kyc-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Customer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:banking-kyc-onboarding-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-kyc-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Another regulated institution",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:banking-re-kyc-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-re-kyc"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:banking-re-kyc-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-re-kyc"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Customer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:banking-re-kyc-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-re-kyc"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Issuer and verifier are the same party, which is why this one needs nobody's cooperation.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:banking-reidentification-password-reset-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-reidentification-password-reset"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Federal e-ID issuer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      }
+    },
+    {
+      "@id": "part:banking-reidentification-password-reset-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-reidentification-password-reset"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Customer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:banking-reidentification-password-reset-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-reidentification-password-reset"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:banking-age-of-majority-reidentification-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-age-of-majority-reidentification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Federal e-ID issuer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      }
+    },
+    {
+      "@id": "part:banking-age-of-majority-reidentification-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-age-of-majority-reidentification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Customer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:banking-age-of-majority-reidentification-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-age-of-majority-reidentification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:education-maturitaetszeugnis-issuance-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:education-maturitaetszeugnis-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Upper-secondary school",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "indirect"
+      },
+      "skos:scopeNote": {
+        "@value": "Bears the issuing cost; gets back only fewer duplicate-copy requests.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:education-maturitaetszeugnis-issuance-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:education-maturitaetszeugnis-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Graduate",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:education-maturitaetszeugnis-issuance-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:education-maturitaetszeugnis-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "University or employer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:education-university-immatriculation-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:education-university-immatriculation"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Upper-secondary school",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "skos:scopeNote": {
+        "@value": "Already carried the cost in the issuance use case and gains nothing here.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:education-university-immatriculation-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:education-university-immatriculation"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Applicant",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:education-university-immatriculation-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:education-university-immatriculation"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "University",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:retail-hospitality-age-verification-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:retail-hospitality-age-verification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Federal e-ID issuer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      }
+    },
+    {
+      "@id": "part:retail-hospitality-age-verification-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:retail-hospitality-age-verification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Customer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:retail-hospitality-age-verification-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:retail-hospitality-age-verification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Merchant or restaurant",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:employment-identity-proofing-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:employment-identity-proofing"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "E-ID issuer and awarding institutions",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      }
+    },
+    {
+      "@id": "part:employment-identity-proofing-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:employment-identity-proofing"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Candidate",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:employment-identity-proofing-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:employment-identity-proofing"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Employer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:aerospace-supplier-onboarding-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:aerospace-supplier-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Accredited certification body",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Certification is its business, so the issuing cost is already paid for.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:aerospace-supplier-onboarding-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:aerospace-supplier-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Supplier",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:aerospace-supplier-onboarding-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:aerospace-supplier-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Manufacturer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:aerospace-supplier-onboarding-trust-anchor",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:aerospace-supplier-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:trust-anchor"
+      },
+      "ifm:party": {
+        "@value": "Accreditation body",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "indirect"
+      }
+    },
+    {
+      "@id": "part:pharma-supplier-qualification-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:pharma-supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Certification body or regulator",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:pharma-supplier-qualification-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:pharma-supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Supplier",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:pharma-supplier-qualification-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:pharma-supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Manufacturer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:pharma-supplier-qualification-trust-anchor",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:pharma-supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:trust-anchor"
+      },
+      "ifm:party": {
+        "@value": "Accreditation body",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "indirect"
+      }
+    },
+    {
+      "@id": "part:healthcare-patient-identification-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:healthcare-patient-identification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Federal e-ID issuer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      }
+    },
+    {
+      "@id": "part:healthcare-patient-identification-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:healthcare-patient-identification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Patient",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:healthcare-patient-identification-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:healthcare-patient-identification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Hospital",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:egov-service-access-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:egov-service-access"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Federal e-ID issuer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Issuer and verifier are both the state, so the investment returns to the party making it.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:egov-service-access-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:egov-service-access"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Resident",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
+      "@id": "part:egov-service-access-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:egov-service-access"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Public administration",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      }
+    },
+    {
       "@id": "driver:friction-reduction",
       "@type": [
         "ifm:ValueDriver",
@@ -3411,6 +4577,29 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:participation": [
+        {
+          "@id": "part:banking-kyc-onboarding-issuer"
+        },
+        {
+          "@id": "part:banking-kyc-onboarding-holder"
+        },
+        {
+          "@id": "part:banking-kyc-onboarding-verifier"
+        }
+      ],
+      "ifm:replaces": [
+        {
+          "@id": "evidence:in-person-check"
+        },
+        {
+          "@id": "evidence:notarised-copy"
+        }
+      ],
+      "ifm:costValueAsymmetry": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
       "ifm:valueDriver": [
         {
           "@id": "driver:friction-reduction"
@@ -3467,6 +4656,32 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:participation": [
+        {
+          "@id": "part:banking-re-kyc-issuer"
+        },
+        {
+          "@id": "part:banking-re-kyc-holder"
+        },
+        {
+          "@id": "part:banking-re-kyc-verifier"
+        }
+      ],
+      "ifm:replaces": [
+        {
+          "@id": "evidence:phone-or-email-check"
+        },
+        {
+          "@id": "evidence:pdf-attachment"
+        }
+      ],
+      "ifm:requiresUseCase": {
+        "@id": "uc:banking-kyc-onboarding"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
       "ifm:valueDriver": [
         {
           "@id": "driver:friction-reduction"
@@ -3519,6 +4734,24 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:participation": [
+        {
+          "@id": "part:banking-reidentification-password-reset-issuer"
+        },
+        {
+          "@id": "part:banking-reidentification-password-reset-holder"
+        },
+        {
+          "@id": "part:banking-reidentification-password-reset-verifier"
+        }
+      ],
+      "ifm:replaces": {
+        "@id": "evidence:in-person-check"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
       "ifm:valueDriver": [
         {
           "@id": "driver:friction-reduction"
@@ -3569,6 +4802,27 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:participation": [
+        {
+          "@id": "part:banking-age-of-majority-reidentification-issuer"
+        },
+        {
+          "@id": "part:banking-age-of-majority-reidentification-holder"
+        },
+        {
+          "@id": "part:banking-age-of-majority-reidentification-verifier"
+        }
+      ],
+      "ifm:replaces": {
+        "@id": "evidence:in-person-check"
+      },
+      "ifm:requiresUseCase": {
+        "@id": "uc:banking-kyc-onboarding"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
       "ifm:valueDriver": [
         {
           "@id": "driver:compliance-assurance"
@@ -3615,6 +4869,24 @@
       },
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:participation": [
+        {
+          "@id": "part:education-maturitaetszeugnis-issuance-issuer"
+        },
+        {
+          "@id": "part:education-maturitaetszeugnis-issuance-holder"
+        },
+        {
+          "@id": "part:education-maturitaetszeugnis-issuance-verifier"
+        }
+      ],
+      "ifm:replaces": {
+        "@id": "evidence:paper-document"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
         {
@@ -3667,6 +4939,32 @@
       ],
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:participation": [
+        {
+          "@id": "part:education-university-immatriculation-issuer"
+        },
+        {
+          "@id": "part:education-university-immatriculation-holder"
+        },
+        {
+          "@id": "part:education-university-immatriculation-verifier"
+        }
+      ],
+      "ifm:replaces": [
+        {
+          "@id": "evidence:notarised-copy"
+        },
+        {
+          "@id": "evidence:paper-document"
+        }
+      ],
+      "ifm:requiresUseCase": {
+        "@id": "uc:education-maturitaetszeugnis-issuance"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
         {
@@ -3722,6 +5020,24 @@
       },
       "ifm:sectorScope": {
         "@id": "ifm:CrossSector"
+      },
+      "ifm:participation": [
+        {
+          "@id": "part:retail-hospitality-age-verification-issuer"
+        },
+        {
+          "@id": "part:retail-hospitality-age-verification-holder"
+        },
+        {
+          "@id": "part:retail-hospitality-age-verification-verifier"
+        }
+      ],
+      "ifm:replaces": {
+        "@id": "evidence:in-person-check"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
         {
@@ -3789,6 +5105,32 @@
       "ifm:sectorScope": {
         "@id": "ifm:CrossSector"
       },
+      "ifm:participation": [
+        {
+          "@id": "part:employment-identity-proofing-issuer"
+        },
+        {
+          "@id": "part:employment-identity-proofing-holder"
+        },
+        {
+          "@id": "part:employment-identity-proofing-verifier"
+        }
+      ],
+      "ifm:replaces": [
+        {
+          "@id": "evidence:pdf-attachment"
+        },
+        {
+          "@id": "evidence:phone-or-email-check"
+        }
+      ],
+      "ifm:requiresUseCase": {
+        "@id": "uc:education-maturitaetszeugnis-issuance"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
       "ifm:valueDriver": [
         {
           "@id": "driver:friction-reduction"
@@ -3843,6 +5185,32 @@
       ],
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:participation": [
+        {
+          "@id": "part:aerospace-supplier-onboarding-issuer"
+        },
+        {
+          "@id": "part:aerospace-supplier-onboarding-holder"
+        },
+        {
+          "@id": "part:aerospace-supplier-onboarding-verifier"
+        },
+        {
+          "@id": "part:aerospace-supplier-onboarding-trust-anchor"
+        }
+      ],
+      "ifm:replaces": [
+        {
+          "@id": "evidence:pdf-attachment"
+        },
+        {
+          "@id": "evidence:self-declaration"
+        }
+      ],
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
         {
@@ -3902,6 +5270,24 @@
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
       },
+      "ifm:participation": [
+        {
+          "@id": "part:healthcare-patient-identification-issuer"
+        },
+        {
+          "@id": "part:healthcare-patient-identification-holder"
+        },
+        {
+          "@id": "part:healthcare-patient-identification-verifier"
+        }
+      ],
+      "ifm:replaces": {
+        "@id": "evidence:in-person-check"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
       "ifm:valueDriver": [
         {
           "@id": "driver:data-quality"
@@ -3953,6 +5339,24 @@
       ],
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:participation": [
+        {
+          "@id": "part:egov-service-access-issuer"
+        },
+        {
+          "@id": "part:egov-service-access-holder"
+        },
+        {
+          "@id": "part:egov-service-access-verifier"
+        }
+      ],
+      "ifm:replaces": {
+        "@id": "evidence:registry-lookup"
+      },
+      "ifm:costValueAsymmetry": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
         {
@@ -4011,6 +5415,32 @@
       ],
       "ifm:sectorScope": {
         "@id": "ifm:SectorSpecific"
+      },
+      "ifm:participation": [
+        {
+          "@id": "part:pharma-supplier-qualification-issuer"
+        },
+        {
+          "@id": "part:pharma-supplier-qualification-holder"
+        },
+        {
+          "@id": "part:pharma-supplier-qualification-verifier"
+        },
+        {
+          "@id": "part:pharma-supplier-qualification-trust-anchor"
+        }
+      ],
+      "ifm:replaces": [
+        {
+          "@id": "evidence:pdf-attachment"
+        },
+        {
+          "@id": "evidence:phone-or-email-check"
+        }
+      ],
+      "ifm:costValueAsymmetry": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
         {

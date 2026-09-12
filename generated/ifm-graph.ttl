@@ -14,6 +14,9 @@
 @prefix mode: <https://didas-swiss.github.io/industry-function-graph/id/transformation-mode/> .
 @prefix stream: <https://didas-swiss.github.io/industry-function-graph/id/value-stream/> .
 @prefix stage: <https://didas-swiss.github.io/industry-function-graph/id/value-stream-stage/> .
+@prefix role: <https://didas-swiss.github.io/industry-function-graph/id/trust-role/> .
+@prefix evidence: <https://didas-swiss.github.io/industry-function-graph/id/replaced-evidence/> .
+@prefix part: <https://didas-swiss.github.io/industry-function-graph/id/participation/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix schema: <https://schema.org/> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -60,6 +63,18 @@ scheme:ifm-transformation-modes
     a skos:ConceptScheme ;
     dct:title "Transformation modes"@en ;
     dct:description "How far the process changes. The first two are run - improving a process that already exists. The last two are change - reorganising it, or doing something that was not viable before. A use case has exactly one."@en ;
+    dct:source <https://didas-swiss.github.io/industry-function-graph/> .
+
+scheme:ifm-trust-roles
+    a skos:ConceptScheme ;
+    dct:title "Trust roles"@en ;
+    dct:description "Who does what in a credential exchange: issuer, holder, verifier, trust anchor. Recorded per use case together with who bears the cost and who gets the value, because those are rarely the same party."@en ;
+    dct:source <https://didas-swiss.github.io/industry-function-graph/> .
+
+scheme:ifm-replaced-evidence
+    a skos:ConceptScheme ;
+    dct:title "Replaced evidence"@en ;
+    dct:description "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Without this, friction reduction is an assertion with nothing behind it."@en ;
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 scheme:ifm-value-streams
@@ -860,6 +875,397 @@ func:research-and-development
     skos:relatedMatch apqc:apqc-2.0 .
 
 ######################################################################
+# Layer 3b - Trust roles and what the credential replaces
+######################################################################
+
+role:issuer
+    a ifm:TrustRole, skos:Concept ;
+    skos:inScheme scheme:ifm-trust-roles ;
+    skos:topConceptOf scheme:ifm-trust-roles ;
+    skos:prefLabel "Issuer"@en ;
+    skos:definition "Makes a signed statement about a subject, and bears the cost of being able to make it credibly."@en .
+
+role:holder
+    a ifm:TrustRole, skos:Concept ;
+    skos:inScheme scheme:ifm-trust-roles ;
+    skos:topConceptOf scheme:ifm-trust-roles ;
+    skos:prefLabel "Holder"@en ;
+    skos:definition "Keeps the credential and decides when, and to whom, to present it."@en .
+
+role:verifier
+    a ifm:TrustRole, skos:Concept ;
+    skos:inScheme scheme:ifm-trust-roles ;
+    skos:topConceptOf scheme:ifm-trust-roles ;
+    skos:prefLabel "Verifier"@en ;
+    skos:definition "Checks a presented credential and acts on the result."@en .
+
+role:trust-anchor
+    a ifm:TrustRole, skos:Concept ;
+    skos:inScheme scheme:ifm-trust-roles ;
+    skos:topConceptOf scheme:ifm-trust-roles ;
+    skos:prefLabel "Trust anchor"@en ;
+    skos:definition "Publishes the registry or accreditation that lets a verifier decide an issuer is credible."@en .
+
+evidence:paper-document
+    a ifm:ReplacedEvidence, skos:Concept ;
+    skos:inScheme scheme:ifm-replaced-evidence ;
+    skos:topConceptOf scheme:ifm-replaced-evidence ;
+    skos:prefLabel "Paper document"@en ;
+    skos:definition "An original or certified copy handed over, posted or presented in person."@en .
+
+evidence:pdf-attachment
+    a ifm:ReplacedEvidence, skos:Concept ;
+    skos:inScheme scheme:ifm-replaced-evidence ;
+    skos:topConceptOf scheme:ifm-replaced-evidence ;
+    skos:prefLabel "PDF or scan"@en ;
+    skos:definition "An unsigned digital file whose authenticity nobody can check, and which is therefore trusted on appearance."@en .
+
+evidence:phone-or-email-check
+    a ifm:ReplacedEvidence, skos:Concept ;
+    skos:inScheme scheme:ifm-replaced-evidence ;
+    skos:topConceptOf scheme:ifm-replaced-evidence ;
+    skos:prefLabel "Phone or email check"@en ;
+    skos:definition "A human contacting the issuing organisation to ask whether a claim is true."@en .
+
+evidence:registry-lookup
+    a ifm:ReplacedEvidence, skos:Concept ;
+    skos:inScheme scheme:ifm-replaced-evidence ;
+    skos:topConceptOf scheme:ifm-replaced-evidence ;
+    skos:prefLabel "Registry lookup"@en ;
+    skos:definition "A verifier querying a register directly, which works only where one exists and grants access."@en .
+
+evidence:in-person-check
+    a ifm:ReplacedEvidence, skos:Concept ;
+    skos:inScheme scheme:ifm-replaced-evidence ;
+    skos:topConceptOf scheme:ifm-replaced-evidence ;
+    skos:prefLabel "In-person check"@en ;
+    skos:definition "The subject attending in person so a human can inspect a document or their face."@en .
+
+evidence:notarised-copy
+    a ifm:ReplacedEvidence, skos:Concept ;
+    skos:inScheme scheme:ifm-replaced-evidence ;
+    skos:topConceptOf scheme:ifm-replaced-evidence ;
+    skos:prefLabel "Notarised copy"@en ;
+    skos:definition "A third party attesting that a copy matches an original, at a fee and a delay."@en .
+
+evidence:self-declaration
+    a ifm:ReplacedEvidence, skos:Concept ;
+    skos:inScheme scheme:ifm-replaced-evidence ;
+    skos:topConceptOf scheme:ifm-replaced-evidence ;
+    skos:prefLabel "Self-declaration"@en ;
+    skos:definition "The subject asserting something with nothing behind it, accepted because checking costs more than the risk."@en .
+
+part:banking-kyc-onboarding-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-kyc-onboarding ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Issues the reusable attestation and is also a verifier of it later."@en .
+
+part:banking-kyc-onboarding-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-kyc-onboarding ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:banking-kyc-onboarding-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-kyc-onboarding ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Another regulated institution"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:banking-re-kyc-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-re-kyc ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:banking-re-kyc-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-re-kyc ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:banking-re-kyc-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-re-kyc ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Issuer and verifier are the same party, which is why this one needs nobody's cooperation."@en .
+
+part:banking-reidentification-password-reset-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-reidentification-password-reset ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Federal e-ID issuer"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "none" .
+
+part:banking-reidentification-password-reset-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-reidentification-password-reset ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:banking-reidentification-password-reset-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-reidentification-password-reset ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:banking-age-of-majority-reidentification-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-age-of-majority-reidentification ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Federal e-ID issuer"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "none" .
+
+part:banking-age-of-majority-reidentification-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-age-of-majority-reidentification ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:banking-age-of-majority-reidentification-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:banking-age-of-majority-reidentification ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:education-maturitaetszeugnis-issuance-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:education-maturitaetszeugnis-issuance ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Upper-secondary school"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" ;
+    skos:scopeNote "Bears the issuing cost; gets back only fewer duplicate-copy requests."@en .
+
+part:education-maturitaetszeugnis-issuance-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:education-maturitaetszeugnis-issuance ;
+    ifm:trustRole role:holder ;
+    ifm:party "Graduate"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:education-maturitaetszeugnis-issuance-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:education-maturitaetszeugnis-issuance ;
+    ifm:trustRole role:verifier ;
+    ifm:party "University or employer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:education-university-immatriculation-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:education-university-immatriculation ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Upper-secondary school"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    skos:scopeNote "Already carried the cost in the issuance use case and gains nothing here."@en .
+
+part:education-university-immatriculation-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:education-university-immatriculation ;
+    ifm:trustRole role:holder ;
+    ifm:party "Applicant"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:education-university-immatriculation-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:education-university-immatriculation ;
+    ifm:trustRole role:verifier ;
+    ifm:party "University"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:retail-hospitality-age-verification-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:retail-hospitality-age-verification ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Federal e-ID issuer"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "none" .
+
+part:retail-hospitality-age-verification-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:retail-hospitality-age-verification ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:retail-hospitality-age-verification-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:retail-hospitality-age-verification ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Merchant or restaurant"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:employment-identity-proofing-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:employment-identity-proofing ;
+    ifm:trustRole role:issuer ;
+    ifm:party "E-ID issuer and awarding institutions"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "none" .
+
+part:employment-identity-proofing-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:employment-identity-proofing ;
+    ifm:trustRole role:holder ;
+    ifm:party "Candidate"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:employment-identity-proofing-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:employment-identity-proofing ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Employer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:aerospace-supplier-onboarding-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:aerospace-supplier-onboarding ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Accredited certification body"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Certification is its business, so the issuing cost is already paid for."@en .
+
+part:aerospace-supplier-onboarding-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:aerospace-supplier-onboarding ;
+    ifm:trustRole role:holder ;
+    ifm:party "Supplier"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:aerospace-supplier-onboarding-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:aerospace-supplier-onboarding ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Manufacturer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:aerospace-supplier-onboarding-trust-anchor
+    a ifm:Participation ;
+    ifm:inUseCase uc:aerospace-supplier-onboarding ;
+    ifm:trustRole role:trust-anchor ;
+    ifm:party "Accreditation body"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" .
+
+part:pharma-supplier-qualification-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:pharma-supplier-qualification ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Certification body or regulator"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:pharma-supplier-qualification-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:pharma-supplier-qualification ;
+    ifm:trustRole role:holder ;
+    ifm:party "Supplier"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:pharma-supplier-qualification-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:pharma-supplier-qualification ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Manufacturer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:pharma-supplier-qualification-trust-anchor
+    a ifm:Participation ;
+    ifm:inUseCase uc:pharma-supplier-qualification ;
+    ifm:trustRole role:trust-anchor ;
+    ifm:party "Accreditation body"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" .
+
+part:healthcare-patient-identification-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:healthcare-patient-identification ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Federal e-ID issuer"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "none" .
+
+part:healthcare-patient-identification-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:healthcare-patient-identification ;
+    ifm:trustRole role:holder ;
+    ifm:party "Patient"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:healthcare-patient-identification-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:healthcare-patient-identification ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Hospital"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:egov-service-access-issuer
+    a ifm:Participation ;
+    ifm:inUseCase uc:egov-service-access ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Federal e-ID issuer"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Issuer and verifier are both the state, so the investment returns to the party making it."@en .
+
+part:egov-service-access-holder
+    a ifm:Participation ;
+    ifm:inUseCase uc:egov-service-access ;
+    ifm:trustRole role:holder ;
+    ifm:party "Resident"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:egov-service-access-verifier
+    a ifm:Participation ;
+    ifm:inUseCase uc:egov-service-access ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Public administration"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+######################################################################
 # Layer 3a - Value drivers and transformation modes
 ######################################################################
 
@@ -1174,6 +1580,9 @@ uc:banking-kyc-onboarding
     ifm:primaryFunction func:customer-onboarding ;
     ifm:executesFunction func:identity-proofing, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:banking-kyc-onboarding-issuer, part:banking-kyc-onboarding-holder, part:banking-kyc-onboarding-verifier ;
+    ifm:replaces evidence:in-person-check, evidence:notarised-copy ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
     ifm:valueDriver driver:friction-reduction, driver:fraud-prevention, driver:compliance-assurance, driver:data-quality ;
     ifm:valueStream stream:order-to-cash ;
     ifm:transformationMode mode:redesign ;
@@ -1189,6 +1598,10 @@ uc:banking-re-kyc
     ifm:primaryFunction func:regulatory-compliance ;
     ifm:executesFunction func:identity-lifecycle-management ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:banking-re-kyc-issuer, part:banking-re-kyc-holder, part:banking-re-kyc-verifier ;
+    ifm:replaces evidence:phone-or-email-check, evidence:pdf-attachment ;
+    ifm:requiresUseCase uc:banking-kyc-onboarding ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
     ifm:valueDriver driver:friction-reduction, driver:compliance-assurance ;
     ifm:transformationMode mode:optimise ;
     ifm:changeMode ifm:Run ;
@@ -1203,6 +1616,9 @@ uc:banking-reidentification-password-reset
     ifm:primaryFunction func:identity-lifecycle-management ;
     ifm:executesFunction func:customer-service, func:access-management ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:banking-reidentification-password-reset-issuer, part:banking-reidentification-password-reset-holder, part:banking-reidentification-password-reset-verifier ;
+    ifm:replaces evidence:in-person-check ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:friction-reduction, driver:fraud-prevention, driver:reach-and-inclusion ;
     ifm:transformationMode mode:optimise ;
     ifm:changeMode ifm:Run ;
@@ -1217,6 +1633,10 @@ uc:banking-age-of-majority-reidentification
     ifm:primaryFunction func:identity-lifecycle-management ;
     ifm:executesFunction func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:banking-age-of-majority-reidentification-issuer, part:banking-age-of-majority-reidentification-holder, part:banking-age-of-majority-reidentification-verifier ;
+    ifm:replaces evidence:in-person-check ;
+    ifm:requiresUseCase uc:banking-kyc-onboarding ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:compliance-assurance, driver:friction-reduction ;
     ifm:transformationMode mode:optimise ;
     ifm:changeMode ifm:Run ;
@@ -1231,6 +1651,9 @@ uc:education-maturitaetszeugnis-issuance
     ifm:primaryFunction func:certification-and-attestation ;
     ifm:executesFunction func:records-management ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:education-maturitaetszeugnis-issuance-issuer, part:education-maturitaetszeugnis-issuance-holder, part:education-maturitaetszeugnis-issuance-verifier ;
+    ifm:replaces evidence:paper-document ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:fraud-prevention, driver:data-quality ;
     ifm:transformationMode mode:digitise ;
     ifm:changeMode ifm:Run ;
@@ -1245,6 +1668,10 @@ uc:education-university-immatriculation
     ifm:primaryFunction func:customer-onboarding ;
     ifm:executesFunction func:eligibility-verification, func:identity-proofing ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:education-university-immatriculation-issuer, part:education-university-immatriculation-holder, part:education-university-immatriculation-verifier ;
+    ifm:replaces evidence:notarised-copy, evidence:paper-document ;
+    ifm:requiresUseCase uc:education-maturitaetszeugnis-issuance ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:friction-reduction, driver:data-quality, driver:fraud-prevention ;
     ifm:transformationMode mode:redesign ;
     ifm:changeMode ifm:Change ;
@@ -1259,6 +1686,9 @@ uc:retail-hospitality-age-verification
     ifm:primaryFunction func:eligibility-verification ;
     ifm:executesFunction func:regulatory-compliance ;
     ifm:sectorScope ifm:CrossSector ;
+    ifm:participation part:retail-hospitality-age-verification-issuer, part:retail-hospitality-age-verification-holder, part:retail-hospitality-age-verification-verifier ;
+    ifm:replaces evidence:in-person-check ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:data-minimisation, driver:fraud-prevention, driver:friction-reduction ;
     ifm:transformationMode mode:redesign ;
     ifm:changeMode ifm:Change ;
@@ -1272,6 +1702,10 @@ uc:employment-identity-proofing
     ifm:primaryFunction func:human-capital-management ;
     ifm:executesFunction func:identity-proofing, func:eligibility-verification ;
     ifm:sectorScope ifm:CrossSector ;
+    ifm:participation part:employment-identity-proofing-issuer, part:employment-identity-proofing-holder, part:employment-identity-proofing-verifier ;
+    ifm:replaces evidence:pdf-attachment, evidence:phone-or-email-check ;
+    ifm:requiresUseCase uc:education-maturitaetszeugnis-issuance ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:friction-reduction, driver:fraud-prevention, driver:data-quality ;
     ifm:valueStream stream:hire-to-retire ;
     ifm:transformationMode mode:optimise ;
@@ -1286,6 +1720,9 @@ uc:aerospace-supplier-onboarding
     ifm:primaryFunction func:sourcing-and-procurement ;
     ifm:executesFunction func:supply-chain-traceability, func:regulatory-compliance ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:aerospace-supplier-onboarding-issuer, part:aerospace-supplier-onboarding-holder, part:aerospace-supplier-onboarding-verifier, part:aerospace-supplier-onboarding-trust-anchor ;
+    ifm:replaces evidence:pdf-attachment, evidence:self-declaration ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:friction-reduction, driver:compliance-assurance, driver:data-quality, driver:fraud-prevention ;
     ifm:valueStream stream:procure-to-pay ;
     ifm:transformationMode mode:redesign ;
@@ -1300,6 +1737,9 @@ uc:healthcare-patient-identification
     ifm:primaryFunction func:service-delivery ;
     ifm:executesFunction func:identity-proofing, func:records-management ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:healthcare-patient-identification-issuer, part:healthcare-patient-identification-holder, part:healthcare-patient-identification-verifier ;
+    ifm:replaces evidence:in-person-check ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:data-quality, driver:friction-reduction, driver:fraud-prevention ;
     ifm:transformationMode mode:optimise ;
     ifm:changeMode ifm:Run ;
@@ -1313,6 +1753,9 @@ uc:egov-service-access
     ifm:primaryFunction func:access-management ;
     ifm:executesFunction func:identity-proofing, func:service-delivery ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:egov-service-access-issuer, part:egov-service-access-holder, part:egov-service-access-verifier ;
+    ifm:replaces evidence:registry-lookup ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
     ifm:valueDriver driver:friction-reduction, driver:data-minimisation, driver:reach-and-inclusion ;
     ifm:transformationMode mode:redesign ;
     ifm:changeMode ifm:Change ;
@@ -1326,6 +1769,9 @@ uc:pharma-supplier-qualification
     ifm:primaryFunction func:sourcing-and-procurement ;
     ifm:executesFunction func:audit-and-assurance, func:product-compliance, func:quality-assurance, func:identity-proofing ;
     ifm:sectorScope ifm:SectorSpecific ;
+    ifm:participation part:pharma-supplier-qualification-issuer, part:pharma-supplier-qualification-holder, part:pharma-supplier-qualification-verifier, part:pharma-supplier-qualification-trust-anchor ;
+    ifm:replaces evidence:pdf-attachment, evidence:phone-or-email-check ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
     ifm:valueDriver driver:compliance-assurance, driver:fraud-prevention, driver:data-quality, driver:friction-reduction ;
     ifm:valueStream stream:procure-to-pay ;
     ifm:transformationMode mode:redesign ;

@@ -49,6 +49,7 @@ Nothing in the model is invented where a standard exists:
 | 2 · Function | UNECE/Eurostat CBF, APQC PCF | A local function scheme mapped onto both with SKOS mapping relations. |
 | 3 · Use case | `schema:Action` | The bridge: each use case links ≥1 sector and exactly one primary function. |
 | 2d · Value stream | ArchiMate `Value Stream` | An ordered composition of functions delivering an outcome — procure to pay, order to cash. Catalogue is our own; no openly licensed one exists. |
+| 3b · Who and what for | own vocabularies | Trust roles with who bears cost and who gains value, what evidence the credential replaces, and which use cases must work first. |
 | 3a · Why and how far | own vocabularies | Value drivers (what it removes, prevents or makes possible) and one transformation mode (how far the process changes). |
 | 4 · Credential | W3C VCDM 2.0, EBSI, DCC/ELM, UN/CEFACT | **Not implemented yet** — see [Layer 4](#layer-4--deferred). |
 
@@ -332,6 +333,53 @@ It is also a coverage check on the repository. Of the eleven seeded use cases,
 every one improves or reorganises something organisations already do. That is a
 fair reflection of where Swiss e-ID practice currently is, and the graph says so
 out loud rather than implying a breadth it does not have.
+
+## Who pays, who benefits
+
+The reason credential ecosystems stall is almost never technical. It is that the
+party who must invest in issuing is not the party who gets the value from
+verifying. A graph that cannot express that cannot answer the first question
+anyone actually has: **who has to move first, and what is in it for them?**
+
+So each use case records its participations — a party, a trust role, whether it
+bears material cost, and whether it gains direct, indirect or no value.
+`ifm:costValueAsymmetry` is derived from those, never typed in.
+
+On the twelve seeded use cases, **nine are asymmetric**:
+
+| | |
+|---|---|
+| Self-funding — issuer gains directly | `banking-kyc-onboarding`, `banking-re-kyc`, `egov-service-access` |
+| Someone must move for another's benefit | the other nine |
+
+The pattern is worth staring at. The three that fund themselves are the three
+where **the issuer and the verifier are the same party or the same institution**:
+a bank issuing a KYC attestation it will re-verify, and a state issuing the
+credential its own services accept. Everywhere else — a school issuing for a
+university's benefit, the federal e-ID issuer bearing cost so a merchant can
+check an age — somebody has to be persuaded, funded or obliged.
+
+That is a prediction the graph makes and can be checked against reality: the
+self-funding cases should be the ones already running. It is also the argument
+for where public funding or regulation does most good, and it fell out of the
+model rather than being asserted.
+
+## What the credential replaces
+
+`friction-reduction` is the easiest driver to claim and the easiest to claim
+emptily. Every use case that claims it must name what goes away — a paper
+document, an uncheckable PDF, a phone call to the issuer, an in-person visit, a
+notarised copy, a registry lookup, a self-declaration nobody checks. The
+validator fails a use case that claims the driver and names nothing, because a
+business case starts with the thing being removed.
+
+## What must work first
+
+`ifm:requiresUseCase` records dependencies between use cases, and the validator
+rejects cycles. There is nothing to present until somebody issues, so these edges
+are the sequencing plan: university immatriculation cannot work before schools
+issue, and employment qualification checks depend on awarding institutions doing
+the same.
 
 ## What belongs in the function layer
 

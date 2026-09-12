@@ -68,6 +68,21 @@ SCHEMES = {
                        "A use case has exactly one.",
         "source": BASE,
     },
+    "ifm-trust-roles": {
+        "title": "Trust roles",
+        "description": "Who does what in a credential exchange: issuer, holder, "
+                       "verifier, trust anchor. Recorded per use case together with who "
+                       "bears the cost and who gets the value, because those are rarely "
+                       "the same party.",
+        "source": BASE,
+    },
+    "ifm-replaced-evidence": {
+        "title": "Replaced evidence",
+        "description": "What the credential displaces: a paper document, an uncheckable "
+                       "PDF, a phone call, an in-person visit. Without this, friction "
+                       "reduction is an assertion with nothing behind it.",
+        "source": BASE,
+    },
     "ifm-value-streams": {
         "title": "Value streams",
         "description": "End-to-end sequences of functions that produce an outcome for "
@@ -103,6 +118,8 @@ class Model:
         self.alignments = _read("function-alignments.csv")
         self.value_drivers = {r["id"]: r for r in _read("value-drivers.csv")}
         self.value_streams = {r["id"]: r for r in _read("value-streams.csv")}
+        self.trust_roles = {r["id"]: r for r in _read("trust-roles.csv")}
+        self.evidence = {r["id"]: r for r in _read("replaced-evidence.csv")}
         self.stream_stages = sorted(_read("value-stream-functions.csv"),
                                     key=lambda r: (r["value_stream_id"], int(r["position"])))
         self.modes = {r["id"]: r for r in _read("transformation-modes.csv")}
@@ -111,6 +128,20 @@ class Model:
         self.uc_functions = _read("use-case-functions.csv")
         self.uc_value_drivers = _read("use-case-value-drivers.csv")
         self.uc_value_streams = _read("use-case-value-streams.csv")
+        self.participants = _read("use-case-participants.csv")
+        self.uc_replaces = _read("use-case-replaces.csv")
+        self.dependencies = _read("use-case-dependencies.csv")
+
+        self.participants_of = {uc: [] for uc in self.use_cases}
+        for row in self.participants:
+            self.participants_of.setdefault(row["use_case_id"], []).append(row)
+        self.replaces_of = {uc: [] for uc in self.use_cases}
+        for row in self.uc_replaces:
+            self.replaces_of.setdefault(row["use_case_id"], []).append(row["evidence_id"])
+        self.requires_of = {uc: [] for uc in self.use_cases}
+        for row in self.dependencies:
+            self.requires_of.setdefault(row["use_case_id"], []).append(
+                row["requires_use_case_id"])
 
         self.streams_of = {uc: [] for uc in self.use_cases}
         for row in self.uc_value_streams:
@@ -162,6 +193,19 @@ class Model:
         mode = self.modes.get(self.use_cases[uc_id]["transformation_mode"])
         return mode["change_mode"] if mode else None
 
+    def bears_cost_without_value(self, uc_id):
+        """Participants who pay for a use case without getting direct value back.
+
+        The reason credential ecosystems stall is almost never technical: it is
+        that the party who must invest is not the party who benefits.
+        """
+        return [p for p in self.participants_of.get(uc_id, [])
+                if p["bears_cost"] == "yes" and p["gains_value"] != "direct"]
+
+    def is_asymmetric(self, uc_id):
+        """True when somebody must move for somebody else's benefit. Derived."""
+        return bool(self.bears_cost_without_value(uc_id))
+
     def primary_function(self, uc_id):
         for row in self.functions_of.get(uc_id, []):
             if row["role"] == "primary":
@@ -197,7 +241,8 @@ class Model:
         table = {"sector": self.sectors, "function": self.functions,
                  "cbf": self.cbf, "apqc-pcf": self.apqc,
                  "driver": self.value_drivers, "mode": self.modes,
-                 "stream": self.value_streams}[kind]
+                 "stream": self.value_streams, "role": self.trust_roles,
+                 "evidence": self.evidence}[kind]
         row = table.get(ident, {})
         return row.get("pref_label_en", ident)
 

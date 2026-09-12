@@ -31,6 +31,8 @@ SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 CODE_STATUS = {"verified", "provisional"}
 MATURITY = {"Exploratory", "Modelled", "Live"}
 CHANGE_MODE = {"run", "change"}
+BEARS_COST = {"yes", "no"}
+GAINS_VALUE = {"direct", "indirect", "none"}
 MATCH_TYPES = {"exactMatch", "closeMatch", "broadMatch", "narrowMatch", "relatedMatch"}
 DOC_URL = re.compile(r"^https://\S+$")
 
@@ -208,6 +210,74 @@ def check_value_streams(model):
              f"in them yet: {', '.join(empty)}")
 
 
+def check_trust_roles(model):
+    for table, name in ((model.trust_roles, "trust-roles.csv"),
+                        (model.evidence, "replaced-evidence.csv")):
+        for key, row in table.items():
+            if not SLUG.match(key):
+                error(f"{name}[{key}]: id must be a lower-case slug")
+            if not row["definition"].strip():
+                error(f"{name}[{key}]: needs a definition")
+
+    for index, row in enumerate(model.participants, start=2):
+        where = f"use-case-participants.csv:{index}"
+        if row["use_case_id"] not in model.use_cases:
+            error(f"{where}: unknown use case {row['use_case_id']!r}")
+        if row["role_id"] not in model.trust_roles:
+            error(f"{where}: unknown trust role {row['role_id']!r}")
+        if not row["party"].strip():
+            error(f"{where}: `party` is required - name the kind of organisation")
+        if row["bears_cost"] not in BEARS_COST:
+            error(f"{where}: bears_cost {row['bears_cost']!r} not in {sorted(BEARS_COST)}")
+        if row["gains_value"] not in GAINS_VALUE:
+            error(f"{where}: gains_value {row['gains_value']!r} not in {sorted(GAINS_VALUE)}")
+
+    seen = set()
+    for row in model.participants:
+        key = (row["use_case_id"], row["role_id"])
+        if key in seen:
+            error(f"use-case-participants.csv: {row['use_case_id']} names role "
+                  f"{row['role_id']} twice")
+        seen.add(key)
+
+    for index, row in enumerate(model.uc_replaces, start=2):
+        where = f"use-case-replaces.csv:{index}"
+        if row["use_case_id"] not in model.use_cases:
+            error(f"{where}: unknown use case {row['use_case_id']!r}")
+        if row["evidence_id"] not in model.evidence:
+            error(f"{where}: unknown evidence {row['evidence_id']!r}")
+
+
+def check_dependencies(model):
+    for index, row in enumerate(model.dependencies, start=2):
+        where = f"use-case-dependencies.csv:{index}"
+        for field in ("use_case_id", "requires_use_case_id"):
+            if row[field] not in model.use_cases:
+                error(f"{where}: unknown use case {row[field]!r}")
+        if row["use_case_id"] == row["requires_use_case_id"]:
+            error(f"{where}: a use case cannot require itself")
+
+    # A dependency cycle means no valid order to build things in, which is the
+    # whole point of recording dependencies.
+    colour: dict[str, int] = {}
+
+    def visit(node, trail):
+        if colour.get(node) == 1:
+            error(f"use-case-dependencies.csv: dependency cycle "
+                  f"{' -> '.join(trail + [node])}")
+            return
+        if colour.get(node) == 2:
+            return
+        colour[node] = 1
+        for nxt in model.requires_of.get(node, []):
+            if nxt in model.use_cases:
+                visit(nxt, trail + [node])
+        colour[node] = 2
+
+    for uc_id in model.use_cases:
+        visit(uc_id, [])
+
+
 def check_use_cases(model):
     for uc_id, row in model.use_cases.items():
         where = f"use-cases.csv[{uc_id}]"
@@ -223,6 +293,19 @@ def check_use_cases(model):
                   f"is not ready to be in the graph")
         if len(drivers) != len(set(drivers)):
             error(f"{where}: the same value driver is listed twice")
+
+        roles = {p["role_id"] for p in model.participants_of.get(uc_id, [])}
+        for required in ("issuer", "verifier"):
+            if required not in roles:
+                error(f"{where}: no {required}. A credential exchange needs one")
+        if "holder" not in roles:
+            warn(f"{where}: no holder named - organisation-to-organisation, or an omission?")
+
+        # Friction reduction is the easiest driver to claim and the easiest to
+        # claim emptily. Naming what goes away is what makes it checkable.
+        if "friction-reduction" in drivers and not model.replaces_of.get(uc_id):
+            error(f"{where}: claims friction-reduction but names nothing it replaces. "
+                  f"Add a row to use-case-replaces.csv or drop the driver")
 
         if row["maturity"] not in MATURITY:
             error(f"{where}: maturity {row['maturity']!r} not in {sorted(MATURITY)}")
@@ -315,6 +398,8 @@ def main():
     check_alignments(model)
     check_axes(model)
     check_value_streams(model)
+    check_trust_roles(model)
+    check_dependencies(model)
     check_use_cases(model)
     check_links(model)
     check_rdf()
@@ -327,7 +412,8 @@ def main():
     counts = (f"{len(model.use_cases)} use cases, {len(model.sectors)} sectors, "
               f"{len(model.functions)} functions, {len(model.alignments)} alignments, "
               f"{len(model.value_drivers)} value drivers, "
-              f"{len(model.value_streams)} value streams")
+              f"{len(model.value_streams)} value streams, "
+              f"{len(model.participants)} participations")
     if errors:
         print(f"\nFAILED: {len(errors)} error(s) in {counts}", file=sys.stderr)
         return 1

@@ -202,6 +202,84 @@ ifm:changeMode a owl:ObjectProperty ;
     rdfs:comment "Run or change. Derived from the transformation mode, never typed in."@en .
 
 ################################################################
+# Layer 3b - who does what, at whose cost, replacing what
+#
+# The reason credential ecosystems stall is almost never technical. It is that
+# the party who must invest to issue is not the party who gets the value from
+# verifying. A graph that cannot express that cannot answer the only question
+# that matters at the start: who has to move first, and what is in it for them.
+################################################################
+
+ifm:TrustRole a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Trust role"@en ;
+    rdfs:comment "Issuer, holder, verifier or trust anchor."@en .
+
+ifm:Participation a owl:Class ;
+    rdfs:label "Participation"@en ;
+    rdfs:comment """One party playing one role in one use case. Reified so it can
+carry who pays and who benefits, which a plain link between use case and role
+could not."""@en .
+
+ifm:participation a owl:ObjectProperty ;
+    rdfs:label "participation"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:Participation .
+
+ifm:inUseCase a owl:ObjectProperty ;
+    rdfs:label "in use case"@en ;
+    owl:inverseOf ifm:participation .
+
+ifm:trustRole a owl:ObjectProperty ;
+    rdfs:label "trust role"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:range ifm:TrustRole .
+
+ifm:party a owl:DatatypeProperty ;
+    rdfs:label "party"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:comment "The kind of organisation or person playing the role, not a named one."@en .
+
+ifm:bearsCost a owl:DatatypeProperty ;
+    rdfs:label "bears cost"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Whether this party carries material cost to make the use case work."@en .
+
+ifm:gainsValue a owl:DatatypeProperty ;
+    rdfs:label "gains value"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:comment "direct, indirect or none. Editorial, and the field most worth arguing about."@en .
+
+ifm:costValueAsymmetry a owl:DatatypeProperty ;
+    rdfs:label "cost/value asymmetry"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment """True when at least one party bears cost without direct value -
+somebody must move for somebody else's benefit. Derived from the participations,
+never typed in. A false here means the use case can start without anyone being
+persuaded, which is the strongest predictor of whether it starts at all."""@en .
+
+ifm:ReplacedEvidence a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Replaced evidence"@en ;
+    rdfs:comment """What the credential displaces: a paper document, an uncheckable
+PDF, a phone call, an in-person visit. Without it, a claim of friction reduction
+has nothing behind it and cannot be measured."""@en .
+
+ifm:replaces a owl:ObjectProperty ;
+    rdfs:label "replaces"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:ReplacedEvidence .
+
+ifm:requiresUseCase a owl:ObjectProperty ;
+    rdfs:label "requires use case"@en ;
+    rdfs:domain ifm:UseCase ;
+    rdfs:range ifm:UseCase ;
+    rdfs:comment """Another use case that must work first. There is nothing to
+present until somebody issues, so the dependency edges are the sequencing plan."""@en .
+
+################################################################
 # Use case attributes
 ################################################################
 

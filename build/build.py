@@ -33,6 +33,9 @@ PREFIXES = [
     ("mode", ID_BASE + "transformation-mode/"),
     ("stream", ID_BASE + "value-stream/"),
     ("stage", ID_BASE + "value-stream-stage/"),
+    ("role", ID_BASE + "trust-role/"),
+    ("evidence", ID_BASE + "replaced-evidence/"),
+    ("part", ID_BASE + "participation/"),
     ("skos", "http://www.w3.org/2004/02/skos/core#"),
     ("schema", "https://schema.org/"),
     ("dct", "http://purl.org/dc/terms/"),
@@ -89,6 +92,9 @@ PREFIX_OF_KIND = {
     "mode": "mode",
     "stream": "stream",
     "stage": "stage",
+    "role": "role",
+    "evidence": "evidence",
+    "participation": "part",
 }
 
 
@@ -191,6 +197,36 @@ def graph_blocks(model):
         pairs.append(("skos:editorialNote", notes))
         blocks.append((heading, Ref(concept_ref("function", function_id)), pairs))
 
+    heading = "Layer 3b - Trust roles and what the credential replaces"
+    for role_id, row in model.trust_roles.items():
+        blocks.append((heading, Ref(concept_ref("role", role_id)), [
+            ("a", [Ref("ifm:TrustRole"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-trust-roles"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-trust-roles"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+        ]))
+    for evidence_id, row in model.evidence.items():
+        blocks.append((heading, Ref(concept_ref("evidence", evidence_id)), [
+            ("a", [Ref("ifm:ReplacedEvidence"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-replaced-evidence"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-replaced-evidence"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+        ]))
+    for row in model.participants:
+        ident = f"{row['use_case_id']}-{row['role_id']}"
+        blocks.append((heading, Ref(concept_ref("participation", ident)), [
+            ("a", R("ifm:Participation")),
+            ("ifm:inUseCase", R(concept_ref("use-case", row["use_case_id"]))),
+            ("ifm:trustRole", R(concept_ref("role", row["role_id"]))),
+            ("ifm:party", L(row["party"])),
+            ("ifm:bearsCost", [Lit("true" if row["bears_cost"] == "yes" else "false",
+                                   datatype="xsd:boolean")]),
+            ("ifm:gainsValue", L(row["gains_value"], lang=None)),
+            ("skos:scopeNote", L(row["note"])),
+        ]))
+
     heading = "Layer 3a - Value drivers and transformation modes"
     for driver_id, row in model.value_drivers.items():
         blocks.append((heading, Ref(concept_ref("driver", driver_id)), [
@@ -252,6 +288,16 @@ def graph_blocks(model):
             ("ifm:primaryFunction", R(concept_ref("function", primary)) if primary else []),
             ("ifm:executesFunction", [Ref(concept_ref("function", f)) for f in supporting]),
             ("ifm:sectorScope", R(f"ifm:{model.scope_of(uc_id)}")),
+            ("ifm:participation", [Ref(concept_ref(
+                "participation", f"{uc_id}-{p['role_id']}"))
+                for p in model.participants_of[uc_id]]),
+            ("ifm:replaces", [Ref(concept_ref("evidence", e))
+                              for e in model.replaces_of[uc_id]]),
+            ("ifm:requiresUseCase", [Ref(concept_ref("use-case", r))
+                                     for r in model.requires_of[uc_id]]),
+            ("ifm:costValueAsymmetry", [Lit(
+                "true" if model.is_asymmetric(uc_id) else "false",
+                datatype="xsd:boolean")]),
             ("ifm:valueDriver", [Ref(concept_ref("driver", d))
                                  for d in model.value_drivers_of[uc_id]]),
             ("ifm:valueStream", [Ref(concept_ref("stream", vs))

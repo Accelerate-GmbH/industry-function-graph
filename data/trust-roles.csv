@@ -1,0 +1,5 @@
+id,pref_label_en,definition
+issuer,Issuer,"Makes a signed statement about a subject, and bears the cost of being able to make it credibly."
+holder,Holder,"Keeps the credential and decides when, and to whom, to present it."
+verifier,Verifier,"Checks a presented credential and acts on the result."
+trust-anchor,Trust anchor,"Publishes the registry or accreditation that lets a verifier decide an issuer is credible."
