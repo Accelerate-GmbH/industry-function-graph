@@ -70,31 +70,31 @@ scheme:ifm-transformation-modes
 scheme:ifm-credential-types
     a skos:ConceptScheme ;
     dct:title "Credential types"@en ;
-    dct:description "What is actually issued, presented and checked. A credential type evidences a state, which is how this layer attaches to the rest: holding the credential is what makes the state true."@en ;
+    dct:description "What is actually issued, presented and checked. A credential type evidences a state, which connects this layer to the rest: holding the credential is what makes the state true."@en ;
     dct:source <https://www.w3.org/TR/vc-data-model-2.0/> .
 
 scheme:ifm-states
     a skos:ConceptScheme ;
     dct:title "States"@en ;
-    dct:description "What is true, or what a party holds, before and after a use case runs. States are the interface that makes use cases composable: one use case's postcondition is another's precondition, so the chain is computed rather than declared."@en ;
+    dct:description "What is true, or what a party holds, before and after a use case runs. States are the interface that makes use cases composable: one use case's postcondition is another's precondition, so the chain can be computed from the data."@en ;
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 scheme:ifm-trust-roles
     a skos:ConceptScheme ;
     dct:title "Trust roles"@en ;
-    dct:description "Who does what in a credential exchange: issuer, holder, verifier, trust anchor. Recorded per use case together with who bears the cost and who gets the value, because those are rarely the same party."@en ;
+    dct:description "Who does what in a credential exchange: issuer, holder, verifier, trust anchor. Recorded per use case together with who bears the cost and who gains the value, which are often different parties."@en ;
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 scheme:ifm-replaced-evidence
     a skos:ConceptScheme ;
     dct:title "Replaced evidence"@en ;
-    dct:description "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Without this, friction reduction is an assertion with nothing behind it."@en ;
+    dct:description "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Recording it is what makes a friction-reduction claim measurable."@en ;
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 scheme:ifm-value-streams
     a skos:ConceptScheme ;
     dct:title "Value streams"@en ;
-    dct:description "End-to-end sequences of functions that produce an outcome for a customer or the organisation. The concept follows ArchiMate's Value Stream element - the what rather than the how - and the catalogue is this repository's own, because no openly licensed one exists. A function appears in several streams."@en ;
+    dct:description "End-to-end sequences of functions that produce an outcome for a customer or the organisation. The concept follows ArchiMate's Value Stream element, which describes the value created rather than the steps taken. The catalogue is this repository's own, because no openly licensed one exists. A function appears in several streams."@en ;
     dct:source <https://pubs.opengroup.org/architecture/archimate32-doc/> .
 
 scheme:ifm-functions
@@ -1196,7 +1196,7 @@ evidence:self-declaration
     skos:inScheme scheme:ifm-replaced-evidence ;
     skos:topConceptOf scheme:ifm-replaced-evidence ;
     skos:prefLabel "Self-declaration"@en ;
-    skos:definition "The subject asserting something with nothing behind it, accepted because checking costs more than the risk."@en .
+    skos:definition "The subject asserting something unsupported, accepted because verifying it would cost more than the risk of it being false."@en .
 
 part:banking-kyc-onboarding-issuer
     a ifm:Participation ;
@@ -1552,14 +1552,14 @@ driver:fraud-prevention
     skos:inScheme scheme:ifm-value-drivers ;
     skos:topConceptOf scheme:ifm-value-drivers ;
     skos:prefLabel "Fraud prevention"@en ;
-    skos:definition "Making forgery, impersonation or misrepresentation of a claim impractical rather than merely detectable after the fact."@en .
+    skos:definition "Making forgery, impersonation or misrepresentation of a claim impractical, instead of detecting it after the fact."@en .
 
 driver:compliance-assurance
     a ifm:ValueDriver, skos:Concept ;
     skos:inScheme scheme:ifm-value-drivers ;
     skos:topConceptOf scheme:ifm-value-drivers ;
     skos:prefLabel "Compliance assurance"@en ;
-    skos:definition "Producing evidence a supervisor or auditor will accept as a by-product of doing the work, rather than as a separate exercise."@en .
+    skos:definition "Producing evidence a supervisor or auditor will accept as a by-product of doing the work, instead of as a separate exercise."@en .
 
 driver:data-quality
     a ifm:ValueDriver, skos:Concept ;
@@ -1573,7 +1573,7 @@ driver:data-minimisation
     skos:inScheme scheme:ifm-value-drivers ;
     skos:topConceptOf scheme:ifm-value-drivers ;
     skos:prefLabel "Data minimisation"@en ;
-    skos:definition "Proving what a counterparty is entitled to know without disclosing the rest, which often makes an exchange permissible that was not."@en .
+    skos:definition "Proving what a counterparty is entitled to know without disclosing the rest, which can make an exchange permissible where full disclosure would not be."@en .
 
 driver:reach-and-inclusion
     a ifm:ValueDriver, skos:Concept ;
@@ -1610,7 +1610,7 @@ mode:redesign
     skos:inScheme scheme:ifm-transformation-modes ;
     skos:topConceptOf scheme:ifm-transformation-modes ;
     skos:prefLabel "Redesign"@en ;
-    skos:definition "An existing process is reorganised around verifiable data. Roles, sequence or who holds what change, and the old process is not recoverable from the new one."@en ;
+    skos:definition "An existing process is reorganised around verifiable data. Roles, sequence or who holds what change, and the previous process cannot be recovered from the new one."@en ;
     ifm:changeMode ifm:Change .
 
 mode:enable

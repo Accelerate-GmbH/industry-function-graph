@@ -143,8 +143,8 @@ def check_axes(model):
         if not SLUG.match(driver_id):
             error(f"value-drivers.csv[{driver_id}]: id must be a lower-case slug")
         if not row["definition"].strip():
-            error(f"value-drivers.csv[{driver_id}]: a driver without a definition will "
-                  f"be used to mean two things")
+            error(f"value-drivers.csv[{driver_id}]: a driver needs a definition, or "
+                  f"two people will apply it differently")
     for mode_id, row in model.modes.items():
         if not SLUG.match(mode_id):
             error(f"transformation-modes.csv[{mode_id}]: id must be a lower-case slug")
@@ -175,13 +175,13 @@ def check_value_streams(model):
         if not SLUG.match(stream_id):
             error(f"{where}: id must be a lower-case slug")
         if not row["definition"].strip():
-            error(f"{where}: a stream without a definition is a name, not a model")
+            error(f"{where}: a stream needs a definition saying what it covers")
         if row["code_status"] not in CODE_STATUS:
             error(f"{where}: bad code_status {row['code_status']!r}")
 
         stages = model.stages_of.get(stream_id, [])
         if not stages:
-            error(f"{where}: no stages. A value stream is its sequence")
+            error(f"{where}: no stages. A value stream is defined by its sequence")
             continue
         positions = [int(st["position"]) for st in stages]
         if positions != list(range(1, len(positions) + 1)):
@@ -216,8 +216,8 @@ def check_states(model):
         if not SLUG.match(state_id):
             error(f"states.csv[{state_id}]: id must be a lower-case slug")
         if not row["definition"].strip():
-            error(f"states.csv[{state_id}]: needs a definition. A state nobody can "
-                  f"test for is not an interface")
+            error(f"states.csv[{state_id}]: needs a definition. Without one there is "
+                  f"no way to tell whether the state holds")
 
     for table, name in ((model.preconditions, "use-case-preconditions.csv"),
                         (model.postconditions, "use-case-postconditions.csv")):
@@ -230,8 +230,8 @@ def check_states(model):
 
     for uc_id in model.use_cases:
         if not model.post_of.get(uc_id):
-            error(f"use-cases.csv[{uc_id}]: no postcondition. A use case that leaves "
-                  f"nothing true cannot be composed with anything")
+            error(f"use-cases.csv[{uc_id}]: no postcondition. Nothing can follow a use "
+                  f"case that leaves no state behind")
         overlap = set(model.pre_of.get(uc_id, [])) & set(model.post_of.get(uc_id, []))
         if overlap:
             warn(f"use-cases.csv[{uc_id}]: {', '.join(sorted(overlap))} is both a pre- "
@@ -341,7 +341,7 @@ def check_credentials(model):
     if unused:
         warn(f"{len(unused)} credential type(s) no participation issues, presents or "
              f"verifies: {', '.join(unused)}. Either a use case is missing or the "
-             f"credential was invented to fill a gap")
+             f"credential may have been added speculatively")
 
     # If a use case needs a state, somebody in it should be checking the
     # credential that evidences that state.
@@ -398,20 +398,22 @@ def check_use_cases(model):
                   f"transformation-modes.csv")
         drivers = model.value_drivers_of.get(uc_id, [])
         if not drivers:
-            error(f"{where}: no value driver. A use case nobody can say the point of "
-                  f"is not ready to be in the graph")
+            error(f"{where}: no value driver. Record at least one reason applying a "
+                  f"credential here is worth doing")
         if len(drivers) != len(set(drivers)):
             error(f"{where}: the same value driver is listed twice")
 
         roles = {p["role_id"] for p in model.participants_of.get(uc_id, [])}
         for required in ("issuer", "verifier"):
             if required not in roles:
-                error(f"{where}: no {required}. A credential exchange needs one")
+                error(f"{where}: no {required}. A credential exchange needs both an "
+                      f"issuer and a verifier")
         if "holder" not in roles:
-            warn(f"{where}: no holder named - organisation-to-organisation, or an omission?")
+            warn(f"{where}: no holder named. Check whether this is an "
+                 f"organisation-to-organisation exchange or an omission")
 
-        # Friction reduction is the easiest driver to claim and the easiest to
-        # claim emptily. Naming what goes away is what makes it checkable.
+        # Friction reduction is easy to claim without evidence. Requiring the
+        # replaced evidence makes the claim checkable.
         if "friction-reduction" in drivers and not model.replaces_of.get(uc_id):
             error(f"{where}: claims friction-reduction but names nothing it replaces. "
                   f"Add a row to use-case-replaces.csv or drop the driver")
@@ -463,9 +465,8 @@ def check_links(model):
         if row["function_id"] not in model.functions:
             error(f"{where}: unknown function {row['function_id']!r}")
 
-    # The vocabulary is deliberately wider than the seeded use cases, so an
-    # unused function is coverage information rather than a defect. One line,
-    # not one line each.
+    # The vocabulary is deliberately wider than the seeded use cases, so unused
+    # functions are expected. Report them once as coverage, not one line each.
     used_functions = {r["function_id"] for r in model.uc_functions}
     unused = [f for f in model.functions if f not in used_functions]
     if unused:

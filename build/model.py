@@ -71,8 +71,8 @@ SCHEMES = {
     "ifm-credential-types": {
         "title": "Credential types",
         "description": "What is actually issued, presented and checked. A credential "
-                       "type evidences a state, which is how this layer attaches to the "
-                       "rest: holding the credential is what makes the state true.",
+                       "type evidences a state, which connects this layer to the rest: "
+                       "holding the credential is what makes the state true.",
         "source": "https://www.w3.org/TR/vc-data-model-2.0/",
     },
     "ifm-states": {
@@ -80,31 +80,32 @@ SCHEMES = {
         "description": "What is true, or what a party holds, before and after a use "
                        "case runs. States are the interface that makes use cases "
                        "composable: one use case's postcondition is another's "
-                       "precondition, so the chain is computed rather than declared.",
+                       "precondition, so the chain can be computed from the data.",
         "source": BASE,
     },
     "ifm-trust-roles": {
         "title": "Trust roles",
         "description": "Who does what in a credential exchange: issuer, holder, "
                        "verifier, trust anchor. Recorded per use case together with who "
-                       "bears the cost and who gets the value, because those are rarely "
-                       "the same party.",
+                       "bears the cost and who gains the value, which are often "
+                       "different parties.",
         "source": BASE,
     },
     "ifm-replaced-evidence": {
         "title": "Replaced evidence",
         "description": "What the credential displaces: a paper document, an uncheckable "
-                       "PDF, a phone call, an in-person visit. Without this, friction "
-                       "reduction is an assertion with nothing behind it.",
+                       "PDF, a phone call, an in-person visit. Recording it is what "
+                       "makes a friction-reduction claim measurable.",
         "source": BASE,
     },
     "ifm-value-streams": {
         "title": "Value streams",
         "description": "End-to-end sequences of functions that produce an outcome for "
                        "a customer or the organisation. The concept follows ArchiMate's "
-                       "Value Stream element - the what rather than the how - and the "
-                       "catalogue is this repository's own, because no openly licensed "
-                       "one exists. A function appears in several streams.",
+                       "Value Stream element, which describes the value created rather "
+                       "than the steps taken. The catalogue is this repository's own, "
+                       "because no openly licensed one exists. A function appears in "
+                       "several streams.",
         "source": "https://pubs.opengroup.org/architecture/archimate32-doc/",
     },
     "ifm-functions": {
@@ -229,9 +230,9 @@ class Model:
     def enables(self, uc_id):
         """Use cases that can start because this one finished.
 
-        Derived from the interfaces, never declared: B follows A when something
-        A leaves true is something B needs. This is the whole point of typing
-        the ends of a use case rather than drawing arrows between them by hand.
+        Computed from the interfaces: B follows A when something A leaves true
+        is something B needs. Typing the ends of each use case is what lets the
+        chain be derived instead of maintained by hand.
         """
         produced = set(self.post_of.get(uc_id, []))
         return sorted(other for other in self.use_cases
@@ -240,8 +241,8 @@ class Model:
     def unproduced_states(self):
         """States something needs and nothing here produces.
 
-        Each one is an open socket: either a use case the ecosystem has not
-        written down yet, or a dependency on something outside it.
+        Each is a gap: either a use case the ecosystem has not written down
+        yet, or a dependency on something outside this graph.
         """
         produced = {s for states in self.post_of.values() for s in states}
         needed = {s for states in self.pre_of.values() for s in states}
@@ -255,7 +256,7 @@ class Model:
         return None
 
     def interface(self, uc_id):
-        """The signature two use cases would have to share to be the same one."""
+        """Preconditions, postconditions and primary function, as a comparable key."""
         return (frozenset(self.pre_of.get(uc_id, [])),
                 frozenset(self.post_of.get(uc_id, [])),
                 self.primary_function(uc_id))
@@ -270,14 +271,14 @@ class Model:
     def bears_cost_without_value(self, uc_id):
         """Participants who pay for a use case without getting direct value back.
 
-        The reason credential ecosystems stall is almost never technical: it is
-        that the party who must invest is not the party who benefits.
+        Credential ecosystems commonly stall for a commercial reason: the cost
+        of issuing falls on one party and the benefit of verifying on another.
         """
         return [p for p in self.participants_of.get(uc_id, [])
                 if p["bears_cost"] == "yes" and p["gains_value"] != "direct"]
 
     def is_asymmetric(self, uc_id):
-        """True when somebody must move for somebody else's benefit. Derived."""
+        """True when at least one party bears cost without direct value. Derived."""
         return bool(self.bears_cost_without_value(uc_id))
 
     def primary_function(self, uc_id):

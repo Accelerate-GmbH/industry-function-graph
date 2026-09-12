@@ -139,7 +139,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "What is actually issued, presented and checked. A credential type evidences a state, which is how this layer attaches to the rest: holding the credential is what makes the state true.",
+        "@value": "What is actually issued, presented and checked. A credential type evidences a state, which connects this layer to the rest: holding the credential is what makes the state true.",
         "@language": "en"
       },
       "dct:source": {
@@ -156,7 +156,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "What is true, or what a party holds, before and after a use case runs. States are the interface that makes use cases composable: one use case's postcondition is another's precondition, so the chain is computed rather than declared.",
+        "@value": "What is true, or what a party holds, before and after a use case runs. States are the interface that makes use cases composable: one use case's postcondition is another's precondition, so the chain can be computed from the data.",
         "@language": "en"
       },
       "dct:source": {
@@ -173,7 +173,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "Who does what in a credential exchange: issuer, holder, verifier, trust anchor. Recorded per use case together with who bears the cost and who gets the value, because those are rarely the same party.",
+        "@value": "Who does what in a credential exchange: issuer, holder, verifier, trust anchor. Recorded per use case together with who bears the cost and who gains the value, which are often different parties.",
         "@language": "en"
       },
       "dct:source": {
@@ -190,7 +190,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Without this, friction reduction is an assertion with nothing behind it.",
+        "@value": "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Recording it is what makes a friction-reduction claim measurable.",
         "@language": "en"
       },
       "dct:source": {
@@ -207,7 +207,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "End-to-end sequences of functions that produce an outcome for a customer or the organisation. The concept follows ArchiMate's Value Stream element - the what rather than the how - and the catalogue is this repository's own, because no openly licensed one exists. A function appears in several streams.",
+        "@value": "End-to-end sequences of functions that produce an outcome for a customer or the organisation. The concept follows ArchiMate's Value Stream element, which describes the value created rather than the steps taken. The catalogue is this repository's own, because no openly licensed one exists. A function appears in several streams.",
         "@language": "en"
       },
       "dct:source": {
@@ -3387,7 +3387,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The subject asserting something with nothing behind it, accepted because checking costs more than the risk.",
+        "@value": "The subject asserting something unsupported, accepted because verifying it would cost more than the risk of it being false.",
         "@language": "en"
       }
     },
@@ -4427,7 +4427,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Making forgery, impersonation or misrepresentation of a claim impractical rather than merely detectable after the fact.",
+        "@value": "Making forgery, impersonation or misrepresentation of a claim impractical, instead of detecting it after the fact.",
         "@language": "en"
       }
     },
@@ -4448,7 +4448,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Producing evidence a supervisor or auditor will accept as a by-product of doing the work, rather than as a separate exercise.",
+        "@value": "Producing evidence a supervisor or auditor will accept as a by-product of doing the work, instead of as a separate exercise.",
         "@language": "en"
       }
     },
@@ -4490,7 +4490,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Proving what a counterparty is entitled to know without disclosing the rest, which often makes an exchange permissible that was not.",
+        "@value": "Proving what a counterparty is entitled to know without disclosing the rest, which can make an exchange permissible where full disclosure would not be.",
         "@language": "en"
       }
     },
@@ -4601,7 +4601,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "An existing process is reorganised around verifiable data. Roles, sequence or who holds what change, and the old process is not recoverable from the new one.",
+        "@value": "An existing process is reorganised around verifiable data. Roles, sequence or who holds what change, and the previous process cannot be recovered from the new one.",
         "@language": "en"
       },
       "ifm:changeMode": {

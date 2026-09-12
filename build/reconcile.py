@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Compare this graph's use cases with the Trust Flow Diagram Repository.
 
-Both repositories now classify the same flows: this one as use cases, that one
-as families in sector.yaml files. Nothing keeps them honest with each other, and
-two descriptions of the same flow that never meet will diverge.
+Both repositories classify the same flows: this one as use cases, that one as
+families in sector.yaml files. Without a comparison the two descriptions drift
+apart, because nothing in either repository reads the other.
 
     python3 build/reconcile.py --source ../Trust-Flow-Diagram-Repository
 
@@ -11,8 +11,8 @@ It joins on `documented_by`: a use case pointing at .../banking/KYC%20Credential
 belongs to the family in banking/sector.yaml whose `directory` is that name, or
 to the sector's only family when the link points at the sector root.
 
-It reports rather than fails. The two repositories are allowed to disagree; they
-are not allowed to disagree without anyone noticing.
+It reports and always exits zero. The two repositories may legitimately
+disagree; the point is that someone sees the disagreement.
 """
 
 from __future__ import annotations
@@ -126,7 +126,7 @@ def main(argv):
         differences += 1
 
     print()
-    print(f"{differences} difference(s). Reconciliation is a report, not a gate.")
+    print(f"{differences} difference(s). This is a report; it does not gate CI.")
     return 0
 
 

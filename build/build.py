@@ -114,9 +114,8 @@ def concept_ref(kind, ident):
 def by_action(model, participation):
     """{predicate: [credential ids]} for one participation.
 
-    Grouped rather than one pair per link: a party can verify two credentials,
-    and two pairs with the same predicate serialise differently in Turtle and
-    JSON-LD.
+    Grouped by predicate because a party can verify two credentials. Two pairs
+    sharing a predicate serialise differently in Turtle and JSON-LD.
     """
     grouped: dict[str, list[str]] = {}
     for link in model.credentials_of.get(
@@ -788,15 +787,15 @@ def build_html(model):
     <h2>What plugs into what</h2>
     <p class="prose">
       A use case declares what must already be true to run and what is true once it
-      has. The arrows below are derived from those interfaces &mdash; nobody drew them.
-      Change a postcondition and the chain changes with it.
+      has. The arrows below are computed from those interfaces; change a postcondition
+      and the chain changes with it.
     </p>
     <ul class="chain">
 {chain_html}
     </ul>
     <p class="legend">
       <strong>Open sockets:</strong> {sockets_html} &mdash; needed by a use case here and
-      produced by none, so each is a flow the ecosystem has not written down yet.
+      produced by none. Each marks a flow the ecosystem has not yet written down.
     </p>
   </section>
 
@@ -804,7 +803,7 @@ def build_html(model):
     <h2>Value streams</h2>
     <p class="prose">
       Where the work sits end to end. The concept follows ArchiMate's
-      <em>Value Stream</em> element; the catalogue is this repository's own, because
+      <em>Value Stream</em> element. The catalogue is this repository's own, since
       no openly licensed one exists.
     </p>
     <div class="axes">
@@ -815,10 +814,10 @@ def build_html(model):
   <section>
     <h2>Why these are worth doing</h2>
     <p class="prose">
-      Sector and function say where a use case sits. They say nothing about why a
-      verifiable credential is worth applying there, or whether it improves a process
-      that already exists or replaces it. Those are separate axes, and the same
-      function in the same sector can be either.
+      Sector and function say where a use case sits. Neither says why applying a
+      verifiable credential there is worth doing, or whether it improves an existing
+      process or replaces one. Those are separate axes: the same function in the same
+      sector can be either.
     </p>
     <div class="axes">
       <div>

@@ -322,26 +322,24 @@ and the pair of them splits into *run* and *change*:
 
 `ifm:changeMode` is derived from the mode, never typed in.
 
-The distinction earns its place because the two halves are justified
-differently: *run* is a business case — count the steps removed — while *change*
-is a strategy, and can look like a poor business case right up until it works.
-Collapsing them is how digitisation programmes end up paving the cowpath: a PDF
-becomes a credential, every signature stays where it was, and nobody asks
-whether the process should exist.
+The two halves are justified differently. *Run* is usually a business case: count
+the steps removed. *Change* is a strategic decision, and may show a weak business
+case until it works. Treating them alike tends to produce digitisation that
+preserves the existing process — the PDF becomes a credential, the signatures stay
+where they were, and the question of whether the process should exist never comes
+up.
 
-It is also a coverage check on the repository. Of the eleven seeded use cases,
-**none** is classified `enable`, and `new-revenue` is claimed by none of them —
-every one improves or reorganises something organisations already do. That is a
-fair reflection of where Swiss e-ID practice currently is, and the graph says so
-out loud rather than implying a breadth it does not have.
+It also measures coverage. `new-revenue` is claimed by no use case here, and only
+one is classified `enable` — the rest improve or reorganise something
+organisations already do. That reflects where Swiss e-ID practice currently is,
+and the validator reports it so the graph does not imply a breadth it lacks.
 
 ## Composability: the point of the classification
 
-A use case is not a leaf in a taxonomy. It is a **component with two ends** —
-what must already be true for it to run, and what is true once it has. Type both
-ends against a shared state vocabulary and composition stops being drawn by hand
-and starts being computed: **B follows A exactly when something A leaves true is
-something B needs.**
+Each use case is a **component with two ends** — what must already be true for it
+to run, and what is true once it has. Both ends are typed against a shared state
+vocabulary, so the composition can be computed instead of maintained by hand:
+**B follows A when something A leaves true is something B needs.**
 
 ```
 education-maturitaetszeugnis-issuance
@@ -354,13 +352,13 @@ banking-kyc-onboarding
     → banking-age-of-majority-…              via customer-relationship-open
 ```
 
-Those arrows are `ifm:enables`, and nobody typed them. Change a postcondition and
-the chain changes with it. `ifm:requiresUseCase` survives for dependencies a
-modeller knows and the interfaces do not yet say, but it is **checked against
-them**: assert that A requires B and the validator insists something B leaves
-true is something A needs, or one of the two is wrong.
+Those arrows are `ifm:enables`, computed from the interfaces. Change a
+postcondition and the chain changes with it. `ifm:requiresUseCase` remains
+available for dependencies a modeller knows before the interfaces express them,
+and it is **validated against them**: assert that A requires B and the validator
+requires that something B leaves true is something A needs.
 
-Three things fall out that a taxonomy alone cannot give you.
+Three results come from this that the taxonomy alone does not provide.
 
 **The chain** — above.
 
@@ -403,17 +401,16 @@ that both sectors instantiate. The sector-specific detail that mattered (GMP for
 pharmaceuticals, quality accreditation for aerospace) survives as a note on the
 issuing participation, which is where it belonged.
 
-That is the minimal-overlap goal working as a check rather than an aspiration,
-and the first thing it did was find a duplicate in its own author's data.
+This turns minimal overlap into an automated check. Its first run found a
+duplicate in the data of this repository itself.
 
 ### Why states are coarse
 
-An interface with one implementor is not an interface. States are deliberately
-blunt — `secondary-education-credential-held`, not
-`gymnasiale-maturitaet-2026-held` — because the point is that flows nobody has
-written yet should plug into the same sockets. As the ecosystem iterates and new
-credentials arrive, they fall into place by matching states, not by being added
-to a list.
+States are deliberately blunt — `secondary-education-credential-held` rather than
+`gymnasiale-maturitaet-2026-held` — so that flows nobody has written yet can
+connect to the same ones. A state used by a single use case connects nothing. As
+new credentials arrive, they attach by matching an existing state, without the
+vocabulary having to grow each time.
 
 ## Who pays, who benefits
 
@@ -431,19 +428,19 @@ On the twelve seeded use cases, **nine are asymmetric**:
 | | |
 |---|---|
 | Self-funding — issuer gains directly | `banking-kyc-onboarding`, `banking-re-kyc`, `egov-service-access` |
-| Someone must move for another's benefit | the other nine |
+| One party invests for another's benefit | the other nine |
 
-The pattern is worth staring at. The three that fund themselves are the three
-where **the issuer and the verifier are the same party or the same institution**:
-a bank issuing a KYC attestation it will re-verify, and a state issuing the
-credential its own services accept. Everywhere else — a school issuing for a
-university's benefit, the federal e-ID issuer bearing cost so a merchant can
-check an age — somebody has to be persuaded, funded or obliged.
+The three self-funding cases share a property: **the issuer and the verifier are
+the same party or the same institution**. A bank issues a KYC attestation it will
+later re-verify; the state issues the credential its own services accept. In the
+other nine the investing party and the benefiting party differ — a school issues
+for a university's benefit, the federal e-ID issuer carries cost so a merchant can
+check an age — so those require funding, regulation or negotiation to proceed.
 
-That is a prediction the graph makes and can be checked against reality: the
-self-funding cases should be the ones already running. It is also the argument
-for where public funding or regulation does most good, and it fell out of the
-model rather than being asserted.
+This gives a testable prediction: the self-funding cases should be the ones
+already in production. It also indicates where public funding or regulation would
+have most effect. Both follow from the participation data rather than from an
+assumption written into it.
 
 ## What the credential replaces
 
@@ -485,30 +482,27 @@ The first run found two disagreements, and both have the same cause:
 | `banking/kyc-credential` | The graph splits it into onboarding and re-KYC, which have different interfaces. The family declares onboarding's, so `kyc-attestation-current` and the `customer-relationship-open` requirement are missing from it. |
 | `education/certificates-and-enrolment` | The graph splits it into issuance and immatriculation. The family declares only `eid-held`, missing immatriculation's need for `secondary-education-credential-held`. |
 
-Both are families that bundle two flows with different interfaces. The
-education one was already suspected — its own pull request raised the question
-of splitting it. The banking one was not, and reconciliation is what surfaced
-it.
+Both are families bundling two flows with different interfaces. The education one
+was already suspected; its own pull request raised the question of splitting it.
+The banking one was not, and the comparison is what surfaced it.
 
-A family whose member flows have different preconditions cannot state a single
-honest interface, which makes "do these flows share an interface?" a sharper
-test for what belongs in one family than "do they share a trigger and a set of
-actors?"
+A family whose flows have different preconditions cannot state one accurate
+interface. "Do these flows share an interface?" is therefore a more precise test
+of what belongs in a family than "do they share a trigger and a set of actors?"
 
 ## What belongs in the function layer
 
-The first draft of this vocabulary read like a list of electronic-identity use
-cases — proofing, onboarding, access. That is too narrow, and narrowing it that
-way quietly answers a question it should leave open.
+The first draft of this vocabulary covered only electronic-identity use cases —
+proofing, onboarding, access. That is too narrow, and it presumes an answer to the
+question of where credentials are useful.
 
 A verifiable credential is a container for **any** signed, structured,
-machine-checkable claim. Identity is the most familiar payload, not the only
-valuable one: a test certificate, a customs declaration, a product conformity
+machine-checkable claim. Identity is the most familiar payload, and there are
+many others: a test certificate, a customs declaration, a product conformity
 statement, an emissions figure, a consent record and an invoice are all
-structured assertions whose value comes from being checkable without calling the
-issuer. The function axis should therefore cover the business functions where a
-checkable claim removes a phone call, a PDF or a trusted intermediary — not the
-functions where identity happens to be the subject.
+structured assertions whose value comes from being checkable without contacting
+the issuer. The function axis therefore covers every business function where a
+checkable claim removes a phone call, a PDF or a trusted intermediary.
 
 So the vocabulary deliberately spans more than it currently uses. It is wider
 than the seeded use cases, and `validate.py` reports the unexercised ones as
@@ -516,11 +510,11 @@ coverage rather than as a problem.
 
 Two rules keep it from sprawling:
 
-- **A function is work, not a credential type.** "Diploma" is a credential;
-  "certification and attestation" is the function that issues one. If a proposed
-  entry names a document, it is in the wrong layer.
-- **A function is sector-independent.** If it cannot be stated without naming an
-  industry, it belongs in a use case instead.
+- **A function names work; a credential type names a document.** "Diploma" is a
+  credential and "certification and attestation" is the function that issues one.
+  A proposed entry that names a document belongs in layer 4.
+- **A function is sector-independent.** One that cannot be stated without naming
+  an industry belongs in a use case instead.
 
 Three entries are close together and worth telling apart: **quality assurance**
 is checking your own output before it ships, **audit and assurance** is someone
@@ -564,12 +558,12 @@ and a credential type evidences that state, somebody in that use case should be
 checking it. This found four use cases where I had recorded a precondition and
 no corresponding verification.
 
-**A credential no participation handles.** A type that nothing issues, presents
-or verifies was probably invented to fill a column rather than observed in a
-flow. This found `customer-relationship-attestation`, which has been removed:
-inside one bank, an open customer relationship is established by the bank's own
-records, not by presenting a credential. Not every state is credential-shaped,
-and the model should not pretend otherwise.
+**A credential no participation handles.** A type that nothing issues, presents or
+verifies has probably been added speculatively. This found
+`customer-relationship-attestation`, since removed: inside one bank an open
+customer relationship is established from the bank's own records, with no
+credential presented. Some states are established without a credential, and the
+model allows for that.
 
 The verifiable credential layer is intentionally left out for now. When it is
 added, nothing in layers 1–3 has to change; the extension point is:

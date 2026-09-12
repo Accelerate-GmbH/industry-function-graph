@@ -114,8 +114,8 @@ ifm:functionHasUseCase a owl:ObjectProperty ;
 # one exists - APQC publishes end-to-end maps but under its own terms, and the
 # SAP naming is proprietary.
 #
-# Streams compose functions; they do not contain them. One function appears in
-# several streams, which is why this is not a hierarchy over the function layer.
+# Streams compose functions without owning them. One function appears in several
+# streams, so this is a many-to-many relation and not a hierarchy.
 ################################################################
 
 ifm:ValueStream a owl:Class ;
@@ -142,7 +142,8 @@ ifm:position a owl:DatatypeProperty ;
     rdfs:label "position"@en ;
     rdfs:domain ifm:ValueStreamStage ;
     rdfs:range xsd:integer ;
-    rdfs:comment "Where the stage sits in the sequence. Ordering only - stages overlap in practice."@en .
+    rdfs:comment """Where the stage sits in the sequence. Ordering only: in practice
+stages overlap and some are skipped."""@en .
 
 ifm:stageFunction a owl:ObjectProperty ;
     rdfs:label "stage function"@en ;
@@ -181,9 +182,9 @@ ifm:TransformationMode a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     rdfs:label "Transformation mode"@en ;
     rdfs:comment """How far the process changes: digitise, optimise, redesign or
-enable. Exactly one per use case. The distinction matters because the first two
-are worth doing on a business case and the last two are worth doing on a
-strategy, and confusing them is how digitisation programmes pave the cowpath."""@en .
+enable. Exactly one per use case. The first two are usually justified by a
+business case that counts steps removed; the last two are justified
+strategically, and may show a weak business case until they work."""@en .
 
 ifm:transformationMode a owl:ObjectProperty ;
     rdfs:label "transformation mode"@en ;
@@ -204,23 +205,22 @@ ifm:changeMode a owl:ObjectProperty ;
 ################################################################
 # Layer 4 - credential types
 #
-# The original sketch for this layer hung a requiresCredential property off the
-# use case. That cannot express the ordinary case, where the school issues one
-# credential and the university checks a different one inside the same use case.
-# So credentials attach to a participation - to a party in a role - and the
-# issuer, the holder and the verifier each name what they handle.
+# Credentials attach to a participation - a party in a role - so that the issuer,
+# the holder and the verifier each name what they handle. A property on the use
+# case itself could not express the common case where one party issues one
+# credential and another checks a different one within the same use case.
 #
-# A credential type evidences a state, which is how this layer joins the rest:
-# holding the credential is what makes the state true, and the state is what
-# other use cases compose against. Adding a credential therefore does not change
-# the composition; it explains it.
+# A credential type evidences a state, which connects this layer to the rest:
+# holding the credential is what makes the state true, and states are what use
+# cases compose against. Credentials explain an existing composition; they do
+# not alter it.
 ################################################################
 
 ifm:CredentialType a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     rdfs:label "Credential type"@en ;
     rdfs:comment """A kind of verifiable credential, not an instance of one. The
-schema itself lives in whichever ecosystem publishes it; recorded here are its
+schema itself is published by the relevant ecosystem; recorded here are its
 format, that ecosystem, and the state it evidences."""@en .
 
 ifm:evidences a owl:ObjectProperty ;
@@ -238,7 +238,7 @@ ifm:ecosystem a owl:DatatypeProperty ;
     rdfs:label "ecosystem"@en ;
     rdfs:domain ifm:CredentialType ;
     rdfs:comment """The governance framework whose schemas apply: swiyu, EBSI, ELM
-for education and labour, UN/CEFACT for trade. Absent where none has been chosen."""@en .
+for education and labour, UN/CEFACT for trade. Omitted where none has been chosen."""@en .
 
 ifm:issuesCredential a owl:ObjectProperty ;
     rdfs:label "issues credential"@en ;
@@ -258,51 +258,50 @@ ifm:verifiesCredential a owl:ObjectProperty ;
 ################################################################
 # Layer 3c - states, and why use cases compose
 #
-# A use case is not a leaf in a taxonomy. It is a component with two ends: what
-# must already be true for it to run, and what is true once it has. Type both
-# ends against a shared state vocabulary and composition stops being drawn by
-# hand and starts being computed - B follows A exactly when something A leaves
-# true is something B needs.
+# Each use case has two ends: what must already be true for it to run, and what
+# is true once it has. Both are typed against a shared state vocabulary, so the
+# composition can be computed - B follows A when something A leaves true is
+# something B needs.
 #
-# Three things fall out of that, none of which a taxonomy alone can give you:
-# the chain, the gaps (states everything needs and nothing produces), and the
-# duplicates (two use cases with the same interface are one use case).
+# Three results come from that, and none is available from the taxonomy alone:
+# the chain of use cases, the states everything needs and nothing produces, and
+# pairs of use cases with identical interfaces, which are likely duplicates.
 ################################################################
 
 ifm:State a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     rdfs:label "State"@en ;
     rdfs:comment """Something that is true, or something a party holds. States are
-deliberately coarse: they are an interface, and an interface with one implementor
-is not an interface."""@en .
+deliberately coarse, because their purpose is to be shared: a state used by only
+one use case cannot connect anything."""@en .
 
 ifm:precondition a owl:ObjectProperty ;
     rdfs:label "precondition"@en ;
     rdfs:domain ifm:UseCase ;
     rdfs:range ifm:State ;
-    rdfs:comment "What must already be true. A use case with none starts from nothing."@en .
+    rdfs:comment "What must already be true. A use case with no precondition can start unaided."@en .
 
 ifm:postcondition a owl:ObjectProperty ;
     rdfs:label "postcondition"@en ;
     rdfs:domain ifm:UseCase ;
     rdfs:range ifm:State ;
-    rdfs:comment "What is true afterwards. A use case that leaves nothing true is not one."@en .
+    rdfs:comment "What is true afterwards. Every use case must leave at least one state behind."@en .
 
 ifm:enables a owl:ObjectProperty ;
     rdfs:label "enables"@en ;
     rdfs:domain ifm:UseCase ;
     rdfs:range ifm:UseCase ;
-    rdfs:comment """Derived: this use case produces a state that one needs. Never
-typed in - if the arrow is wrong, the interfaces are wrong, and that is the
-thing worth fixing."""@en .
+    rdfs:comment """Derived: this use case produces a state that the other needs.
+It is computed from the interfaces and never entered by hand, so a wrong arrow
+means a wrong precondition or postcondition somewhere."""@en .
 
 ################################################################
 # Layer 3b - who does what, at whose cost, replacing what
 #
-# The reason credential ecosystems stall is almost never technical. It is that
-# the party who must invest to issue is not the party who gets the value from
-# verifying. A graph that cannot express that cannot answer the only question
-# that matters at the start: who has to move first, and what is in it for them.
+# Credential ecosystems commonly stall for a commercial reason: the cost of
+# issuing falls on one party and the benefit of verifying on another. Recording
+# who bears cost and who gains value lets the graph answer who has to move first
+# and what they get for it.
 ################################################################
 
 ifm:TrustRole a owl:Class ;
@@ -312,9 +311,9 @@ ifm:TrustRole a owl:Class ;
 
 ifm:Participation a owl:Class ;
     rdfs:label "Participation"@en ;
-    rdfs:comment """One party playing one role in one use case. Reified so it can
-carry who pays and who benefits, which a plain link between use case and role
-could not."""@en .
+    rdfs:comment """One party playing one role in one use case. Reified so that it
+can carry who pays and who benefits; a direct link from use case to role has
+nowhere to put those."""@en .
 
 ifm:participation a owl:ObjectProperty ;
     rdfs:label "participation"@en ;
@@ -344,23 +343,24 @@ ifm:bearsCost a owl:DatatypeProperty ;
 ifm:gainsValue a owl:DatatypeProperty ;
     rdfs:label "gains value"@en ;
     rdfs:domain ifm:Participation ;
-    rdfs:comment "direct, indirect or none. Editorial, and the field most worth arguing about."@en .
+    rdfs:comment """direct, indirect or none. This is an editorial judgement, and
+the conclusions drawn from cost/value asymmetry depend on it."""@en .
 
 ifm:costValueAsymmetry a owl:DatatypeProperty ;
     rdfs:label "cost/value asymmetry"@en ;
     rdfs:domain ifm:UseCase ;
     rdfs:range xsd:boolean ;
-    rdfs:comment """True when at least one party bears cost without direct value -
-somebody must move for somebody else's benefit. Derived from the participations,
-never typed in. A false here means the use case can start without anyone being
-persuaded, which is the strongest predictor of whether it starts at all."""@en .
+    rdfs:comment """True when at least one party bears cost without direct value.
+Derived from the participations. Where it is false, every party that must invest
+also benefits, so the use case can proceed without anyone funding or obliging
+another."""@en .
 
 ifm:ReplacedEvidence a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     rdfs:label "Replaced evidence"@en ;
     rdfs:comment """What the credential displaces: a paper document, an uncheckable
-PDF, a phone call, an in-person visit. Without it, a claim of friction reduction
-has nothing behind it and cannot be measured."""@en .
+PDF, a phone call, an in-person visit. Recording it is what makes a claim of
+friction reduction measurable."""@en .
 
 ifm:replaces a owl:ObjectProperty ;
     rdfs:label "replaces"@en ;
@@ -371,10 +371,11 @@ ifm:requiresUseCase a owl:ObjectProperty ;
     rdfs:label "requires use case"@en ;
     rdfs:domain ifm:UseCase ;
     rdfs:range ifm:UseCase ;
-    rdfs:comment """An asserted dependency, kept because a modeller may know
-something the interfaces do not yet say. It is checked against them: if A
-requires B, then something B leaves true must be something A needs, or one of
-the two is wrong. Prefer ifm:enables, which is derived."""@en .
+    rdfs:comment """An asserted dependency, available for cases a modeller knows
+before the interfaces express them. It is validated against the interfaces: if A
+requires B, something B leaves true must be something A needs, otherwise either
+the assertion or the states need correcting. Prefer ifm:enables, which is
+derived."""@en .
 
 ################################################################
 # Use case attributes
