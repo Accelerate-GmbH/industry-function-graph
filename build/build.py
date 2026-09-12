@@ -37,6 +37,7 @@ PREFIXES = [
     ("evidence", ID_BASE + "replaced-evidence/"),
     ("part", ID_BASE + "participation/"),
     ("state", ID_BASE + "state/"),
+    ("cred", ID_BASE + "credential-type/"),
     ("skos", "http://www.w3.org/2004/02/skos/core#"),
     ("schema", "https://schema.org/"),
     ("dct", "http://purl.org/dc/terms/"),
@@ -97,6 +98,7 @@ PREFIX_OF_KIND = {
     "evidence": "evidence",
     "participation": "part",
     "state": "state",
+    "credential": "cred",
 }
 
 
@@ -106,6 +108,29 @@ def scheme_iri(scheme_id):
 
 def concept_ref(kind, ident):
     return f"{PREFIX_OF_KIND[kind]}:{ident}"
+
+
+# What a party does with a credential, by the role it plays.
+def by_action(model, participation):
+    """{predicate: [credential ids]} for one participation.
+
+    Grouped rather than one pair per link: a party can verify two credentials,
+    and two pairs with the same predicate serialise differently in Turtle and
+    JSON-LD.
+    """
+    grouped: dict[str, list[str]] = {}
+    for link in model.credentials_of.get(
+            (participation["use_case_id"], participation["role_id"]), []):
+        grouped.setdefault(ACTION_PROPERTY[link["action"]], []).append(
+            link["credential_type_id"])
+    return grouped
+
+
+ACTION_PROPERTY = {
+    "issues": "ifm:issuesCredential",
+    "presents": "ifm:presentsCredential",
+    "verifies": "ifm:verifiesCredential",
+}
 
 
 def graph_blocks(model):
@@ -199,6 +224,22 @@ def graph_blocks(model):
         pairs.append(("skos:editorialNote", notes))
         blocks.append((heading, Ref(concept_ref("function", function_id)), pairs))
 
+    heading = "Layer 4 - Credential types"
+    for cred_id, row in model.credential_types.items():
+        blocks.append((heading, Ref(concept_ref("credential", cred_id)), [
+            ("a", [Ref("ifm:CredentialType"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-credential-types"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-credential-types"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+            ("ifm:evidences", R(concept_ref("state", row["evidences_state"]))
+             if row["evidences_state"] else []),
+            ("ifm:credentialFormat", L(row["format"], lang=None)),
+            ("ifm:ecosystem", L(row["ecosystem"], lang=None)
+             if row["ecosystem"] != "none" else []),
+            ("ifm:codeStatus", L(row["code_status"], lang=None)),
+        ]))
+
     heading = "Layer 3c - States: the interface that makes use cases composable"
     for state_id, row in model.states.items():
         blocks.append((heading, Ref(concept_ref("state", state_id)), [
@@ -237,6 +278,9 @@ def graph_blocks(model):
                                    datatype="xsd:boolean")]),
             ("ifm:gainsValue", L(row["gains_value"], lang=None)),
             ("skos:scopeNote", L(row["note"])),
+        ] + [
+            (prop, [Ref(concept_ref("credential", cred)) for cred in creds])
+            for prop, creds in sorted(by_action(model, row).items())
         ]))
 
     heading = "Layer 3a - Value drivers and transformation modes"

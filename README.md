@@ -494,7 +494,49 @@ is checking your own output before it ships, **audit and assurance** is someone
 independent checking it afterwards, and **certification and attestation** is
 issuing the statement that results.
 
-## Layer 4 — deferred
+## Layer 4 — credential types
+
+The blueprint this started from put a `requiresCredential` property on the use
+case. That cannot express the ordinary case: inside one use case the school
+issues a certificate and the university checks a different credential. So
+credentials attach to a **participation** — to a party in a role — and each
+party names what it handles:
+
+```turtle
+part:eid-issuance-issuer
+    ifm:trustRole     role:issuer ;
+    ifm:party         "Federal e-ID issuer"@en ;
+    ifm:issuesCredential cred:eid-credential .
+```
+
+A party is not limited to one verb. The school that issues a school-leaving
+certificate also verifies the graduate's e-ID, and both are recorded on its
+participation.
+
+A credential type **evidences a state**, which is how this layer joins the rest:
+holding the credential is what makes the state true, and states are what use
+cases compose against. Adding credentials therefore does not change the
+composition — it explains it.
+
+Recorded per type: the format (`SD-JWT VC`, `W3C VCDM 2.0`), the ecosystem whose
+schemas apply (`swiyu`, `ELM` for education and labour, `UN/CEFACT` for trade),
+and the state it evidences. The schemas themselves are not copied here; they
+belong to those ecosystems. Every type is `provisional` — none has been checked
+against a published schema registry.
+
+### Two checks that earn their place
+
+**A state needing a credential nobody verifies.** If a use case requires a state,
+and a credential type evidences that state, somebody in that use case should be
+checking it. This found four use cases where I had recorded a precondition and
+no corresponding verification.
+
+**A credential no participation handles.** A type that nothing issues, presents
+or verifies was probably invented to fill a column rather than observed in a
+flow. This found `customer-relationship-attestation`, which has been removed:
+inside one bank, an open customer relationship is established by the bank's own
+records, not by presenting a credential. Not every state is credential-shaped,
+and the model should not pretend otherwise.
 
 The verifiable credential layer is intentionally left out for now. When it is
 added, nothing in layers 1–3 has to change; the extension point is:

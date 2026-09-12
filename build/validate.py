@@ -32,6 +32,7 @@ CODE_STATUS = {"verified", "provisional"}
 MATURITY = {"Exploratory", "Modelled", "Live"}
 CHANGE_MODE = {"run", "change"}
 BEARS_COST = {"yes", "no"}
+CREDENTIAL_ACTIONS = {"issues", "presents", "verifies"}
 GAINS_VALUE = {"direct", "indirect", "none"}
 MATCH_TYPES = {"exactMatch", "closeMatch", "broadMatch", "narrowMatch", "relatedMatch"}
 DOC_URL = re.compile(r"^https://\S+$")
@@ -294,6 +295,68 @@ def check_trust_roles(model):
             error(f"{where}: unknown evidence {row['evidence_id']!r}")
 
 
+def check_credentials(model):
+    for cred_id, row in model.credential_types.items():
+        where = f"credential-types.csv[{cred_id}]"
+        if not SLUG.match(cred_id):
+            error(f"{where}: id must be a lower-case slug")
+        if not row["definition"].strip():
+            error(f"{where}: needs a definition")
+        if row["code_status"] not in CODE_STATUS:
+            error(f"{where}: bad code_status {row['code_status']!r}")
+        if not row["format"].strip():
+            error(f"{where}: `format` is required - a credential with no format cannot "
+                  f"be implemented")
+        state = row["evidences_state"]
+        if state and state not in model.states:
+            error(f"{where}: evidences_state {state!r} is not in states.csv")
+
+    claimed = {}
+    for cred_id, row in model.credential_types.items():
+        state = row["evidences_state"]
+        if state:
+            claimed.setdefault(state, []).append(cred_id)
+    for state, creds in claimed.items():
+        if len(creds) > 1:
+            warn(f"states.csv[{state}]: evidenced by {len(creds)} credential types "
+                 f"({', '.join(creds)}). Two credentials for one state means either the "
+                 f"state is too coarse or one of them is redundant")
+
+    for index, row in enumerate(model.participation_credentials, start=2):
+        where = f"participation-credentials.csv:{index}"
+        key = (row["use_case_id"], row["role_id"])
+        if key not in model.credentials_of:
+            continue
+        if row["credential_type_id"] not in model.credential_types:
+            error(f"{where}: unknown credential type {row['credential_type_id']!r}")
+        if row["action"] not in CREDENTIAL_ACTIONS:
+            error(f"{where}: action {row['action']!r} not in {sorted(CREDENTIAL_ACTIONS)}")
+        if not any(p["role_id"] == row["role_id"]
+                   for p in model.participants_of.get(row["use_case_id"], [])):
+            error(f"{where}: {row['use_case_id']} has no {row['role_id']} participation "
+                  f"to attach a credential to")
+    referenced = {link["credential_type_id"]
+                  for links in model.credentials_of.values() for link in links}
+    unused = [c for c in model.credential_types if c not in referenced]
+    if unused:
+        warn(f"{len(unused)} credential type(s) no participation issues, presents or "
+             f"verifies: {', '.join(unused)}. Either a use case is missing or the "
+             f"credential was invented to fill a gap")
+
+    # If a use case needs a state, somebody in it should be checking the
+    # credential that evidences that state.
+    for uc_id in model.use_cases:
+        verified = {link["credential_type_id"]
+                    for (case, _role), links in model.credentials_of.items()
+                    if case == uc_id
+                    for link in links if link["action"] == "verifies"}
+        for state in model.pre_of.get(uc_id, []):
+            cred = model.credential_for_state(state)
+            if cred and cred not in verified:
+                warn(f"use-cases.csv[{uc_id}]: requires {state}, evidenced by {cred}, "
+                     f"but no verifier in this use case checks it")
+
+
 def check_dependencies(model):
     for index, row in enumerate(model.dependencies, start=2):
         where = f"use-case-dependencies.csv:{index}"
@@ -447,6 +510,7 @@ def main():
     check_states(model)
     check_trust_roles(model)
     check_dependencies(model)
+    check_credentials(model)
     check_use_cases(model)
     check_links(model)
     check_rdf()
@@ -461,7 +525,8 @@ def main():
               f"{len(model.value_drivers)} value drivers, "
               f"{len(model.value_streams)} value streams, "
               f"{len(model.participants)} participations, "
-              f"{len(model.states)} states")
+              f"{len(model.states)} states, "
+              f"{len(model.credential_types)} credential types")
     if errors:
         print(f"\nFAILED: {len(errors)} error(s) in {counts}", file=sys.stderr)
         return 1

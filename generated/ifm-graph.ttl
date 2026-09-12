@@ -18,6 +18,7 @@
 @prefix evidence: <https://didas-swiss.github.io/industry-function-graph/id/replaced-evidence/> .
 @prefix part: <https://didas-swiss.github.io/industry-function-graph/id/participation/> .
 @prefix state: <https://didas-swiss.github.io/industry-function-graph/id/state/> .
+@prefix cred: <https://didas-swiss.github.io/industry-function-graph/id/credential-type/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix schema: <https://schema.org/> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -65,6 +66,12 @@ scheme:ifm-transformation-modes
     dct:title "Transformation modes"@en ;
     dct:description "How far the process changes. The first two are run - improving a process that already exists. The last two are change - reorganising it, or doing something that was not viable before. A use case has exactly one."@en ;
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
+
+scheme:ifm-credential-types
+    a skos:ConceptScheme ;
+    dct:title "Credential types"@en ;
+    dct:description "What is actually issued, presented and checked. A credential type evidences a state, which is how this layer attaches to the rest: holding the credential is what makes the state true."@en ;
+    dct:source <https://www.w3.org/TR/vc-data-model-2.0/> .
 
 scheme:ifm-states
     a skos:ConceptScheme ;
@@ -882,6 +889,126 @@ func:research-and-development
     skos:relatedMatch apqc:apqc-2.0 .
 
 ######################################################################
+# Layer 4 - Credential types
+######################################################################
+
+cred:eid-credential
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Electronic identity credential"@en ;
+    skos:definition "The state-issued electronic identity, held in a wallet and presented with selective disclosure."@en ;
+    ifm:evidences state:eid-held ;
+    ifm:credentialFormat "SD-JWT VC" ;
+    ifm:ecosystem "swiyu" ;
+    ifm:codeStatus "provisional" .
+
+cred:kyc-attestation
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "KYC attestation"@en ;
+    skos:definition "A regulated institution's statement that customer due diligence was completed, reusable by another institution."@en ;
+    ifm:evidences state:kyc-attestation-held ;
+    ifm:credentialFormat "SD-JWT VC" ;
+    ifm:codeStatus "provisional" .
+
+cred:kyc-currency-attestation
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "KYC currency attestation"@en ;
+    skos:definition "A statement that the due diligence behind a KYC attestation was re-evaluated within its validity period."@en ;
+    ifm:evidences state:kyc-attestation-current ;
+    ifm:credentialFormat "SD-JWT VC" ;
+    ifm:codeStatus "provisional" .
+
+cred:legal-capacity-attestation
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Legal capacity attestation"@en ;
+    skos:definition "A statement that the subject may contract in their own right, typically after reaching majority."@en ;
+    ifm:evidences state:legal-capacity-established ;
+    ifm:credentialFormat "SD-JWT VC" ;
+    ifm:codeStatus "provisional" .
+
+cred:age-attestation
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Age attestation"@en ;
+    skos:definition "A predicate proof that the subject is over a threshold age, disclosing nothing else. In swiyu this is a selective disclosure of the electronic identity rather than a separately issued credential."@en ;
+    ifm:evidences state:age-attribute-proven ;
+    ifm:credentialFormat "SD-JWT VC" ;
+    ifm:codeStatus "provisional" .
+
+cred:secondary-education-certificate
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Secondary education certificate"@en ;
+    skos:definition "A school-leaving certificate as a verifiable credential. The European Learning Model is the schema family to align with."@en ;
+    ifm:evidences state:secondary-education-credential-held ;
+    ifm:credentialFormat "W3C VCDM 2.0" ;
+    ifm:ecosystem "ELM" ;
+    ifm:codeStatus "provisional" .
+
+cred:tertiary-enrolment-attestation
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Tertiary enrolment attestation"@en ;
+    skos:definition "A statement that the subject is enrolled at a higher education institution."@en ;
+    ifm:evidences state:tertiary-enrolment-established ;
+    ifm:credentialFormat "W3C VCDM 2.0" ;
+    ifm:ecosystem "ELM" ;
+    ifm:codeStatus "provisional" .
+
+cred:employment-attestation
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Employment attestation"@en ;
+    skos:definition "A statement that an employment contract is in force between the subject and a named employer."@en ;
+    ifm:evidences state:employment-relationship-open ;
+    ifm:credentialFormat "W3C VCDM 2.0" ;
+    ifm:ecosystem "ELM" ;
+    ifm:codeStatus "provisional" .
+
+cred:quality-accreditation-certificate
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Quality accreditation certificate"@en ;
+    skos:definition "An accredited body's certificate that an organisation meets a standard - ISO 9001, GMP, sector conformity schemes."@en ;
+    ifm:evidences state:supplier-accreditation-held ;
+    ifm:credentialFormat "W3C VCDM 2.0" ;
+    ifm:ecosystem "UN/CEFACT" ;
+    ifm:codeStatus "provisional" .
+
+cred:supplier-qualification-record
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Supplier qualification record"@en ;
+    skos:definition "A buying organisation's own record that a supplier passed qualification, presentable to an auditor."@en ;
+    ifm:evidences state:supplier-qualified ;
+    ifm:credentialFormat "W3C VCDM 2.0" ;
+    ifm:ecosystem "UN/CEFACT" ;
+    ifm:codeStatus "provisional" .
+
+cred:service-entitlement-attestation
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Service entitlement attestation"@en ;
+    skos:definition "A statement that the subject is entitled to a named public service."@en ;
+    ifm:evidences state:service-entitlement-established ;
+    ifm:credentialFormat "SD-JWT VC" ;
+    ifm:codeStatus "provisional" .
+
+######################################################################
 # Layer 3c - States: the interface that makes use cases composable
 ######################################################################
 
@@ -1078,7 +1205,8 @@ part:banking-kyc-onboarding-issuer
     ifm:party "Bank"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
     ifm:gainsValue "direct" ;
-    skos:scopeNote "Issues the reusable attestation and is also a verifier of it later."@en .
+    skos:scopeNote "Issues the reusable attestation and is also a verifier of it later."@en ;
+    ifm:issuesCredential cred:kyc-attestation .
 
 part:banking-kyc-onboarding-holder
     a ifm:Participation ;
@@ -1086,7 +1214,8 @@ part:banking-kyc-onboarding-holder
     ifm:trustRole role:holder ;
     ifm:party "Customer"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:kyc-attestation .
 
 part:banking-kyc-onboarding-verifier
     a ifm:Participation ;
@@ -1094,7 +1223,8 @@ part:banking-kyc-onboarding-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Another regulated institution"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:eid-credential .
 
 part:banking-re-kyc-issuer
     a ifm:Participation ;
@@ -1102,7 +1232,8 @@ part:banking-re-kyc-issuer
     ifm:trustRole role:issuer ;
     ifm:party "Bank"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:issuesCredential cred:kyc-currency-attestation .
 
 part:banking-re-kyc-holder
     a ifm:Participation ;
@@ -1119,7 +1250,8 @@ part:banking-re-kyc-verifier
     ifm:party "Bank"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
     ifm:gainsValue "direct" ;
-    skos:scopeNote "Issuer and verifier are the same party, which is why this one needs nobody's cooperation."@en .
+    skos:scopeNote "Issuer and verifier are the same party, which is why this one needs nobody's cooperation."@en ;
+    ifm:verifiesCredential cred:kyc-attestation .
 
 part:banking-reidentification-password-reset-issuer
     a ifm:Participation ;
@@ -1143,7 +1275,8 @@ part:banking-reidentification-password-reset-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Bank"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:eid-credential .
 
 part:banking-age-of-majority-reidentification-issuer
     a ifm:Participation ;
@@ -1151,7 +1284,8 @@ part:banking-age-of-majority-reidentification-issuer
     ifm:trustRole role:issuer ;
     ifm:party "Federal e-ID issuer"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "none" .
+    ifm:gainsValue "none" ;
+    ifm:issuesCredential cred:legal-capacity-attestation .
 
 part:banking-age-of-majority-reidentification-holder
     a ifm:Participation ;
@@ -1167,7 +1301,8 @@ part:banking-age-of-majority-reidentification-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Bank"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:eid-credential .
 
 part:education-maturitaetszeugnis-issuance-issuer
     a ifm:Participation ;
@@ -1176,7 +1311,9 @@ part:education-maturitaetszeugnis-issuance-issuer
     ifm:party "Upper-secondary school"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
     ifm:gainsValue "indirect" ;
-    skos:scopeNote "Bears the issuing cost; gets back only fewer duplicate-copy requests."@en .
+    skos:scopeNote "Bears the issuing cost; gets back only fewer duplicate-copy requests."@en ;
+    ifm:issuesCredential cred:secondary-education-certificate ;
+    ifm:verifiesCredential cred:eid-credential .
 
 part:education-maturitaetszeugnis-issuance-holder
     a ifm:Participation ;
@@ -1184,7 +1321,8 @@ part:education-maturitaetszeugnis-issuance-holder
     ifm:trustRole role:holder ;
     ifm:party "Graduate"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:secondary-education-certificate .
 
 part:education-maturitaetszeugnis-issuance-verifier
     a ifm:Participation ;
@@ -1201,7 +1339,8 @@ part:education-university-immatriculation-issuer
     ifm:party "Upper-secondary school"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
     ifm:gainsValue "none" ;
-    skos:scopeNote "Already carried the cost in the issuance use case and gains nothing here."@en .
+    skos:scopeNote "Already carried the cost in the issuance use case and gains nothing here."@en ;
+    ifm:issuesCredential cred:tertiary-enrolment-attestation .
 
 part:education-university-immatriculation-holder
     a ifm:Participation ;
@@ -1217,7 +1356,8 @@ part:education-university-immatriculation-verifier
     ifm:trustRole role:verifier ;
     ifm:party "University"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:secondary-education-certificate, cred:eid-credential .
 
 part:retail-hospitality-age-verification-issuer
     a ifm:Participation ;
@@ -1233,7 +1373,8 @@ part:retail-hospitality-age-verification-holder
     ifm:trustRole role:holder ;
     ifm:party "Customer"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:age-attestation .
 
 part:retail-hospitality-age-verification-verifier
     a ifm:Participation ;
@@ -1241,7 +1382,8 @@ part:retail-hospitality-age-verification-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Merchant or restaurant"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:age-attestation, cred:eid-credential .
 
 part:employment-identity-proofing-issuer
     a ifm:Participation ;
@@ -1249,7 +1391,8 @@ part:employment-identity-proofing-issuer
     ifm:trustRole role:issuer ;
     ifm:party "E-ID issuer and awarding institutions"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "none" .
+    ifm:gainsValue "none" ;
+    ifm:issuesCredential cred:employment-attestation .
 
 part:employment-identity-proofing-holder
     a ifm:Participation ;
@@ -1265,7 +1408,8 @@ part:employment-identity-proofing-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Employer"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:secondary-education-certificate, cred:eid-credential .
 
 part:healthcare-patient-identification-issuer
     a ifm:Participation ;
@@ -1289,7 +1433,8 @@ part:healthcare-patient-identification-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Hospital"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:eid-credential .
 
 part:egov-service-access-issuer
     a ifm:Participation ;
@@ -1298,7 +1443,8 @@ part:egov-service-access-issuer
     ifm:party "Federal e-ID issuer"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
     ifm:gainsValue "direct" ;
-    skos:scopeNote "Issuer and verifier are both the state, so the investment returns to the party making it."@en .
+    skos:scopeNote "Issuer and verifier are both the state, so the investment returns to the party making it."@en ;
+    ifm:issuesCredential cred:service-entitlement-attestation .
 
 part:egov-service-access-holder
     a ifm:Participation ;
@@ -1314,7 +1460,8 @@ part:egov-service-access-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Public administration"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:eid-credential .
 
 part:supplier-qualification-issuer
     a ifm:Participation ;
@@ -1323,7 +1470,8 @@ part:supplier-qualification-issuer
     ifm:party "Certification body, accreditor or regulator"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
     ifm:gainsValue "direct" ;
-    skos:scopeNote "Certification is its business, so the issuing cost is already paid for. GMP for pharmaceuticals, quality accreditations for aerospace."@en .
+    skos:scopeNote "Certification is its business, so the issuing cost is already paid for. GMP for pharmaceuticals, quality accreditations for aerospace."@en ;
+    ifm:issuesCredential cred:quality-accreditation-certificate .
 
 part:supplier-qualification-holder
     a ifm:Participation ;
@@ -1331,7 +1479,8 @@ part:supplier-qualification-holder
     ifm:trustRole role:holder ;
     ifm:party "Supplier"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:quality-accreditation-certificate .
 
 part:supplier-qualification-verifier
     a ifm:Participation ;
@@ -1339,7 +1488,9 @@ part:supplier-qualification-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Buying organisation"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:issuesCredential cred:supplier-qualification-record ;
+    ifm:verifiesCredential cred:quality-accreditation-certificate .
 
 part:supplier-qualification-trust-anchor
     a ifm:Participation ;
@@ -1356,7 +1507,8 @@ part:eid-issuance-issuer
     ifm:party "Federal e-ID issuer"@en ;
     ifm:bearsCost "true"^^xsd:boolean ;
     ifm:gainsValue "indirect" ;
-    skos:scopeNote "Carries the cost of the credential every other use case depends on, while the value lands on the parties verifying it. The asymmetry at the root of the ecosystem."@en .
+    skos:scopeNote "Carries the cost of the credential every other use case depends on, while the value lands on the parties verifying it. The asymmetry at the root of the ecosystem."@en ;
+    ifm:issuesCredential cred:eid-credential .
 
 part:eid-issuance-holder
     a ifm:Participation ;
@@ -1364,7 +1516,8 @@ part:eid-issuance-holder
     ifm:trustRole role:holder ;
     ifm:party "Resident"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:eid-credential .
 
 part:eid-issuance-verifier
     a ifm:Participation ;
@@ -1372,7 +1525,8 @@ part:eid-issuance-verifier
     ifm:trustRole role:verifier ;
     ifm:party "Any relying party"@en ;
     ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
+    ifm:gainsValue "direct" ;
+    ifm:verifiesCredential cred:eid-credential .
 
 part:eid-issuance-trust-anchor
     a ifm:Participation ;

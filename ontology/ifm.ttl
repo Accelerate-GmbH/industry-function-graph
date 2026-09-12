@@ -202,6 +202,60 @@ ifm:changeMode a owl:ObjectProperty ;
     rdfs:comment "Run or change. Derived from the transformation mode, never typed in."@en .
 
 ################################################################
+# Layer 4 - credential types
+#
+# The original sketch for this layer hung a requiresCredential property off the
+# use case. That cannot express the ordinary case, where the school issues one
+# credential and the university checks a different one inside the same use case.
+# So credentials attach to a participation - to a party in a role - and the
+# issuer, the holder and the verifier each name what they handle.
+#
+# A credential type evidences a state, which is how this layer joins the rest:
+# holding the credential is what makes the state true, and the state is what
+# other use cases compose against. Adding a credential therefore does not change
+# the composition; it explains it.
+################################################################
+
+ifm:CredentialType a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Credential type"@en ;
+    rdfs:comment """A kind of verifiable credential, not an instance of one. The
+schema itself lives in whichever ecosystem publishes it; recorded here are its
+format, that ecosystem, and the state it evidences."""@en .
+
+ifm:evidences a owl:ObjectProperty ;
+    rdfs:label "evidences"@en ;
+    rdfs:domain ifm:CredentialType ;
+    rdfs:range ifm:State ;
+    rdfs:comment "Holding this credential is what makes the state true."@en .
+
+ifm:credentialFormat a owl:DatatypeProperty ;
+    rdfs:label "credential format"@en ;
+    rdfs:domain ifm:CredentialType ;
+    rdfs:comment "SD-JWT VC, W3C VCDM 2.0, and so on."@en .
+
+ifm:ecosystem a owl:DatatypeProperty ;
+    rdfs:label "ecosystem"@en ;
+    rdfs:domain ifm:CredentialType ;
+    rdfs:comment """The governance framework whose schemas apply: swiyu, EBSI, ELM
+for education and labour, UN/CEFACT for trade. Absent where none has been chosen."""@en .
+
+ifm:issuesCredential a owl:ObjectProperty ;
+    rdfs:label "issues credential"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:range ifm:CredentialType .
+
+ifm:presentsCredential a owl:ObjectProperty ;
+    rdfs:label "presents credential"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:range ifm:CredentialType .
+
+ifm:verifiesCredential a owl:ObjectProperty ;
+    rdfs:label "verifies credential"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:range ifm:CredentialType .
+
+################################################################
 # Layer 3c - states, and why use cases compose
 #
 # A use case is not a leaf in a taxonomy. It is a component with two ends: what

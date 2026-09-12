@@ -68,6 +68,13 @@ SCHEMES = {
                        "A use case has exactly one.",
         "source": BASE,
     },
+    "ifm-credential-types": {
+        "title": "Credential types",
+        "description": "What is actually issued, presented and checked. A credential "
+                       "type evidences a state, which is how this layer attaches to the "
+                       "rest: holding the credential is what makes the state true.",
+        "source": "https://www.w3.org/TR/vc-data-model-2.0/",
+    },
     "ifm-states": {
         "title": "States",
         "description": "What is true, or what a party holds, before and after a use "
@@ -127,6 +134,7 @@ class Model:
         self.value_drivers = {r["id"]: r for r in _read("value-drivers.csv")}
         self.value_streams = {r["id"]: r for r in _read("value-streams.csv")}
         self.states = {r["id"]: r for r in _read("states.csv")}
+        self.credential_types = {r["id"]: r for r in _read("credential-types.csv")}
         self.trust_roles = {r["id"]: r for r in _read("trust-roles.csv")}
         self.evidence = {r["id"]: r for r in _read("replaced-evidence.csv")}
         self.stream_stages = sorted(_read("value-stream-functions.csv"),
@@ -137,6 +145,12 @@ class Model:
         self.uc_functions = _read("use-case-functions.csv")
         self.uc_value_drivers = _read("use-case-value-drivers.csv")
         self.uc_value_streams = _read("use-case-value-streams.csv")
+        self.participation_credentials = _read("participation-credentials.csv")
+        self.credentials_of = {}
+        for row in self.participation_credentials:
+            self.credentials_of.setdefault(
+                (row["use_case_id"], row["role_id"]), []).append(row)
+
         self.preconditions = _read("use-case-preconditions.csv")
         self.postconditions = _read("use-case-postconditions.csv")
         self.participants = _read("use-case-participants.csv")
@@ -233,6 +247,13 @@ class Model:
         needed = {s for states in self.pre_of.values() for s in states}
         return sorted(needed - produced)
 
+    def credential_for_state(self, state_id):
+        """The credential type whose possession makes a state true, if there is one."""
+        for key, row in self.credential_types.items():
+            if row["evidences_state"] == state_id:
+                return key
+        return None
+
     def interface(self, uc_id):
         """The signature two use cases would have to share to be the same one."""
         return (frozenset(self.pre_of.get(uc_id, [])),
@@ -295,7 +316,8 @@ class Model:
                  "cbf": self.cbf, "apqc-pcf": self.apqc,
                  "driver": self.value_drivers, "mode": self.modes,
                  "stream": self.value_streams, "role": self.trust_roles,
-                 "evidence": self.evidence, "state": self.states}[kind]
+                 "evidence": self.evidence, "state": self.states,
+                 "credential": self.credential_types}[kind]
         row = table.get(ident, {})
         return row.get("pref_label_en", ident)
 

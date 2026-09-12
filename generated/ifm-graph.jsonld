@@ -15,6 +15,7 @@
     "evidence": "https://didas-swiss.github.io/industry-function-graph/id/replaced-evidence/",
     "part": "https://didas-swiss.github.io/industry-function-graph/id/participation/",
     "state": "https://didas-swiss.github.io/industry-function-graph/id/state/",
+    "cred": "https://didas-swiss.github.io/industry-function-graph/id/credential-type/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "schema": "https://schema.org/",
     "dct": "http://purl.org/dc/terms/",
@@ -126,6 +127,23 @@
       },
       "dct:source": {
         "@id": "https://didas-swiss.github.io/industry-function-graph/"
+      }
+    },
+    {
+      "@id": "scheme:ifm-credential-types",
+      "@type": [
+        "skos:ConceptScheme"
+      ],
+      "dct:title": {
+        "@value": "Credential types",
+        "@language": "en"
+      },
+      "dct:description": {
+        "@value": "What is actually issued, presented and checked. A credential type evidences a state, which is how this layer attaches to the rest: holding the credential is what makes the state true.",
+        "@language": "en"
+      },
+      "dct:source": {
+        "@id": "https://www.w3.org/TR/vc-data-model-2.0/"
       }
     },
     {
@@ -2480,6 +2498,354 @@
       }
     },
     {
+      "@id": "cred:eid-credential",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Electronic identity credential",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "The state-issued electronic identity, held in a wallet and presented with selective disclosure.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:eid-held"
+      },
+      "ifm:credentialFormat": {
+        "@value": "SD-JWT VC"
+      },
+      "ifm:ecosystem": {
+        "@value": "swiyu"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:kyc-attestation",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "KYC attestation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A regulated institution's statement that customer due diligence was completed, reusable by another institution.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:kyc-attestation-held"
+      },
+      "ifm:credentialFormat": {
+        "@value": "SD-JWT VC"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:kyc-currency-attestation",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "KYC currency attestation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A statement that the due diligence behind a KYC attestation was re-evaluated within its validity period.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:kyc-attestation-current"
+      },
+      "ifm:credentialFormat": {
+        "@value": "SD-JWT VC"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:legal-capacity-attestation",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Legal capacity attestation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A statement that the subject may contract in their own right, typically after reaching majority.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:legal-capacity-established"
+      },
+      "ifm:credentialFormat": {
+        "@value": "SD-JWT VC"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:age-attestation",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Age attestation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A predicate proof that the subject is over a threshold age, disclosing nothing else. In swiyu this is a selective disclosure of the electronic identity rather than a separately issued credential.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:age-attribute-proven"
+      },
+      "ifm:credentialFormat": {
+        "@value": "SD-JWT VC"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:secondary-education-certificate",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Secondary education certificate",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A school-leaving certificate as a verifiable credential. The European Learning Model is the schema family to align with.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:secondary-education-credential-held"
+      },
+      "ifm:credentialFormat": {
+        "@value": "W3C VCDM 2.0"
+      },
+      "ifm:ecosystem": {
+        "@value": "ELM"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:tertiary-enrolment-attestation",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Tertiary enrolment attestation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A statement that the subject is enrolled at a higher education institution.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:tertiary-enrolment-established"
+      },
+      "ifm:credentialFormat": {
+        "@value": "W3C VCDM 2.0"
+      },
+      "ifm:ecosystem": {
+        "@value": "ELM"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:employment-attestation",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Employment attestation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A statement that an employment contract is in force between the subject and a named employer.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:employment-relationship-open"
+      },
+      "ifm:credentialFormat": {
+        "@value": "W3C VCDM 2.0"
+      },
+      "ifm:ecosystem": {
+        "@value": "ELM"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:quality-accreditation-certificate",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Quality accreditation certificate",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "An accredited body's certificate that an organisation meets a standard - ISO 9001, GMP, sector conformity schemes.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:supplier-accreditation-held"
+      },
+      "ifm:credentialFormat": {
+        "@value": "W3C VCDM 2.0"
+      },
+      "ifm:ecosystem": {
+        "@value": "UN/CEFACT"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:supplier-qualification-record",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Supplier qualification record",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A buying organisation's own record that a supplier passed qualification, presentable to an auditor.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:supplier-qualified"
+      },
+      "ifm:credentialFormat": {
+        "@value": "W3C VCDM 2.0"
+      },
+      "ifm:ecosystem": {
+        "@value": "UN/CEFACT"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
+      "@id": "cred:service-entitlement-attestation",
+      "@type": [
+        "ifm:CredentialType",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-credential-types"
+      },
+      "skos:prefLabel": {
+        "@value": "Service entitlement attestation",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "A statement that the subject is entitled to a named public service.",
+        "@language": "en"
+      },
+      "ifm:evidences": {
+        "@id": "state:service-entitlement-established"
+      },
+      "ifm:credentialFormat": {
+        "@value": "SD-JWT VC"
+      },
+      "ifm:codeStatus": {
+        "@value": "provisional"
+      }
+    },
+    {
       "@id": "state:eid-held",
       "@type": [
         "ifm:State",
@@ -3050,6 +3416,9 @@
       "skos:scopeNote": {
         "@value": "Issues the reusable attestation and is also a verifier of it later.",
         "@language": "en"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:kyc-attestation"
       }
     },
     {
@@ -3073,6 +3442,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:kyc-attestation"
       }
     },
     {
@@ -3096,6 +3468,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
@@ -3119,6 +3494,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:kyc-currency-attestation"
       }
     },
     {
@@ -3169,6 +3547,9 @@
       "skos:scopeNote": {
         "@value": "Issuer and verifier are the same party, which is why this one needs nobody's cooperation.",
         "@language": "en"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:kyc-attestation"
       }
     },
     {
@@ -3238,6 +3619,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
@@ -3261,6 +3645,9 @@
       },
       "ifm:gainsValue": {
         "@value": "none"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:legal-capacity-attestation"
       }
     },
     {
@@ -3307,6 +3694,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
@@ -3334,6 +3724,12 @@
       "skos:scopeNote": {
         "@value": "Bears the issuing cost; gets back only fewer duplicate-copy requests.",
         "@language": "en"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:secondary-education-certificate"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
@@ -3357,6 +3753,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:secondary-education-certificate"
       }
     },
     {
@@ -3407,6 +3806,9 @@
       "skos:scopeNote": {
         "@value": "Already carried the cost in the issuance use case and gains nothing here.",
         "@language": "en"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:tertiary-enrolment-attestation"
       }
     },
     {
@@ -3453,7 +3855,15 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      }
+      },
+      "ifm:verifiesCredential": [
+        {
+          "@id": "cred:secondary-education-certificate"
+        },
+        {
+          "@id": "cred:eid-credential"
+        }
+      ]
     },
     {
       "@id": "part:retail-hospitality-age-verification-issuer",
@@ -3499,6 +3909,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:age-attestation"
       }
     },
     {
@@ -3522,7 +3935,15 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      }
+      },
+      "ifm:verifiesCredential": [
+        {
+          "@id": "cred:age-attestation"
+        },
+        {
+          "@id": "cred:eid-credential"
+        }
+      ]
     },
     {
       "@id": "part:employment-identity-proofing-issuer",
@@ -3545,6 +3966,9 @@
       },
       "ifm:gainsValue": {
         "@value": "none"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:employment-attestation"
       }
     },
     {
@@ -3591,7 +4015,15 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      }
+      },
+      "ifm:verifiesCredential": [
+        {
+          "@id": "cred:secondary-education-certificate"
+        },
+        {
+          "@id": "cred:eid-credential"
+        }
+      ]
     },
     {
       "@id": "part:healthcare-patient-identification-issuer",
@@ -3660,6 +4092,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
@@ -3687,6 +4122,9 @@
       "skos:scopeNote": {
         "@value": "Issuer and verifier are both the state, so the investment returns to the party making it.",
         "@language": "en"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:service-entitlement-attestation"
       }
     },
     {
@@ -3733,6 +4171,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
@@ -3760,6 +4201,9 @@
       "skos:scopeNote": {
         "@value": "Certification is its business, so the issuing cost is already paid for. GMP for pharmaceuticals, quality accreditations for aerospace.",
         "@language": "en"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:quality-accreditation-certificate"
       }
     },
     {
@@ -3783,6 +4227,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:quality-accreditation-certificate"
       }
     },
     {
@@ -3806,6 +4253,12 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:supplier-qualification-record"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:quality-accreditation-certificate"
       }
     },
     {
@@ -3856,6 +4309,9 @@
       "skos:scopeNote": {
         "@value": "Carries the cost of the credential every other use case depends on, while the value lands on the parties verifying it. The asymmetry at the root of the ecosystem.",
         "@language": "en"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
@@ -3879,6 +4335,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
@@ -3902,6 +4361,9 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
