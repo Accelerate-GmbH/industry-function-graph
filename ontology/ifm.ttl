@@ -1,23 +1,34 @@
 # Industry–Function Mapping (IFM) — core ontology
 #
-# The layers of the model:
-#   1. Sector       — where an activity happens  (SKOS rendering of ISIC Rev. 5)
-#   2. Function     — what is being done         (IFM scheme, aligned to UN CBF / APQC PCF)
-#   2d. Value stream— the end-to-end sequence a function sits in
-#   3. Use case     — the bridge between sector and function
-#   3a. Why and how far — value drivers, transformation mode
-#   3b. Who         — participations, trust roles, cost and value
-#   3c. Interface   — pre- and postconditions over a shared state vocabulary
-#   4. Credential   — credential types, attached to a participation
+# The graph exists so that ecosystem use cases and real implementation flows can
+# be classified and composed. Three concerns are kept apart, and the separation
+# is the load-bearing decision in this file:
 #
-# Layer 4 is implemented: see ifm:CredentialType, ifm:issuesCredential,
-# ifm:holdsCredential, ifm:presentsCredential and ifm:verifiesCredential, and
-# ../data/credential-types.csv and ../data/participation-credentials.csv.
+#   CLASSIFICATION  where does this use case belong?
+#                   ifm:Sector, ifm:BusinessFunction, ifm:ValueStream,
+#                   ifm:ValueStreamStage
 #
-# Which parts of this vocabulary are IFM's own rather than reused from an
-# external standard is recorded on each class. External classifications are
-# referenced, not forked: the alignment to them is carried as SKOS mapping
-# relations in ../data/function-alignments.csv.
+#   INTERFACE       what can connect to it?
+#                   ifm:Condition, ifm:Requirement, ifm:Provision,
+#                   ifm:requires, ifm:provides
+#
+#   REALISATION     how is it implemented?
+#                   ifm:Flow, ifm:CredentialType, ifm:Participation,
+#                   ifm:TrustRole, protocol profile, governance reference
+#
+# Two rules follow from the separation and are worth stating before anything
+# else, because breaking either collapses the model back into a taxonomy:
+#
+#   A classification relationship never implies composability. Two use cases
+#   under the same function, in the same sector, at the same value-stream stage
+#   do not thereby connect. They connect when one provides a condition the
+#   other requires.
+#
+#   A credential identifier is never the mechanism of composition. A use case
+#   provides a condition; a credential can substantiate that condition; another
+#   use case requires the condition, not the credential. That is what lets a
+#   second credential, issuer or evidence mechanism serve the same business
+#   interface without touching the classification.
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
@@ -31,18 +42,171 @@
 <https://didas-swiss.github.io/industry-function-graph/ontology>
     a owl:Ontology ;
     dct:title "Industry–Function Mapping ontology"@en ;
-    dct:description """Vocabulary for describing use cases for verifiable
-credentials against an industry sector taxonomy and a business function
-taxonomy, together with the states they consume and produce, the parties that
-take part, and the credential types those parties handle. The purpose is that
-the same function can be recognised across sectors and the same sector compared
-across functions."""@en ;
+    dct:description """Vocabulary for classifying reusable business use cases
+against an industry sector taxonomy, a business function taxonomy and a value
+stream position; for describing each one's machine-readable interface of
+required and provided conditions; and for recording the real implementation
+flows and credential types that realise them. The purpose is that a new
+ecosystem flow or a new credential type can find a stable place in the
+classification and connect to what is already there, instead of forcing the
+classification itself to grow."""@en ;
     dct:creator "Daniel Saeuberli" ;
     dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-    owl:versionInfo "0.2.0" .
+    owl:versionInfo "0.3.0" .
 
 ################################################################
-# Layer 1 — Sector
+# Composition — the abstract interface
+#
+# A use case pattern, a value stream stage and a value stream itself all expose
+# the same shape: a set of required conditions and a set of provided ones. One
+# abstract class carries that shape so the composition rules are written once
+# and every kind of element can feed every other kind.
+################################################################
+
+ifm:ComposableElement a owl:Class ;
+    rdfs:label "Composable element"@en ;
+    rdfs:comment """Anything with an interface of required and provided
+conditions: a use case pattern, a value stream stage, or a whole value stream.
+Introduced because the composition rules are identical for all three, so a use
+case can feed a value stream and a value stream can feed a use case without a
+second set of properties."""@en .
+
+ifm:Requirement a owl:Class ;
+    rdfs:label "Requirement"@en ;
+    rdfs:comment """One thing that must be true before a composable element can
+run. Reified rather than a bare link to a condition, so it can also name the
+actor the condition is about, a specific evidence type where the requirement
+genuinely turns on one, and contextual constraints.
+
+Only the condition is mandatory. An interface stays as loose as its author left
+it: a requirement that names no subject role, no evidence type and no context
+is met by anything that provides a compatible condition."""@en .
+
+ifm:Provision a owl:Class ;
+    rdfs:label "Provision"@en ;
+    rdfs:comment """One thing that is true once a composable element has run.
+Reified for the same reasons as ifm:Requirement. Exactly one provision of a use
+case pattern is its principal outcome; the rest are additional outputs."""@en .
+
+ifm:requires a owl:ObjectProperty ;
+    rdfs:label "requires"@en ;
+    rdfs:domain ifm:ComposableElement ;
+    rdfs:range ifm:Requirement ;
+    rdfs:comment "An element with no requirement can start unaided."@en .
+
+ifm:provides a owl:ObjectProperty ;
+    rdfs:label "provides"@en ;
+    rdfs:domain ifm:ComposableElement ;
+    rdfs:range ifm:Provision ;
+    rdfs:comment "Every use case pattern must provide at least one thing, or nothing can follow it."@en .
+
+ifm:condition a owl:ObjectProperty ;
+    rdfs:label "condition"@en ;
+    rdfs:range ifm:Condition ;
+    rdfs:comment "The condition a requirement asks for or a provision establishes. The one mandatory part of an interface point."@en .
+
+ifm:subjectRole a owl:ObjectProperty ;
+    rdfs:label "subject role"@en ;
+    rdfs:range ifm:SubjectRole ;
+    rdfs:comment """Which party the condition is about, where a use case
+involves more than one it could apply to. A requirement about an organisation is
+not met by a provision about a natural person. Omitted where the subject is
+obvious."""@en .
+
+ifm:evidenceType a owl:ObjectProperty ;
+    rdfs:label "evidence type"@en ;
+    rdfs:range ifm:CredentialType ;
+    rdfs:comment """A specific credential, recorded only where the interface
+point genuinely turns on one. On a requirement it narrows what is acceptable;
+on a provision it records what this element actually issues. Most interface
+points should leave it empty, because naming a credential in an interface is
+what stops a second credential from serving the same business need."""@en .
+
+ifm:contextConstraint a owl:DatatypeProperty ;
+    rdfs:label "context constraint"@en ;
+    rdfs:comment """Contextual constraints on an interface point, as
+`key=value` clauses: jurisdiction, sector, actor type, governing authority,
+required assurance, governance regime. Composition means a compatible interface
+AND compatible context. The vocabulary is deliberately small for now; the shape
+is here so it can grow without the interface model changing."""@en .
+
+ifm:principalOutcome a owl:DatatypeProperty ;
+    rdfs:label "principal outcome"@en ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment """True on the one provision that is the use case's reason for
+existing. Exactly one per use case pattern. Additional provisions are legitimate
+outputs; they are not what the use case is for."""@en .
+
+ifm:satisfies a owl:ObjectProperty ;
+    rdfs:label "satisfies"@en ;
+    rdfs:domain ifm:Provision ;
+    rdfs:range ifm:Requirement ;
+    rdfs:comment """Derived: this provision meets that requirement. True when
+the provided condition is the required one or narrower than it, the subject
+roles agree where both are stated, any named evidence type is met, and the
+context constraints are compatible. Never entered by hand."""@en .
+
+ifm:enables a owl:ObjectProperty ;
+    rdfs:label "enables"@en ;
+    rdfs:domain ifm:ComposableElement ;
+    rdfs:range ifm:ComposableElement ;
+    rdfs:comment """Derived: something this element provides satisfies a
+requirement of the other. Computed from the interfaces through the condition
+subsumption lattice, so an element providing something narrower than what a
+downstream element asks for is still recognised as feeding it."""@en .
+
+################################################################
+# Conditions — what interfaces are written in
+#
+# Conditions form a subsumption lattice through skos:broader. That is what lets
+# an interface be written at the level of generality it actually needs: a use
+# case asking for "education qualification evidence" is fed by one providing an
+# upper-secondary qualification, without either naming the other.
+################################################################
+
+ifm:Condition a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Condition"@en ;
+    rdfs:comment """Something that is true, or that a party holds, before or
+after a composable element runs. Conditions are deliberately coarse, because
+their purpose is to be shared: a condition used by one use case connects
+nothing.
+
+A narrower condition satisfies a requirement for a broader one, never the
+reverse. skos:broader carries that relation."""@en .
+
+ifm:EvidenceCondition a owl:Class ;
+    rdfs:subClassOf ifm:Condition ;
+    rdfs:label "Evidence condition"@en ;
+    rdfs:comment """Evidence is available: a party holds something it can
+present and another can check. Says nothing about whether anyone has checked it
+or acted on it, which is the distinction the rest of these subclasses exist to
+keep."""@en .
+
+ifm:FactCondition a owl:Class ;
+    rdfs:subClassOf ifm:Condition ;
+    rdfs:label "Fact condition"@en ;
+    rdfs:comment """A relying party has established a fact by checking evidence:
+an identity verified, an age threshold proven, a qualification confirmed.
+Holding evidence is not this."""@en .
+
+ifm:OutcomeCondition a owl:Class ;
+    rdfs:subClassOf ifm:Condition ;
+    rdfs:label "Outcome condition"@en ;
+    rdfs:comment "A business decision has been taken on established facts - a supplier accepted, a record bound to a person."@en .
+
+ifm:RelationshipCondition a owl:Class ;
+    rdfs:subClassOf ifm:Condition ;
+    rdfs:label "Relationship condition"@en ;
+    rdfs:comment "An ongoing relationship, entitlement or access exists and persists after the interaction that created it."@en .
+
+ifm:SubjectRole a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Subject role"@en ;
+    rdfs:comment "Which party an interface point's condition is about."@en .
+
+################################################################
+# Classification — where a use case belongs
 ################################################################
 
 ifm:Sector a owl:Class ;
@@ -52,11 +216,13 @@ ifm:Sector a owl:Class ;
 they are a local SKOS rendering of ISIC Rev. 5 (sections, divisions, classes).
 skos:notation carries the official ISIC code.
 
+Sector is context, not identity. Two flows doing the same work in different
+sectors realise one use case pattern; they do not become two patterns.
+
 Identifiers for divisions and classes deliberately omit the section letter.
 Letters move between revisions - finance went K to L, education P to Q and human
 health Q to R between Rev. 4 and Rev. 5 - while the division and class numbers
-hold. An identifier keyed on the letter would have to be rewritten at every
-revision."""@en .
+hold."""@en .
 
 ifm:naceRev21Code a owl:DatatypeProperty ;
     rdfs:label "NACE Rev. 2.1 code"@en ;
@@ -64,15 +230,9 @@ ifm:naceRev21Code a owl:DatatypeProperty ;
     rdfs:range xsd:string ;
     rdfs:comment """NACE Rev. 2.1 is the European classification derived from
 ISIC Rev. 5, and its sections and divisions are reported to be identical to
-ISIC's. The code is therefore recorded as a literal at those two levels only. It
-is NOT asserted at class level, where NACE subdivides ISIC according to European
-requirements, nor for divisions the cross-check described in ../README.md could
-not cover. See ../README.md § "Provenance" for how far that relationship has
-been verified from primary sources."""@en .
-
-################################################################
-# Layer 2 — Function
-################################################################
+ISIC's. The code is therefore recorded at those two levels only, and not at
+class level where NACE subdivides ISIC. See ../README.md § "Provenance" for how
+far that relationship has been verified from primary sources."""@en .
 
 ifm:BusinessFunction a owl:Class ;
     rdfs:subClassOf skos:Concept ;
@@ -83,83 +243,33 @@ same function in banking and in healthcare; only its regulatory context differs.
 
 A business function must not denote an industry, a department, an actor, a
 technology, a legal obligation or a desired outcome. An entry that cannot be
-stated without naming one of those belongs in another layer: an industry in the
-sector layer, an actor in a participation, a document in the credential layer,
-an outcome in the state vocabulary.
+stated without naming one of those belongs in another layer.
 
-The scheme is IFM's own. It is not a fork of CBF or of the APQC PCF; the
-relation to those is carried as SKOS mapping relations, so an external
-classification can be corrected or replaced without touching a use case."""@en .
-
-################################################################
-# Layer 3 — Use case (the bridge)
-################################################################
-
-ifm:UseCase a owl:Class ;
-    rdfs:label "Use case"@en ;
-    rdfs:comment """An intersection node: a reusable definition of a piece of
-work that a given function performs inside a given sector. Use cases are where
-sector-specific regulation meets a sector-neutral function.
-
-A use case is a pattern, not an occurrence. It is deliberately not a
-schema:Action, which models an action that is being or has been performed by an
-agent at a time; nothing in this graph records an instance of a use case being
-carried out."""@en .
-
-ifm:appliesToSector a owl:ObjectProperty ;
-    rdfs:label "applies to sector"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:Sector ;
-    rdfs:comment """Link to the most specific ISIC concept that is actually
-warranted. A use case that genuinely spans an entire section links to the
-section, not to an arbitrary class inside it."""@en .
-
-ifm:executesFunction a owl:ObjectProperty ;
-    rdfs:label "executes function"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:BusinessFunction .
-
-ifm:primaryFunction a owl:ObjectProperty ;
-    rdfs:subPropertyOf ifm:executesFunction ;
-    rdfs:label "primary function"@en ;
-    rdfs:comment "The one function the use case exists to perform. Exactly one per use case."@en .
-
-ifm:sectorHasUseCase a owl:ObjectProperty ;
-    rdfs:label "sector has use case"@en ;
-    owl:inverseOf ifm:appliesToSector .
-
-ifm:functionHasUseCase a owl:ObjectProperty ;
-    rdfs:label "function has use case"@en ;
-    owl:inverseOf ifm:executesFunction .
-
-################################################################
-# Layer 2d - value streams
-#
-# A value stream is an end-to-end sequence of functions producing an outcome.
-# The concept follows ArchiMate's Value Stream element: the what rather than
-# the how. The catalogue and the stage decomposition are IFM editorial models,
-# not extracts from an external standard - no openly licensed catalogue of value
-# streams exists; APQC publishes end-to-end maps under its own terms and the SAP
-# naming is proprietary.
-#
-# Streams compose functions without owning them. One function appears in several
-# streams, so this is a many-to-many relation and not a hierarchy.
-################################################################
+The scheme is IFM's own; the relation to CBF and the APQC PCF is carried as
+SKOS mapping relations, so an external classification can be corrected or
+replaced without touching a use case."""@en .
 
 ifm:ValueStream a owl:Class ;
-    rdfs:subClassOf skos:Concept ;
+    rdfs:subClassOf ifm:ComposableElement, skos:Concept ;
     rdfs:label "Value stream"@en ;
-    rdfs:comment """An ordered sequence of functions delivering an outcome -
-procure to pay, order to cash. Stages are reified rather than listed, so each
-carries its position and its own label.
+    rdfs:comment """An ordered sequence of stages delivering an outcome - procure
+to pay, order to cash. The concept follows ArchiMate's Value Stream element.
+
+A value stream is a composition template, not just a list of functions: each
+stage carries its own interface, and the stream as a whole exposes start
+requirements and end outcomes through the same ifm:requires and ifm:provides as
+a use case. That is what lets a use case feed a stream and a stream feed a use
+case.
 
 Each catalogue entry here is one modelled decomposition, not the universal
-sequence for that stream. Organisations decompose the same stream
-differently."""@en .
+sequence for that stream."""@en .
 
 ifm:ValueStreamStage a owl:Class ;
+    rdfs:subClassOf ifm:ComposableElement ;
     rdfs:label "Value stream stage"@en ;
-    rdfs:comment "One step of a modelled value stream: a position, a label and the function it exercises."@en .
+    rdfs:comment """One step of a modelled value stream: a position, a label, the
+function it exercises, and its own interface of required and provided
+conditions. Several use case patterns may realise the same stage."""@en .
 
 ifm:hasStage a owl:ObjectProperty ;
     rdfs:label "has stage"@en ;
@@ -177,138 +287,225 @@ ifm:position a owl:DatatypeProperty ;
     rdfs:comment """Where the stage sits in the reading order of the modelled
 sequence. An ordering and presentation hint only. It does not assert temporal
 exclusivity, that the stage is mandatory, that it causally depends on the
-preceding one, or any process-control semantics. In practice stages overlap,
-repeat and are skipped."""@en .
+preceding one, or any process-control semantics. What actually orders the work
+is the stages' interfaces."""@en .
 
 ifm:stageFunction a owl:ObjectProperty ;
     rdfs:label "stage function"@en ;
     rdfs:domain ifm:ValueStreamStage ;
     rdfs:range ifm:BusinessFunction .
 
-ifm:valueStream a owl:ObjectProperty ;
-    rdfs:label "value stream"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:ValueStream ;
-    rdfs:comment "The modelled end-to-end sequence this use case is positioned within. Optional, and a use case may sit in more than one."@en .
+ifm:realisesStage a owl:ObjectProperty ;
+    rdfs:label "realises stage"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:ValueStreamStage ;
+    rdfs:comment """This use case pattern is one way of performing that stage.
+Several patterns may realise one stage, and one pattern may realise stages in
+several streams - which is the point of separating the two."""@en .
 
 ################################################################
-# Layer 3a - why it is worth doing, and how far it changes things
-#
-# Sector and function say where a use case sits. They say nothing about why
-# applying a verifiable credential there is worth the effort, or whether it
-# improves a process that already exists or reorganises it. Both are properties
-# of the use case: the same function, in the same sector, can be a paper
-# substitution in one instance and a new operating model in another.
-#
-# Both vocabularies are IFM editorial classifications. Neither is taken from,
-# nor aligned to, an external standard.
+# Use case patterns — the canonical unit
 ################################################################
 
-ifm:ValueDriver a owl:Class ;
-    rdfs:subClassOf skos:Concept ;
-    rdfs:label "Value driver"@en ;
-    rdfs:comment """What applying a verifiable credential to this use case
-reduces, removes or makes possible - friction, fraud risk, disclosure,
-unreachable counterparties. A use case usually has several, and they are not
-ranked. An IFM editorial vocabulary."""@en .
+ifm:UseCasePattern a owl:Class ;
+    rdfs:subClassOf ifm:ComposableElement ;
+    rdfs:label "Use case pattern"@en ;
+    rdfs:comment """A reusable unit of business activity with one primary
+business function, a defined set of required conditions and one principal
+business outcome. It may expose additional outputs, but it must represent one
+coherent transformation:
 
-ifm:valueDriver a owl:ObjectProperty ;
-    rdfs:label "value driver"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:ValueDriver .
+    required conditions  ->  use case  ->  provided conditions
 
-ifm:TransformationMode a owl:Class ;
-    rdfs:subClassOf skos:Concept ;
-    rdfs:label "Transformation mode"@en ;
-    rdfs:comment """How far the process changes: digitise, optimise, redesign or
-enable. Exactly one per use case. An IFM editorial classification, not an
-external standard. The first two are usually justified by a business case that
-counts steps removed; the last two are justified strategically, and may show a
-weak business case until they work."""@en .
+Atomicity. If a candidate performs several independent transformations that
+could be reused on their own, it is not one pattern: split it, and model the
+larger process as a flow or a value stream composing the parts. "Employee
+onboarding" containing identity proofing, qualification verification, contract
+signing and access provisioning is four reusable patterns and one flow, not one
+pattern.
 
-ifm:transformationMode a owl:ObjectProperty ;
-    rdfs:label "transformation mode"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:TransformationMode .
+A pattern is a definition, not an occurrence, and not an implementation. It is
+deliberately not a schema:Action, and the concrete implementations of it are
+ifm:Flow instances."""@en .
 
-ifm:ChangeMode a owl:Class ; rdfs:label "Change mode"@en ;
-    rdfs:comment "An IFM editorial two-way split over the transformation modes. Derived, never typed in."@en .
-ifm:Run    a ifm:ChangeMode ; rdfs:label "Run"@en ;
-    rdfs:comment "Improving a process the organisation already has. Derived from the transformation mode."@en .
-ifm:Change a ifm:ChangeMode ; rdfs:label "Change"@en ;
-    rdfs:comment "Reorganising a process, or enabling something previously impractical. Derived from the transformation mode."@en .
+ifm:appliesToSector a owl:ObjectProperty ;
+    rdfs:label "applies to sector"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:Sector ;
+    rdfs:comment """Where the pattern is applicable, which is broader than where
+it has been implemented. Applicability is editorial; the sectors flows actually
+run in are recorded on the flows."""@en .
 
-ifm:changeMode a owl:ObjectProperty ;
-    rdfs:label "change mode"@en ;
-    rdfs:range ifm:ChangeMode ;
-    rdfs:comment "Run or change. Derived from the transformation mode, never typed in."@en .
+ifm:executesFunction a owl:ObjectProperty ;
+    rdfs:label "executes function"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:BusinessFunction ;
+    rdfs:comment """A supporting function. Useful for discovery and context; it
+must not determine a use case's identity or its composition, which run on the
+primary function and the interface."""@en .
+
+ifm:primaryFunction a owl:ObjectProperty ;
+    rdfs:subPropertyOf ifm:executesFunction ;
+    rdfs:label "primary function"@en ;
+    rdfs:comment "The one function the use case exists to perform. Exactly one per pattern."@en .
+
+ifm:sectorHasUseCase a owl:ObjectProperty ;
+    rdfs:label "sector has use case"@en ;
+    owl:inverseOf ifm:appliesToSector .
+
+ifm:functionHasUseCase a owl:ObjectProperty ;
+    rdfs:label "function has use case"@en ;
+    owl:inverseOf ifm:executesFunction .
+
+ifm:requiresUseCase a owl:ObjectProperty ;
+    rdfs:label "requires use case"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:UseCasePattern ;
+    rdfs:comment """A named dependency on another specific use case. Exceptional
+by design, and empty in this repository.
+
+Prefer the interface. "Tertiary admission requires verified qualification
+evidence" composes with any upstream flow that can establish it; "tertiary
+admission requires the Maturitätszeugnis issuance use case" composes with
+exactly one and silently excludes every alternative route. Use this property
+only for a dependency that genuinely cannot be stated as a condition."""@en .
 
 ################################################################
-# Layer 4 - credential types
-#
-# Credentials attach to a participation - a party in a role - so that the issuer,
-# the holder and the verifier each name what they handle. A property on the use
-# case itself could not express the common case where one party issues one
-# credential and another checks a different one within the same use case.
-#
-# The four verbs mark the lifecycle stage a use case covers: issued, held,
-# presented, verified. A use case may cover only part of it. `holds` marks the
-# use case in which the holder comes into possession, which is the issuing one;
-# a holder presenting a credential it obtained elsewhere records `presents`
-# alone.
+# Realisation — how a use case is actually implemented
 ################################################################
+
+ifm:Flow a owl:Class ;
+    rdfs:label "Flow"@en ;
+    rdfs:comment """A real implementation: an actual trust flow, in an actual
+sector and jurisdiction, naming the credential types it uses, the parties and
+roles that take part, the protocols and governance it runs under, and where it
+is documented.
+
+A flow realises one or more use case patterns, in order. Keeping flows out of
+the taxonomy is the point of the distinction: an ecosystem adds implementations
+continuously, and each new one should find a place among the existing patterns
+rather than becoming another canonical node. Several flows realising one pattern
+is the normal case, not an exception."""@en .
+
+ifm:realisesUseCase a owl:ObjectProperty ;
+    rdfs:label "realises use case"@en ;
+    rdfs:domain ifm:Flow ;
+    rdfs:range ifm:UseCasePattern ;
+    rdfs:comment "A canonical pattern this flow implements. A flow that composes several patterns records each, with its step."@en .
+
+ifm:realisedBy a owl:ObjectProperty ;
+    rdfs:label "realised by"@en ;
+    owl:inverseOf ifm:realisesUseCase .
+
+ifm:realisationStep a owl:DatatypeProperty ;
+    rdfs:label "realisation step"@en ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Where a realised pattern sits in the flow's sequence."@en .
+
+ifm:sectorContext a owl:ObjectProperty ;
+    rdfs:label "sector context"@en ;
+    rdfs:domain ifm:Flow ;
+    rdfs:range ifm:Sector ;
+    rdfs:comment """The sector this implementation actually runs in. Omitted for
+infrastructure flows that belong to no one sector."""@en .
+
+ifm:jurisdiction a owl:DatatypeProperty ;
+    rdfs:label "jurisdiction"@en ;
+    rdfs:domain ifm:Flow ;
+    rdfs:comment "The legal jurisdiction the implementation runs under, as an ISO 3166 alpha-2 code."@en .
+
+ifm:governanceReference a owl:DatatypeProperty ;
+    rdfs:label "governance reference"@en ;
+    rdfs:domain ifm:Flow ;
+    rdfs:comment "The statute, framework or scheme rules the implementation operates under, where one has been established."@en .
 
 ifm:CredentialType a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     rdfs:label "Credential type"@en ;
     rdfs:comment """A kind of verifiable credential, not an instance of one, and
-not a claim, a derived attribute or a business conclusion. A credential type is
-recorded here only where something is actually issued as a separate artefact.
+not a claim, a derived attribute or a business conclusion. Recorded only where
+something is actually issued as a separate artefact.
 
-The schema itself is published by the relevant ecosystem; what is recorded here
-is the wire format, the semantic model, the trust framework, the protocol
-profile and the state the credential provides evidence for - each only where it
-has been established."""@en .
+A credential is evidence, not a socket. It substantiates a condition; it is not
+what two use cases plug into each other with. Several credential types can
+substantiate the same condition, which is what lets a new credential enter the
+ecosystem without any canonical use case changing."""@en .
 
-ifm:evidences a owl:ObjectProperty ;
-    rdfs:label "evidences"@en ;
+ifm:substantiates a owl:ObjectProperty ;
+    rdfs:label "substantiates"@en ;
     rdfs:domain ifm:CredentialType ;
-    rdfs:range ifm:State ;
-    rdfs:comment """This credential type provides evidence that may support the
-establishment of the state. It does not assert equivalence: possession is not
-verification, and verification is not acceptance. Whether a relying party
-accepts the evidence is a governance question this graph does not settle."""@en .
+    rdfs:range ifm:Condition ;
+    rdfs:comment """This credential type is evidence that may support the
+condition. Not equivalence, and not exclusivity: possession is not verification,
+verification is not acceptance, several credentials may substantiate one
+condition, and one credential may substantiate several."""@en .
+
+ifm:substantiatedBy a owl:ObjectProperty ;
+    rdfs:label "substantiated by"@en ;
+    rdfs:domain ifm:Condition ;
+    rdfs:range ifm:CredentialType ;
+    owl:inverseOf ifm:substantiates ;
+    rdfs:comment """Which credential types are acceptable evidence for this
+condition. Several is the normal case, and the reason a new credential can enter
+the ecosystem without any use case changing."""@en .
 
 ifm:credentialFormat a owl:DatatypeProperty ;
     rdfs:label "credential format"@en ;
     rdfs:domain ifm:CredentialType ;
-    rdfs:comment """The credential's wire format or representation: SD-JWT VC,
-W3C VCDM, and so on. A version is recorded only where the ecosystem states
-one."""@en .
+    rdfs:comment "The wire format or representation: SD-JWT VC, W3C VCDM. A version only where the ecosystem states one."@en .
 
 ifm:semanticModel a owl:DatatypeProperty ;
     rdfs:label "semantic model"@en ;
     rdfs:domain ifm:CredentialType ;
-    rdfs:comment """The schema or data model family that gives the credential's
-claims their meaning - the European Learning Model, a UNTP credential type.
-Distinct from the wire format, which says how the claims are carried, and from
-the trust framework, which says who may issue them. Omitted where none has been
-established."""@en .
+    rdfs:comment "The schema family that gives the claims their meaning. Distinct from the wire format and from the trust framework."@en .
 
 ifm:trustFramework a owl:DatatypeProperty ;
     rdfs:label "trust framework"@en ;
     rdfs:domain ifm:CredentialType ;
-    rdfs:comment """The governance framework under which issuers are authorised
-and verifiers decide an issuer is credible - swiyu for the Swiss trust
-infrastructure, UN/CEFACT's UN Transparency Protocol for trade. Omitted where
-none has been chosen. It is not interchangeable with the format or the semantic
-model: a credential can use a format without belonging to any framework."""@en .
+    rdfs:comment "The governance framework under which issuers are authorised. Omitted where none has been chosen."@en .
 
 ifm:protocolProfile a owl:DatatypeProperty ;
     rdfs:label "protocol profile"@en ;
     rdfs:domain ifm:CredentialType ;
-    rdfs:comment """The issuance and presentation profile the credential is
-exchanged under, where an ecosystem names one. Omitted otherwise."""@en .
+    rdfs:comment "The issuance and presentation profile the credential is exchanged under, where an ecosystem names one."@en .
+
+ifm:TrustRole a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Trust role"@en ;
+    rdfs:comment """The role a party plays in a credential exchange: issuer,
+holder, verifier, relying party or trust anchor. Verifier and relying party are
+distinct roles that frequently belong to the same organisation; where one
+organisation plays several roles in one flow, each is its own
+participation."""@en .
+
+ifm:Participation a owl:Class ;
+    rdfs:label "Participation"@en ;
+    rdfs:comment """One party playing one role in one flow. A property of the
+implementation, not of the canonical use case: who does the work, at whose cost,
+is exactly what differs between two implementations of one pattern.
+
+Reified so it can carry who pays, who benefits and which credentials that party
+handles. A flow may hold several participations with the same trust role, so a
+participation is identified within its flow rather than by its role."""@en .
+
+ifm:participation a owl:ObjectProperty ;
+    rdfs:label "participation"@en ;
+    rdfs:domain ifm:Flow ;
+    rdfs:range ifm:Participation .
+
+ifm:inFlow a owl:ObjectProperty ;
+    rdfs:label "in flow"@en ;
+    owl:inverseOf ifm:participation .
+
+ifm:trustRole a owl:ObjectProperty ;
+    rdfs:label "trust role"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:range ifm:TrustRole .
+
+ifm:party a owl:DatatypeProperty ;
+    rdfs:label "party"@en ;
+    rdfs:domain ifm:Participation ;
+    rdfs:comment "The kind of organisation or person playing the role, not a named one."@en .
 
 ifm:issuesCredential a owl:ObjectProperty ;
     rdfs:label "issues credential"@en ;
@@ -320,9 +517,7 @@ ifm:holdsCredential a owl:ObjectProperty ;
     rdfs:label "holds credential"@en ;
     rdfs:domain ifm:Participation ;
     rdfs:range ifm:CredentialType ;
-    rdfs:comment """Recorded only on a participation whose trust role is holder,
-and only in the use case where the holder comes into possession of the
-credential."""@en .
+    rdfs:comment "Recorded only on a holder participation, and only in the flow where possession begins."@en .
 
 ifm:presentsCredential a owl:ObjectProperty ;
     rdfs:label "presents credential"@en ;
@@ -337,233 +532,133 @@ ifm:verifiesCredential a owl:ObjectProperty ;
     rdfs:comment "Recorded only on a participation whose trust role is verifier."@en .
 
 ################################################################
-# Layer 3c - states, and why use cases compose
+# Decision-support metadata
 #
-# Each use case has two ends: what must already be true for it to run, and what
-# is true once it has. Both are typed against a shared state vocabulary, so the
-# composition can be computed - B follows A when something A leaves true is
-# something B needs.
-#
-# Three results come from that, and none is available from the taxonomy alone:
-# the chain of use cases, the states everything needs and nothing produces, and
-# pairs of use cases with identical interfaces, which are likely duplicates.
+# Useful for prioritising work. Deliberately secondary: none of it takes part
+# in classification or in composition, and nothing below should be read as
+# having the standing of the interface model above.
 ################################################################
 
-ifm:State a owl:Class ;
+ifm:ValueDriver a owl:Class ;
     rdfs:subClassOf skos:Concept ;
-    rdfs:label "State"@en ;
-    rdfs:comment """Something that is true, or something a party holds. States
-are deliberately coarse, because their purpose is to be shared: a state used by
-only one use case cannot connect anything.
+    rdfs:label "Value driver"@en ;
+    rdfs:comment "What applying a verifiable credential to a use case reduces, removes or makes possible. An IFM editorial vocabulary."@en .
 
-States divide into evidence states and outcome states. Both compose in the same
-way - the distinction is about what the state asserts, not about how it is
-used."""@en .
+ifm:valueDriver a owl:ObjectProperty ;
+    rdfs:label "value driver"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:ValueDriver .
 
-ifm:EvidenceState a owl:Class ;
-    rdfs:subClassOf ifm:State ;
-    rdfs:label "Evidence state"@en ;
-    rdfs:comment """A party is in possession of evidence - typically a credential
-it holds. Possession alone says nothing about whether any relying party has
-verified it or acted on it."""@en .
-
-ifm:OutcomeState a owl:Class ;
-    rdfs:subClassOf ifm:State ;
-    rdfs:label "Outcome state"@en ;
-    rdfs:comment """A business or administrative conclusion has been reached: a
-relationship is open, an entitlement is established, an attribute has been
-demonstrated to a relying party. An outcome state may be supported by evidence
-without being equivalent to holding it."""@en .
-
-ifm:precondition a owl:ObjectProperty ;
-    rdfs:label "precondition"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:State ;
-    rdfs:comment "What must already be true. A use case with no precondition can start unaided."@en .
-
-ifm:postcondition a owl:ObjectProperty ;
-    rdfs:label "postcondition"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:State ;
-    rdfs:comment "What is true afterwards. Every use case must leave at least one state behind."@en .
-
-ifm:enables a owl:ObjectProperty ;
-    rdfs:label "enables"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:UseCase ;
-    rdfs:comment """Derived: this use case produces a state that the other needs.
-It is computed from the interfaces and never entered by hand, so a wrong arrow
-means a wrong precondition or postcondition somewhere."""@en .
-
-################################################################
-# Layer 3b - who does what, at whose cost, and what it displaces
-#
-# Credential ecosystems commonly stall for a commercial reason: the cost of
-# issuing falls on one party and the benefit of verifying on another. Recording
-# who bears cost and who gains value lets the graph surface where that happens.
-# What follows from it is a matter for judgement, not a result the graph
-# computes.
-################################################################
-
-ifm:TrustRole a owl:Class ;
+ifm:TransformationMode a owl:Class ;
     rdfs:subClassOf skos:Concept ;
-    rdfs:label "Trust role"@en ;
-    rdfs:comment """The role a party plays in a credential exchange: issuer,
-holder, verifier, relying party or trust anchor. Verifier and relying party are
-distinct roles that frequently belong to the same organisation; where one
-organisation plays several roles in one use case, each is recorded as its own
-participation."""@en .
+    rdfs:label "Transformation mode"@en ;
+    rdfs:comment "How far the process is reorganised. Exactly one per pattern. An IFM editorial classification, not an external standard."@en .
 
-ifm:Participation a owl:Class ;
-    rdfs:label "Participation"@en ;
-    rdfs:comment """One party playing one role in one use case. Reified so that
-it can carry who pays, who benefits and which credentials that party handles; a
-direct link from use case to role has nowhere to put those.
+ifm:transformationMode a owl:ObjectProperty ;
+    rdfs:label "transformation mode"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:TransformationMode .
 
-A use case may hold several participations with the same trust role - one party
-in two capacities, or two parties in the same capacity - so a participation is
-identified within its use case rather than by its role."""@en .
+ifm:ChangeMode a owl:Class ; rdfs:label "Change mode"@en ;
+    rdfs:comment "An IFM editorial two-way split over the transformation modes. Derived, never typed in."@en .
+ifm:Run    a ifm:ChangeMode ; rdfs:label "Run"@en .
+ifm:Change a ifm:ChangeMode ; rdfs:label "Change"@en .
 
-ifm:participation a owl:ObjectProperty ;
-    rdfs:label "participation"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:Participation .
-
-ifm:inUseCase a owl:ObjectProperty ;
-    rdfs:label "in use case"@en ;
-    owl:inverseOf ifm:participation .
-
-ifm:trustRole a owl:ObjectProperty ;
-    rdfs:label "trust role"@en ;
-    rdfs:domain ifm:Participation ;
-    rdfs:range ifm:TrustRole .
-
-ifm:party a owl:DatatypeProperty ;
-    rdfs:label "party"@en ;
-    rdfs:domain ifm:Participation ;
-    rdfs:comment "The kind of organisation or person playing the role, not a named one."@en .
+ifm:changeMode a owl:ObjectProperty ;
+    rdfs:label "change mode"@en ;
+    rdfs:range ifm:ChangeMode ;
+    rdfs:comment "Run or change. Derived from the transformation mode, never typed in."@en .
 
 ifm:bearsCost a owl:DatatypeProperty ;
     rdfs:label "bears cost"@en ;
     rdfs:domain ifm:Participation ;
     rdfs:range xsd:boolean ;
-    rdfs:comment """Whether this party carries material cost to make the use case
-work, as a yes or no. It carries no magnitude and no time profile."""@en .
+    rdfs:comment "Whether this party carries material cost to make the flow work, as a yes or no. No magnitude, no time profile."@en .
 
 ifm:gainsValue a owl:DatatypeProperty ;
     rdfs:label "gains value"@en ;
     rdfs:domain ifm:Participation ;
-    rdfs:comment """direct, indirect or none. An editorial judgement, and the
-conclusions drawn from cost/value asymmetry depend on it."""@en .
+    rdfs:comment "direct, indirect or none. An editorial judgement."@en .
 
 ifm:costValueAsymmetry a owl:DatatypeProperty ;
     rdfs:label "cost/value asymmetry"@en ;
-    rdfs:domain ifm:UseCase ;
+    rdfs:domain ifm:Flow ;
     rdfs:range xsd:boolean ;
-    rdfs:comment """True when at least one participation records bearing cost
-without direct value. Derived from the participations.
-
-An editorial heuristic for locating where funding or coordination may be needed,
-not an economic result. It aggregates two yes/no editorial judgements, weighs
-nothing, and supports no inference about whether a use case will be adopted."""@en .
+    rdfs:comment """True when at least one participation in the flow records
+bearing cost without direct value. An editorial heuristic for locating where
+funding or coordination may be needed, not an economic result: it aggregates two
+yes/no judgements, weighs nothing, and supports no inference about whether an
+implementation will be adopted."""@en .
 
 ifm:PriorEvidenceMechanism a owl:Class ;
     rdfs:subClassOf skos:Concept ;
     rdfs:label "Prior evidence mechanism"@en ;
-    rdfs:comment """A mechanism by which the same assurance is obtained today
-without a verifiable credential: a paper document, a PDF, a phone call to the
-issuer, a register lookup, an in-person visit. Naming it is how a claim of
-friction reduction becomes checkable. It is a description of the current
-mechanism, not a judgement on it."""@en .
+    rdfs:comment "How the same assurance is obtained today without a verifiable credential. A description of the current mechanism, not a judgement on it."@en .
 
 ifm:reducesRelianceOn a owl:ObjectProperty ;
     rdfs:label "reduces reliance on"@en ;
-    rdfs:domain ifm:UseCase ;
+    rdfs:domain ifm:UseCasePattern ;
     rdfs:range ifm:PriorEvidenceMechanism ;
-    rdfs:comment """The use case reduces how far the parties must rely on this
-mechanism for the same assurance. It does not assert that the mechanism is
-removed from the architecture, that it is inferior, or that it ceases to be
-available: a register queried less often is still a register."""@en .
-
-ifm:requiresUseCase a owl:ObjectProperty ;
-    rdfs:label "requires use case"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:UseCase ;
-    rdfs:comment """An asserted dependency, available for cases a modeller knows
-before the interfaces express them. It is validated against the interfaces: if A
-requires B, something B leaves true must be something A needs, otherwise either
-the assertion or the states need correcting. Prefer ifm:enables, which is
-derived."""@en .
-
-################################################################
-# Use case attributes
-################################################################
-
-ifm:Scope a owl:Class ; rdfs:label "Classification scope"@en ;
-    rdfs:comment """How widely a use case reaches across one level of the sector
-classification. Derived from the sectors a use case links to, at each of the
-three ISIC levels separately, because the three answer different questions and a
-single binary conflates them."""@en .
-
-ifm:CrossSection  a ifm:Scope ; rdfs:label "Cross-section"@en ;
-    rdfs:comment "Reaches more than one ISIC section. Derived, not hand-maintained."@en .
-ifm:SingleSection a ifm:Scope ; rdfs:label "Single-section"@en ;
-    rdfs:comment "Confined to one ISIC section. Derived, not hand-maintained."@en .
-ifm:CrossDivision  a ifm:Scope ; rdfs:label "Cross-division"@en ;
-    rdfs:comment """Reaches more than one ISIC division, or links a whole section
-and so spans every division under it. Derived, not hand-maintained."""@en .
-ifm:SingleDivision a ifm:Scope ; rdfs:label "Single-division"@en ;
-    rdfs:comment "Confined to one ISIC division. Derived, not hand-maintained."@en .
-ifm:CrossClass  a ifm:Scope ; rdfs:label "Cross-class"@en ;
-    rdfs:comment """Reaches more than one ISIC class, or links a section or
-division and so spans every class under it. Derived, not hand-maintained."""@en .
-ifm:SingleClass a ifm:Scope ; rdfs:label "Single-class"@en ;
-    rdfs:comment "Confined to one ISIC class. Derived, not hand-maintained."@en .
-
-ifm:sectionScope a owl:ObjectProperty ;
-    rdfs:label "section scope"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:Scope ;
-    rdfs:comment """Whether the use case stays inside one ISIC section. Note that
-this is a statement about the classification, not about industries in ordinary
-usage: banking and insurance are different industries inside one ISIC
-section."""@en .
-
-ifm:divisionScope a owl:ObjectProperty ;
-    rdfs:label "division scope"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:Scope .
-
-ifm:classScope a owl:ObjectProperty ;
-    rdfs:label "class scope"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:range ifm:Scope .
+    rdfs:comment """The use case reduces how far the parties must lean on this
+mechanism for the same assurance. It does not assert that the mechanism leaves
+the architecture: a register queried less often is still a register."""@en .
 
 ifm:Maturity a owl:Class ; rdfs:label "Maturity"@en ;
-    rdfs:comment "An IFM editorial classification of how far a use case has been worked out."@en .
+    rdfs:comment "How far a real implementation has been worked out. A property of a flow, not of a canonical pattern."@en .
 ifm:Exploratory a ifm:Maturity ; rdfs:label "Exploratory"@en ;
     rdfs:comment "Identified and scoped; no worked flow is linked."@en .
 ifm:Modelled    a ifm:Maturity ; rdfs:label "Modelled"@en ;
     rdfs:comment "A worked flow or equivalent detailed specification is linked through ifm:documentedBy."@en .
 ifm:Live        a ifm:Maturity ; rdfs:label "Live"@en ;
-    rdfs:comment """Documented as operational in at least one production
-deployment. Evidence for that is required and is linked through
-ifm:deploymentEvidence."""@en .
+    rdfs:comment "Documented as operational in at least one production deployment, with evidence linked through ifm:deploymentEvidence."@en .
 
 ifm:maturity a owl:ObjectProperty ;
     rdfs:label "maturity"@en ;
-    rdfs:domain ifm:UseCase ;
+    rdfs:domain ifm:Flow ;
     rdfs:range ifm:Maturity .
 
 ifm:documentedBy a owl:ObjectProperty ;
     rdfs:label "documented by"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:comment "The worked flow or detailed specification for this use case, wherever it is published."@en .
+    rdfs:domain ifm:Flow ;
+    rdfs:comment "The worked flow or detailed specification for this implementation, wherever it is published."@en .
 
 ifm:deploymentEvidence a owl:ObjectProperty ;
     rdfs:label "deployment evidence"@en ;
-    rdfs:domain ifm:UseCase ;
-    rdfs:comment "Evidence that the use case is operational in a production deployment. Required for ifm:Live."@en .
+    rdfs:domain ifm:Flow ;
+    rdfs:comment "Evidence that the implementation is operational in production. Required for ifm:Live."@en .
+
+################################################################
+# Derived classification scope
+################################################################
+
+ifm:Scope a owl:Class ; rdfs:label "Classification scope"@en ;
+    rdfs:comment """How widely a use case reaches across one level of the sector
+classification. Derived at each of the three ISIC levels separately, because
+they answer different questions and a single binary conflates them: banking and
+insurance are different industries inside one ISIC section."""@en .
+
+ifm:CrossSection  a ifm:Scope ; rdfs:label "Cross-section"@en .
+ifm:SingleSection a ifm:Scope ; rdfs:label "Single-section"@en .
+ifm:CrossDivision  a ifm:Scope ; rdfs:label "Cross-division"@en .
+ifm:SingleDivision a ifm:Scope ; rdfs:label "Single-division"@en .
+ifm:CrossClass  a ifm:Scope ; rdfs:label "Cross-class"@en .
+ifm:SingleClass a ifm:Scope ; rdfs:label "Single-class"@en .
+
+ifm:sectionScope a owl:ObjectProperty ;
+    rdfs:label "section scope"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:Scope ;
+    rdfs:comment "A statement about the classification, not about industries in ordinary usage."@en .
+
+ifm:divisionScope a owl:ObjectProperty ;
+    rdfs:label "division scope"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:Scope .
+
+ifm:classScope a owl:ObjectProperty ;
+    rdfs:label "class scope"@en ;
+    rdfs:domain ifm:UseCasePattern ;
+    rdfs:range ifm:Scope .
 
 ################################################################
 # Provenance of the taxonomy data itself
@@ -573,26 +668,18 @@ ifm:codeStatus a owl:DatatypeProperty ;
     rdfs:label "code status"@en ;
     rdfs:range xsd:string ;
     rdfs:comment """How far the notation and label of a concept have been checked
-against the official publication of the source classification. One of "verified"
-(checked against the published classification) or "provisional" (seeded here, to
-be replaced by an official extract). It describes the concept alone. The
-confidence of a mapping onto that concept is carried separately by
-ifm:mappingStatus. Never silently upgrade a value: see ../README.md §
-"Provenance"."""@en .
+against the official publication of the source classification: "verified" or
+"provisional". It describes the concept alone; the confidence of a mapping onto
+it is carried separately by ifm:mappingStatus."""@en .
 
 ifm:mappingStatus a owl:DatatypeProperty ;
     rdfs:label "mapping status"@en ;
     rdfs:range xsd:string ;
-    rdfs:comment """How a SKOS mapping between an IFM concept and an external
-concept was arrived at. One of "editorial" (a modeller's judgement, with the
-reasoning recorded on the row) or "verified" (taken from a published crosswalk).
-Independent of the external concept's own ifm:codeStatus: a mapping onto a
-verified concept can still be editorial."""@en .
+    rdfs:comment """How a SKOS mapping onto an external concept was arrived at:
+"editorial" or "verified". Independent of the external concept's own
+ifm:codeStatus."""@en .
 
 ifm:schemeVersion a owl:DatatypeProperty ;
     rdfs:label "scheme version"@en ;
     rdfs:range xsd:string ;
-    rdfs:comment """The edition of an external classification that the concepts
-carried here follow, where one is known. Where the edition could not be
-confirmed against the publisher's own document, the value says so rather than
-naming a release."""@en .
+    rdfs:comment "The edition of an external classification the concepts here follow, where one is known."@en .

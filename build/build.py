@@ -114,20 +114,28 @@ XSD_IRI = "http://www.w3.org/2001/XMLSchema#"
 PREFIXES = [
     ("ifm", ONT),
     ("scheme", ID_BASE + "scheme/"),
+    # Classification
     ("sector", ID_BASE + "sector/"),
     ("func", ID_BASE + "function/"),
     ("cbf", ID_BASE + "cbf/"),
     ("apqc", ID_BASE + "apqc/"),
-    ("uc", ID_BASE + "use-case/"),
-    ("driver", ID_BASE + "value-driver/"),
-    ("mode", ID_BASE + "transformation-mode/"),
     ("stream", ID_BASE + "value-stream/"),
     ("stage", ID_BASE + "value-stream-stage/"),
-    ("role", ID_BASE + "trust-role/"),
-    ("prior", ID_BASE + "prior-evidence/"),
+    ("uc", ID_BASE + "use-case/"),
+    # Interface
+    ("cond", ID_BASE + "condition/"),
+    ("req", ID_BASE + "requirement/"),
+    ("prov", ID_BASE + "provision/"),
+    ("srole", ID_BASE + "subject-role/"),
+    # Realisation
+    ("flow", ID_BASE + "flow/"),
     ("part", ID_BASE + "participation/"),
-    ("state", ID_BASE + "state/"),
     ("cred", ID_BASE + "credential-type/"),
+    ("role", ID_BASE + "trust-role/"),
+    # Decision support
+    ("driver", ID_BASE + "value-driver/"),
+    ("mode", ID_BASE + "transformation-mode/"),
+    ("prior", ID_BASE + "prior-evidence/"),
     ("skos", "http://www.w3.org/2004/02/skos/core#"),
     ("dct", "http://purl.org/dc/terms/"),
     ("rdfs", "http://www.w3.org/2000/01/rdf-schema#"),
@@ -174,20 +182,28 @@ def R(ref):
 # Turtle prefixed names cannot contain "/", so each layer gets its own prefix
 # rather than one namespace with slash-separated local names.
 PREFIX_OF_KIND = {
+    # Classification
     "sector": "sector",
     "function": "func",
     "cbf": "cbf",
     "apqc": "apqc",
-    "use-case": "uc",
-    "driver": "driver",
-    "mode": "mode",
     "stream": "stream",
     "stage": "stage",
-    "role": "role",
-    "prior-evidence": "prior",
+    "use-case": "uc",
+    # Interface
+    "condition": "cond",
+    "requirement": "req",
+    "provision": "prov",
+    "subject-role": "srole",
+    # Realisation
+    "flow": "flow",
     "participation": "part",
-    "state": "state",
     "credential": "cred",
+    "role": "role",
+    # Decision support
+    "driver": "driver",
+    "mode": "mode",
+    "prior-evidence": "prior",
 }
 
 
@@ -199,24 +215,7 @@ def concept_ref(kind, ident):
     return f"{PREFIX_OF_KIND[kind]}:{ident}"
 
 
-# What a party does with a credential. Keyed on the participation, so one party
-# holding two roles in a use case keeps its actions apart.
-def by_action(model, participation):
-    """{predicate: [credential ids]} for one participation.
-
-    Grouped by predicate because a party can verify two credentials. Two pairs
-    sharing a predicate serialise differently in Turtle and JSON-LD.
-    """
-    grouped: dict[str, list[str]] = {}
-    for link in model.credentials_of.get(
-            (participation["use_case_id"], participation["participation_id"]), []):
-        grouped.setdefault(ACTION_PROPERTY[link["action"]], []).append(
-            link["credential_type_id"])
-    return grouped
-
-
-# The four stages of the credential lifecycle a participation can cover:
-# issued, held, presented, verified.
+# The four stages of the credential lifecycle a participation can cover.
 ACTION_PROPERTY = {
     "issues": "ifm:issuesCredential",
     "holds": "ifm:holdsCredential",
@@ -224,14 +223,53 @@ ACTION_PROPERTY = {
     "verifies": "ifm:verifiesCredential",
 }
 
-
-# Evidence states record possession; outcome states record a business or
-# administrative conclusion. Both are ifm:State subclasses, so composition is
-# unaffected by which one a state is.
-STATE_CLASS = {
-    "evidence": "ifm:EvidenceState",
-    "outcome": "ifm:OutcomeState",
+# Evidence, fact, outcome and relationship conditions are all ifm:Condition
+# subclasses, so composition is unaffected by which one a condition is. The
+# distinction records what a condition asserts: holding evidence is not the
+# same as a relying party having established something on it.
+CONDITION_CLASS = {
+    "evidence": "ifm:EvidenceCondition",
+    "fact": "ifm:FactCondition",
+    "outcome": "ifm:OutcomeCondition",
+    "relationship": "ifm:RelationshipCondition",
 }
+
+
+def by_action(model, flow_id, participation_id):
+    """{predicate: [credential ids]} for one participation.
+
+    Grouped by predicate because a party can verify two credentials. Two pairs
+    sharing a predicate serialise differently in Turtle and JSON-LD.
+    """
+    grouped: dict[str, list[str]] = {}
+    for link in model.credentials_of.get((flow_id, participation_id), []):
+        grouped.setdefault(ACTION_PROPERTY[link["action"]], []).append(
+            link["credential_type_id"])
+    return grouped
+
+
+def interface_point(model, kind, ident, row, blocks, heading, is_provision):
+    """Emit one reified ifm:Requirement or ifm:Provision.
+
+    Reified rather than a bare condition link so an interface point can also
+    carry the subject role, a specific evidence type and context constraints -
+    none of them mandatory.
+    """
+    pairs = [
+        ("a", R("ifm:Provision" if is_provision else "ifm:Requirement")),
+        ("ifm:condition", R(concept_ref("condition", row["condition_id"]))),
+        ("ifm:subjectRole", R(concept_ref("subject-role", row["subject_role"]))
+         if row.get("subject_role", "").strip() else []),
+        ("ifm:evidenceType", R(concept_ref("credential", row["evidence_type"]))
+         if row.get("evidence_type", "").strip() else []),
+        ("ifm:contextConstraint", L(row.get("context", "").strip(), lang=None)),
+        ("skos:scopeNote", L(row.get("note", ""))),
+    ]
+    if is_provision:
+        pairs.insert(2, ("ifm:principalOutcome",
+                         [Lit("true", datatype="xsd:boolean")]
+                         if row.get("principal") == "yes" else []))
+    blocks.append((heading, Ref(concept_ref(kind, ident)), pairs))
 
 
 def graph_blocks(model):
@@ -255,7 +293,8 @@ def graph_blocks(model):
             ("dct:source", R(f"<{meta['source']}>")),
         ]))
 
-    heading = "Layer 1 - Sectors (ISIC Rev. 5)"
+    # ---------------------------------------------------------------
+    heading = "Classification - Sectors (ISIC Rev. 5)"
     for sector_id, row in model.sectors.items():
         narrower = [Ref(concept_ref("sector", other_id))
                     for other_id, other in model.sectors.items()
@@ -273,7 +312,7 @@ def graph_blocks(model):
             ("skos:scopeNote", L(row["note"])),
         ]))
 
-    heading = "Layer 2a - CBF categories (mapping target)"
+    heading = "Classification - CBF categories (mapping target)"
     for cbf_id, row in model.cbf.items():
         blocks.append((heading, Ref(concept_ref("cbf", cbf_id)), [
             ("a", R("skos:Concept")),
@@ -285,7 +324,7 @@ def graph_blocks(model):
             ("ifm:codeStatus", L(row["code_status"], lang=None)),
         ]))
 
-    heading = "Layer 2b - APQC PCF categories (mapping target)"
+    heading = "Classification - APQC PCF categories (mapping target)"
     for apqc_id, row in model.apqc.items():
         blocks.append((heading, Ref(concept_ref("apqc", apqc_id)), [
             ("a", R("skos:Concept")),
@@ -297,12 +336,10 @@ def graph_blocks(model):
             ("skos:scopeNote", L(row["note"])),
         ]))
 
-    heading = "Layer 2c - Operational business functions (+ alignments)"
+    heading = "Classification - Business functions (+ alignments)"
     kind_of_scheme = {"cbf": "cbf", "apqc-pcf": "apqc"}
     for function_id, row in model.functions.items():
-        matches = {}
-        notes = []
-        statuses: set[str] = set()
+        matches, notes, statuses = {}, [], set()
         for alignment in model.alignments:
             if alignment["function_id"] != function_id:
                 continue
@@ -329,59 +366,182 @@ def graph_blocks(model):
                            "skos:narrowMatch", "skos:relatedMatch"):
             pairs.append((match_type, matches.get(match_type, [])))
         pairs.append(("ifm:mappingStatus",
-                      [Lit(s, datatype=None, lang=None) for s in sorted(statuses)]))
+                      [Lit(s, lang=None) for s in sorted(statuses)]))
         pairs.append(("skos:editorialNote", notes))
         blocks.append((heading, Ref(concept_ref("function", function_id)), pairs))
 
-    heading = "Layer 4 - Credential types"
-    for cred_id, row in model.credential_types.items():
-        blocks.append((heading, Ref(concept_ref("credential", cred_id)), [
-            ("a", [Ref("ifm:CredentialType"), Ref("skos:Concept")]),
-            ("skos:inScheme", R(scheme_iri("ifm-credential-types"))),
-            ("skos:topConceptOf", R(scheme_iri("ifm-credential-types"))),
+    # ---------------------------------------------------------------
+    heading = "Interface - Conditions (the subsumption lattice)"
+    for condition_id, row in model.conditions.items():
+        narrower = [Ref(concept_ref("condition", other_id))
+                    for other_id, other in model.conditions.items()
+                    if other["broader"] == condition_id]
+        blocks.append((heading, Ref(concept_ref("condition", condition_id)), [
+            ("a", [Ref(CONDITION_CLASS[row["kind"]]), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-conditions"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-conditions")) if not row["broader"] else []),
             ("skos:prefLabel", L(row["pref_label_en"])),
             ("skos:definition", L(row["definition"])),
-            ("ifm:evidences", R(concept_ref("state", row["evidences_state"]))
-             if row["evidences_state"] else []),
-            ("ifm:credentialFormat", L(row["format"], lang=None)),
-            ("ifm:semanticModel", L(row["semantic_model"], lang=None)),
-            ("ifm:trustFramework", L(row["trust_framework"], lang=None)),
-            ("ifm:protocolProfile", L(row["protocol_profile"], lang=None)),
+            ("skos:broader", R(concept_ref("condition", row["broader"]))
+             if row["broader"] else []),
+            ("skos:narrower", narrower),
+            ("ifm:substantiatedBy", [Ref(concept_ref("credential", c))
+                                     for c in model.substantiated_by.get(condition_id, [])]),
+        ]))
+
+    heading = "Interface - Subject roles"
+    for role_id, row in model.subject_roles.items():
+        blocks.append((heading, Ref(concept_ref("subject-role", role_id)), [
+            ("a", [Ref("ifm:SubjectRole"), Ref("skos:Concept")]),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+        ]))
+
+    heading = "Interface - Requirements and provisions"
+    for row in model.uc_requires:
+        interface_point(model, "requirement",
+                        f"{row['use_case_id']}-{row['requirement_id']}", row,
+                        blocks, heading, is_provision=False)
+    for row in model.uc_provides:
+        interface_point(model, "provision",
+                        f"{row['use_case_id']}-{row['provision_id']}", row,
+                        blocks, heading, is_provision=True)
+    for row in model.stage_requires:
+        interface_point(model, "requirement",
+                        f"stage-{row['value_stream_id']}-{row['stage_id']}-{row['condition_id']}",
+                        row, blocks, heading, is_provision=False)
+    for row in model.stage_provides:
+        interface_point(model, "provision",
+                        f"stage-{row['value_stream_id']}-{row['stage_id']}-{row['condition_id']}",
+                        row, blocks, heading, is_provision=True)
+    for row in model.stream_requires:
+        interface_point(model, "requirement",
+                        f"stream-{row['value_stream_id']}-{row['condition_id']}",
+                        row, blocks, heading, is_provision=False)
+    for row in model.stream_provides:
+        interface_point(model, "provision",
+                        f"stream-{row['value_stream_id']}-{row['condition_id']}",
+                        row, blocks, heading, is_provision=True)
+
+    # ---------------------------------------------------------------
+    heading = "Classification - Value streams as composition templates"
+    for stream_id, row in model.value_streams.items():
+        stages = model.stages_of[stream_id]
+        blocks.append((heading, Ref(concept_ref("stream", stream_id)), [
+            ("a", [Ref("ifm:ValueStream"), Ref("ifm:ComposableElement"),
+                   Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-value-streams"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-value-streams"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:altLabel", [Lit(alt.strip()) for alt in row["also_known_as"].split(";")
+                               if alt.strip()]),
+            ("skos:definition", L(row["definition"])),
             ("ifm:codeStatus", L(row["code_status"], lang=None)),
+            ("ifm:hasStage", [Ref(concept_ref("stage", f"{stream_id}-{st['stage_id']}"))
+                              for st in stages]),
+            ("ifm:requires", [Ref(concept_ref(
+                "requirement", f"stream-{stream_id}-{r['condition_id']}"))
+                for r in model.stream_requires if r["value_stream_id"] == stream_id]),
+            ("ifm:provides", [Ref(concept_ref(
+                "provision", f"stream-{stream_id}-{r['condition_id']}"))
+                for r in model.stream_provides if r["value_stream_id"] == stream_id]),
+        ]))
+        for stage in stages:
+            stage_id = stage["stage_id"]
+            realised = [uc for uc, pairs in model.stages_realised_by.items()
+                        if (stream_id, stage_id) in pairs]
+            blocks.append((heading, Ref(concept_ref(
+                "stage", f"{stream_id}-{stage_id}")), [
+                ("a", [Ref("ifm:ValueStreamStage"), Ref("ifm:ComposableElement")]),
+                ("ifm:inValueStream", R(concept_ref("stream", stream_id))),
+                ("ifm:position", [Lit(int(stage["position"]), datatype="xsd:integer")]),
+                ("rdfs:label", L(stage["stage_label"])),
+                ("ifm:stageFunction", R(concept_ref("function", stage["function_id"]))),
+                ("ifm:requires", [Ref(concept_ref(
+                    "requirement", f"stage-{stream_id}-{stage_id}-{r['condition_id']}"))
+                    for r in model.stage_requires
+                    if r["value_stream_id"] == stream_id and r["stage_id"] == stage_id]),
+                ("ifm:provides", [Ref(concept_ref(
+                    "provision", f"stage-{stream_id}-{stage_id}-{r['condition_id']}"))
+                    for r in model.stage_provides
+                    if r["value_stream_id"] == stream_id and r["stage_id"] == stage_id]),
+                ("ifm:realisedBy", [Ref(concept_ref("use-case", uc)) for uc in realised]),
+                ("skos:scopeNote", L(stage["note"])),
+            ]))
+
+    # ---------------------------------------------------------------
+    heading = "Use case patterns (classification + interface)"
+    for uc_id, row in model.use_cases.items():
+        primary = model.primary_function(uc_id)
+        supporting = [r["function_id"] for r in model.functions_of[uc_id]
+                      if r["role"] != "primary"]
+        blocks.append((heading, Ref(concept_ref("use-case", uc_id)), [
+            ("a", [Ref("ifm:UseCasePattern"), Ref("ifm:ComposableElement")]),
+            ("rdfs:label", L(row["name"])),
+            ("dct:description", L(row["description"])),
+            # -- classification
+            ("ifm:appliesToSector", [Ref(concept_ref("sector", s))
+                                     for s in model.sectors_of[uc_id]]),
+            ("ifm:primaryFunction", R(concept_ref("function", primary)) if primary else []),
+            ("ifm:executesFunction", [Ref(concept_ref("function", f)) for f in supporting]),
+            ("ifm:realisesStage", [Ref(concept_ref("stage", f"{vs}-{st}"))
+                                   for vs, st in model.stages_realised_by[uc_id]]),
+            ("ifm:sectionScope", R(f"ifm:{model.scope_of(uc_id, 'section')}")),
+            ("ifm:divisionScope", R(f"ifm:{model.scope_of(uc_id, 'division')}")),
+            ("ifm:classScope", R(f"ifm:{model.scope_of(uc_id, 'class')}")),
+            # -- interface
+            ("ifm:requires", [Ref(concept_ref("requirement", f"{uc_id}-{r['requirement_id']}"))
+                              for r in model.requires_of[uc_id]]),
+            ("ifm:provides", [Ref(concept_ref("provision", f"{uc_id}-{p['provision_id']}"))
+                              for p in model.provides_of[uc_id]]),
+            ("ifm:enables", [Ref(concept_ref("use-case", other))
+                             for other in model.enables(uc_id)]),
+            ("ifm:requiresUseCase", [Ref(concept_ref("use-case", r))
+                                     for r in model.depends_on[uc_id]]),
+            # -- realisation
+            ("ifm:realisedBy", [Ref(concept_ref("flow", f))
+                                for f in model.flows_of_use_case(uc_id)]),
+            # -- decision support
+            ("ifm:valueDriver", [Ref(concept_ref("driver", d))
+                                 for d in model.value_drivers_of[uc_id]]),
+            ("ifm:reducesRelianceOn", [Ref(concept_ref("prior-evidence", e))
+                                       for e in model.prior_evidence_of[uc_id]]),
+            ("ifm:transformationMode", R(concept_ref("mode", row["transformation_mode"]))),
+            ("ifm:changeMode", R(f"ifm:{(model.change_mode_of(uc_id) or '').capitalize()}")),
+            ("skos:scopeNote", L(row["note"])),
         ]))
 
-    heading = "Layer 3c - States: the interface that makes use cases composable"
-    for state_id, row in model.states.items():
-        blocks.append((heading, Ref(concept_ref("state", state_id)), [
-            ("a", [Ref(STATE_CLASS[row["kind"]]), Ref("skos:Concept")]),
-            ("skos:inScheme", R(scheme_iri("ifm-states"))),
-            ("skos:topConceptOf", R(scheme_iri("ifm-states"))),
-            ("skos:prefLabel", L(row["pref_label_en"])),
-            ("skos:definition", L(row["definition"])),
+    # ---------------------------------------------------------------
+    heading = "Realisation - Flows (real implementations)"
+    for flow_id, row in model.flows.items():
+        documentation = model.documentation_iri(flow_id)
+        deployment = row["deployment_evidence"].strip()
+        blocks.append((heading, Ref(concept_ref("flow", flow_id)), [
+            ("a", R("ifm:Flow")),
+            ("rdfs:label", L(row["name"])),
+            ("dct:description", L(row["description"])),
+            ("ifm:realisesUseCase", [Ref(concept_ref("use-case", uc))
+                                     for uc in model.realises_of[flow_id]]),
+            ("ifm:sectorContext", R(concept_ref("sector", row["sector_id"]))
+             if row["sector_id"].strip() else []),
+            ("ifm:jurisdiction", L(row["jurisdiction"], lang=None)),
+            ("ifm:governanceReference", L(row["governance_ref"])),
+            ("ifm:participation", [Ref(concept_ref(
+                "participation", f"{flow_id}-{p['participation_id']}"))
+                for p in model.participants_of[flow_id]]),
+            ("ifm:costValueAsymmetry", [Lit(
+                "true" if model.is_asymmetric(flow_id) else "false",
+                datatype="xsd:boolean")]),
+            ("ifm:maturity", R(f"ifm:{row['maturity']}")),
+            ("ifm:documentedBy", R(f"<{documentation}>") if documentation else []),
+            ("ifm:deploymentEvidence", R(f"<{deployment}>") if deployment else []),
+            ("skos:scopeNote", L(row["note"])),
         ]))
-
-    heading = "Layer 3b - Trust roles and the mechanisms a credential displaces"
-    for role_id, row in model.trust_roles.items():
-        blocks.append((heading, Ref(concept_ref("role", role_id)), [
-            ("a", [Ref("ifm:TrustRole"), Ref("skos:Concept")]),
-            ("skos:inScheme", R(scheme_iri("ifm-trust-roles"))),
-            ("skos:topConceptOf", R(scheme_iri("ifm-trust-roles"))),
-            ("skos:prefLabel", L(row["pref_label_en"])),
-            ("skos:definition", L(row["definition"])),
-        ]))
-    for mechanism_id, row in model.prior_evidence.items():
-        blocks.append((heading, Ref(concept_ref("prior-evidence", mechanism_id)), [
-            ("a", [Ref("ifm:PriorEvidenceMechanism"), Ref("skos:Concept")]),
-            ("skos:inScheme", R(scheme_iri("ifm-prior-evidence"))),
-            ("skos:topConceptOf", R(scheme_iri("ifm-prior-evidence"))),
-            ("skos:prefLabel", L(row["pref_label_en"])),
-            ("skos:definition", L(row["definition"])),
-        ]))
-    for row in model.participants:
-        ident = f"{row['use_case_id']}-{row['participation_id']}"
+    for row in model.flow_participants:
+        ident = f"{row['flow_id']}-{row['participation_id']}"
         blocks.append((heading, Ref(concept_ref("participation", ident)), [
             ("a", R("ifm:Participation")),
-            ("ifm:inUseCase", R(concept_ref("use-case", row["use_case_id"]))),
+            ("ifm:inFlow", R(concept_ref("flow", row["flow_id"]))),
             ("ifm:trustRole", R(concept_ref("role", row["role_id"]))),
             ("ifm:party", L(row["party"])),
             ("ifm:bearsCost", [Lit("true" if row["bears_cost"] == "yes" else "false",
@@ -390,10 +550,37 @@ def graph_blocks(model):
             ("skos:scopeNote", L(row["note"])),
         ] + [
             (prop, [Ref(concept_ref("credential", cred)) for cred in creds])
-            for prop, creds in sorted(by_action(model, row).items())
+            for prop, creds in sorted(
+                by_action(model, row["flow_id"], row["participation_id"]).items())
         ]))
 
-    heading = "Layer 3a - Value drivers and transformation modes"
+    heading = "Realisation - Credential types and trust roles"
+    for cred_id, row in model.credential_types.items():
+        blocks.append((heading, Ref(concept_ref("credential", cred_id)), [
+            ("a", [Ref("ifm:CredentialType"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-credential-types"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-credential-types"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+            ("ifm:substantiates", [Ref(concept_ref("condition", link["condition_id"]))
+                                   for link in model.substantiates.get(cred_id, [])]),
+            ("ifm:credentialFormat", L(row["format"], lang=None)),
+            ("ifm:semanticModel", L(row["semantic_model"], lang=None)),
+            ("ifm:trustFramework", L(row["trust_framework"], lang=None)),
+            ("ifm:protocolProfile", L(row["protocol_profile"], lang=None)),
+            ("ifm:codeStatus", L(row["code_status"], lang=None)),
+        ]))
+    for role_id, row in model.trust_roles.items():
+        blocks.append((heading, Ref(concept_ref("role", role_id)), [
+            ("a", [Ref("ifm:TrustRole"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-trust-roles"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-trust-roles"))),
+            ("skos:prefLabel", L(row["pref_label_en"])),
+            ("skos:definition", L(row["definition"])),
+        ]))
+
+    # ---------------------------------------------------------------
+    heading = "Decision support - drivers, modes, prior evidence"
     for driver_id, row in model.value_drivers.items():
         blocks.append((heading, Ref(concept_ref("driver", driver_id)), [
             ("a", [Ref("ifm:ValueDriver"), Ref("skos:Concept")]),
@@ -411,80 +598,32 @@ def graph_blocks(model):
             ("skos:definition", L(row["definition"])),
             ("ifm:changeMode", R(f"ifm:{row['change_mode'].capitalize()}")),
         ]))
-
-    heading = "Layer 2d - Value streams (ordered compositions of functions)"
-    for stream_id, row in model.value_streams.items():
-        stages = model.stages_of[stream_id]
-        blocks.append((heading, Ref(concept_ref("stream", stream_id)), [
-            ("a", [Ref("ifm:ValueStream"), Ref("skos:Concept")]),
-            ("skos:inScheme", R(scheme_iri("ifm-value-streams"))),
-            ("skos:topConceptOf", R(scheme_iri("ifm-value-streams"))),
+    for mechanism_id, row in model.prior_evidence.items():
+        blocks.append((heading, Ref(concept_ref("prior-evidence", mechanism_id)), [
+            ("a", [Ref("ifm:PriorEvidenceMechanism"), Ref("skos:Concept")]),
+            ("skos:inScheme", R(scheme_iri("ifm-prior-evidence"))),
+            ("skos:topConceptOf", R(scheme_iri("ifm-prior-evidence"))),
             ("skos:prefLabel", L(row["pref_label_en"])),
-            ("skos:altLabel", [Lit(alt.strip()) for alt in row["also_known_as"].split(";")
-                               if alt.strip()]),
             ("skos:definition", L(row["definition"])),
-            ("ifm:codeStatus", L(row["code_status"], lang=None)),
-            ("ifm:hasStage", [Ref(concept_ref("stage", f"{stream_id}-{int(st['position']):02d}"))
-                              for st in stages]),
         ]))
-        for stage in stages:
-            position = int(stage["position"])
-            blocks.append((heading, Ref(concept_ref(
-                "stage", f"{stream_id}-{position:02d}")), [
-                ("a", R("ifm:ValueStreamStage")),
-                ("ifm:inValueStream", R(concept_ref("stream", stream_id))),
-                ("ifm:position", [Lit(position, datatype="xsd:integer")]),
-                ("rdfs:label", L(stage["stage_label"])),
-                ("ifm:stageFunction", R(concept_ref("function", stage["function_id"]))),
-                ("skos:scopeNote", L(stage["note"])),
-            ]))
 
-    heading = "Layer 3 - Use cases (sector x function intersection nodes)"
-    for uc_id, row in model.use_cases.items():
-        primary = model.primary_function(uc_id)
-        supporting = [r["function_id"] for r in model.functions_of[uc_id]
-                      if r["role"] != "primary"]
-        documentation = model.documentation_iri(uc_id)
-        deployment = row["deployment_evidence"].strip()
-        blocks.append((heading, Ref(concept_ref("use-case", uc_id)), [
-            # Not a schema:Action: these are reusable use-case definitions, not
-            # occurrences of an action performed by an agent at a time.
-            ("a", R("ifm:UseCase")),
-            ("rdfs:label", L(row["name"])),
-            ("dct:description", L(row["description"])),
-            ("ifm:appliesToSector", [Ref(concept_ref("sector", s))
-                                     for s in model.sectors_of[uc_id]]),
-            ("ifm:primaryFunction", R(concept_ref("function", primary)) if primary else []),
-            ("ifm:executesFunction", [Ref(concept_ref("function", f)) for f in supporting]),
-            ("ifm:sectionScope", R(f"ifm:{model.scope_of(uc_id, 'section')}")),
-            ("ifm:divisionScope", R(f"ifm:{model.scope_of(uc_id, 'division')}")),
-            ("ifm:classScope", R(f"ifm:{model.scope_of(uc_id, 'class')}")),
-            ("ifm:participation", [Ref(concept_ref(
-                "participation", f"{uc_id}-{p['participation_id']}"))
-                for p in model.participants_of[uc_id]]),
-            ("ifm:reducesRelianceOn", [Ref(concept_ref("prior-evidence", e))
-                                       for e in model.prior_evidence_of[uc_id]]),
-            ("ifm:precondition", [Ref(concept_ref("state", st))
-                                  for st in model.pre_of[uc_id]]),
-            ("ifm:postcondition", [Ref(concept_ref("state", st))
-                                   for st in model.post_of[uc_id]]),
-            ("ifm:enables", [Ref(concept_ref("use-case", other))
-                             for other in model.enables(uc_id)]),
-            ("ifm:requiresUseCase", [Ref(concept_ref("use-case", r))
-                                     for r in model.requires_of[uc_id]]),
-            ("ifm:costValueAsymmetry", [Lit(
-                "true" if model.is_asymmetric(uc_id) else "false",
-                datatype="xsd:boolean")]),
-            ("ifm:valueDriver", [Ref(concept_ref("driver", d))
-                                 for d in model.value_drivers_of[uc_id]]),
-            ("ifm:valueStream", [Ref(concept_ref("stream", vs))
-                                 for vs in model.streams_of[uc_id]]),
-            ("ifm:transformationMode", R(concept_ref("mode", row["transformation_mode"]))),
-            ("ifm:changeMode", R(f"ifm:{(model.change_mode_of(uc_id) or '').capitalize()}")),
-            ("ifm:maturity", R(f"ifm:{row['maturity']}")),
-            ("ifm:documentedBy", R(f"<{documentation}>") if documentation else []),
-            ("ifm:deploymentEvidence", R(f"<{deployment}>") if deployment else []),
-        ]))
+    # Derived satisfaction edges, the machine-readable form of "these two
+    # compose". Emitted last because they are computed from everything above.
+    heading = "Derived - which provisions satisfy which requirements"
+    for uc_id in model.use_cases:
+        for provision in model.provides_of[uc_id]:
+            met = []
+            for other in model.use_cases:
+                if other == uc_id:
+                    continue
+                for requirement in model.requires_of[other]:
+                    if model.satisfies(provision, requirement):
+                        met.append(Ref(concept_ref(
+                            "requirement", f"{other}-{requirement['requirement_id']}")))
+            if met:
+                blocks.append((heading, Ref(concept_ref(
+                    "provision", f"{uc_id}-{provision['provision_id']}")),
+                    [("ifm:satisfies", met)]))
 
     return blocks
 
@@ -618,7 +757,29 @@ def build_matrix_md(model):
             lines.append(f"- **{model.label('function', function)}** — "
                          f"{len(touched)} sections ({codes})")
 
-    lines += ["", "## Use cases", ""]
+    def interface_line(rows, key):
+        out = []
+        for row in rows:
+            text = model.label("condition", row["condition_id"])
+            extras = []
+            if row.get("subject_role", "").strip():
+                extras.append(model.label("subject-role", row["subject_role"]).lower())
+            if row.get("evidence_type", "").strip():
+                extras.append("as " + model.label("credential", row["evidence_type"]))
+            if row.get("context", "").strip():
+                extras.append(row["context"].strip())
+            if extras:
+                text += f" ({', '.join(extras)})"
+            if key == "provision" and row.get("principal") == "yes":
+                text = f"**{text}**"
+            out.append(text)
+        return ", ".join(out) or "—"
+
+    lines += ["", "## Use case patterns", "",
+              "Each pattern carries a classification and an interface. The interface "
+              "is what composes: a pattern providing a condition narrower than what "
+              "another requires is recognised as feeding it. The principal outcome is "
+              "in bold.", ""]
     for uc_id, row in model.use_cases.items():
         sector_labels = ", ".join(
             f"{model.sectors[s]['notation']} {model.label('sector', s)}"
@@ -628,17 +789,59 @@ def build_matrix_md(model):
         lines.append("")
         lines.append(f"{row['description']}")
         lines.append("")
-        lines.append(f"- Sectors: {sector_labels}")
+        lines.append(f"- Requires: {interface_line(model.requires_of[uc_id], 'requirement')}")
+        lines.append(f"- Provides: {interface_line(model.provides_of[uc_id], 'provision')}")
+        enabled = model.enables(uc_id)
+        if enabled:
+            lines.append(f"- Enables: {', '.join(model.label('use-case', e) for e in enabled)}")
         lines.append(f"- Primary function: {model.label('function', primary)}")
         supporting = [model.label('function', r["function_id"])
                       for r in model.functions_of[uc_id] if r["role"] != "primary"]
         if supporting:
             lines.append(f"- Supporting functions: {', '.join(supporting)}")
-        lines.append(f"- Scope: {scope_phrase(model, uc_id)}"
-                     f" · Maturity: {row['maturity'].lower()}")
-        documentation = model.documentation_iri(uc_id)
+        lines.append(f"- Applies in: {sector_labels} · {scope_phrase(model, uc_id)}")
+        stages = model.stages_realised_by[uc_id]
+        if stages:
+            lines.append("- Realises stage: " + ", ".join(
+                f"{model.label('stream', vs)} — {model.stage_index[(vs, st)]['stage_label']}"
+                for vs, st in stages))
+        flows = model.flows_of_use_case(uc_id)
+        if flows:
+            lines.append("- Realised by: " + ", ".join(
+                f"{model.label('flow', f)}" for f in flows))
+        else:
+            lines.append("- Realised by: no flow yet")
+        lines.append("")
+
+    lines += ["", "## Flows (real implementations)", "",
+              "A flow is an actual implementation in an actual sector and "
+              "jurisdiction. Several flows may realise one pattern, and one flow may "
+              "realise several patterns in sequence.", ""]
+    for flow_id, row in model.flows.items():
+        lines.append(f"### {row['name']}")
+        lines.append("")
+        lines.append(f"{row['description']}")
+        lines.append("")
+        realises = " → ".join(model.label("use-case", uc)
+                              for uc in model.realises_of[flow_id])
+        lines.append(f"- Realises: {realises}")
+        context = []
+        if row["sector_id"].strip():
+            context.append(f"{model.sectors[row['sector_id']]['notation']} "
+                           f"{model.label('sector', row['sector_id'])}")
+        if row["jurisdiction"].strip():
+            context.append(row["jurisdiction"].strip())
+        lines.append(f"- Context: {' · '.join(context) or 'sector-neutral'}")
+        lines.append(f"- Maturity: {row['maturity'].lower()}")
+        credentials = sorted({link["credential_type_id"]
+                              for (f, _p), links in model.credentials_of.items()
+                              if f == flow_id for link in links})
+        if credentials:
+            lines.append("- Credentials: " + ", ".join(
+                model.label("credential", c) for c in credentials))
+        documentation = model.documentation_iri(flow_id)
         if documentation:
-            lines.append(f"- Worked flow: [{row['documented_by']}]({documentation})")
+            lines.append(f"- Worked flow: [{documentation}]({documentation})")
         lines.append("")
     return "\n".join(lines).rstrip() + "\n"
 
@@ -672,6 +875,25 @@ def build_html(model):
         body.append(f'<tr><th class="sector" scope="row"><span class="code">{code}</span> '
                     f'{label}</th>' + "".join(cells) + "</tr>")
 
+    def iface(rows, principal=False):
+        """One interface point per line, with whatever dimensions it states."""
+        out = []
+        for row in rows:
+            text = esc(model.label("condition", row["condition_id"]))
+            extras = []
+            if row.get("subject_role", "").strip() and row["subject_role"] != "subject":
+                extras.append(esc(model.label("subject-role", row["subject_role"]).lower()))
+            if row.get("evidence_type", "").strip():
+                extras.append("as " + esc(model.label("credential", row["evidence_type"])))
+            if row.get("context", "").strip():
+                extras.append(esc(row["context"].strip()))
+            if extras:
+                text += f' <span class="muted">({", ".join(extras)})</span>'
+            if principal and row.get("principal") == "yes":
+                text = f"<strong>{text}</strong>"
+            out.append(text)
+        return ", ".join(out) or "&mdash; nothing"
+
     cards = []
     for uc_id, row in model.use_cases.items():
         primary = model.primary_function(uc_id)
@@ -680,38 +902,77 @@ def build_html(model):
         sector_list = ", ".join(
             f'<span class="code">{esc(model.sectors[s]["notation"])}</span> '
             f'{esc(model.label("sector", s))}' for s in model.sectors_of[uc_id])
-        documentation = model.documentation_iri(uc_id)
-        link = (f'<div class="flow-link"><a href="{esc(documentation)}">Worked flow &rarr;</a></div>'
-                if documentation else
-                '<div class="flow-link"><span class="status">Not yet modelled</span></div>')
+        flows = model.flows_of_use_case(uc_id)
+        if flows:
+            link = ('<div class="flow-link">Realised by ' + ", ".join(
+                (f'<a href="{esc(model.documentation_iri(f))}">'
+                 f'{esc(model.label("flow", f))} &rarr;</a>'
+                 if model.documentation_iri(f) else esc(model.label("flow", f)))
+                for f in flows) + '</div>')
+        else:
+            link = ('<div class="flow-link"><span class="status">'
+                    'No implementation yet</span></div>')
         scope = scope_phrase(model, uc_id)
         mode = model.modes[row["transformation_mode"]]
         change = model.change_mode_of(uc_id)
-        drivers = ", ".join(esc(model.label("driver", d))
-                            for d in model.value_drivers_of[uc_id])
-        requires = ", ".join(esc(model.label("state", st))
-                             for st in model.pre_of[uc_id]) or "&mdash; nothing"
-        establishes = ", ".join(esc(model.label("state", st))
-                                for st in model.post_of[uc_id])
-        streams = ", ".join(esc(model.label("stream", vs))
-                            for vs in model.streams_of[uc_id])
-        stream_line = (f'\n          <p class="meta"><strong>Value stream:</strong> '
-                       f'{streams}</p>') if streams else ""
-        payers = ", ".join(esc(p["party"]) for p in model.bears_cost_without_value(uc_id))
-        asym_line = (f'\n          <p class="meta asym"><strong>Recorded as bearing cost '
-                     f'without direct value:</strong> {payers}</p>') if payers else ""
+        requires = iface(model.requires_of[uc_id])
+        provides = iface(model.provides_of[uc_id], principal=True)
+        enabled = ", ".join(f'<a href="#{esc(e)}">{esc(model.label("use-case", e))}</a>'
+                            for e in model.enables(uc_id))
+        enables_line = (f'\n          <p class="meta"><strong>Enables:</strong> '
+                        f'{enabled}</p>') if enabled else ""
+        stages = model.stages_realised_by[uc_id]
+        stage_line = (f'\n          <p class="meta"><strong>Value stream stage:</strong> '
+                      + ", ".join(
+                          f'{esc(model.label("stream", vs))} &mdash; '
+                          f'{esc(model.stage_index[(vs, st)]["stage_label"])}'
+                          for vs, st in stages) + '</p>') if stages else ""
         cards.append(f"""      <div class="flow" id="{esc(uc_id)}">
-        <div class="flow-tag">{esc(scope)} &middot; {esc(row['maturity'])}
+        <div class="flow-tag">{esc(scope)}
           &middot; <span class="mode mode-{esc(change)}">{esc(mode['pref_label_en'])}</span></div>
         <div class="flow-body">
           <h3>{esc(row['name'])}</h3>
           <p>{esc(row['description'])}</p>
-          <p class="meta"><strong>Sectors:</strong> {sector_list}</p>
+          <p class="meta"><strong>Requires:</strong> {requires}</p>
+          <p class="meta"><strong>Provides:</strong> {provides}</p>{enables_line}
           <p class="meta"><strong>Primary function:</strong> {esc(model.label('function', primary))}</p>
           <p class="meta"><strong>Supporting:</strong> {esc(', '.join(supporting)) or '&mdash;'}</p>
-          <p class="meta"><strong>Why it pays:</strong> {drivers}</p>
-          <p class="meta"><strong>Needs:</strong> {requires}</p>
-          <p class="meta"><strong>Leaves:</strong> {establishes}</p>{stream_line}{asym_line}
+          <p class="meta"><strong>Applies in:</strong> {sector_list}</p>{stage_line}
+        </div>
+{link}
+      </div>""")
+
+    flow_cards = []
+    for flow_id, row in model.flows.items():
+        realises = " &rarr; ".join(
+            f'<a href="#{esc(uc)}">{esc(model.label("use-case", uc))}</a>'
+            for uc in model.realises_of[flow_id])
+        context = []
+        if row["sector_id"].strip():
+            context.append(f'<span class="code">{esc(model.sectors[row["sector_id"]]["notation"])}'
+                           f'</span> {esc(model.label("sector", row["sector_id"]))}')
+        if row["jurisdiction"].strip():
+            context.append(esc(row["jurisdiction"].strip()))
+        credentials = sorted({link["credential_type_id"]
+                              for (f, _pt), links in model.credentials_of.items()
+                              if f == flow_id for link in links})
+        cred_line = (f'\n          <p class="meta"><strong>Credentials:</strong> '
+                     + ", ".join(esc(model.label("credential", c)) for c in credentials)
+                     + '</p>') if credentials else ""
+        payers = ", ".join(esc(p["party"]) for p in model.bears_cost_without_value(flow_id))
+        asym_line = (f'\n          <p class="meta asym"><strong>Recorded as bearing cost '
+                     f'without direct value:</strong> {payers}</p>') if payers else ""
+        documentation = model.documentation_iri(flow_id)
+        link = (f'<div class="flow-link"><a href="{esc(documentation)}">Worked flow &rarr;</a></div>'
+                if documentation else
+                '<div class="flow-link"><span class="status">Not yet documented</span></div>')
+        flow_cards.append(f"""      <div class="flow" id="{esc(flow_id)}">
+        <div class="flow-tag">{esc(" &middot; ".join(context)) or "sector-neutral"}
+          &middot; {esc(row['maturity'])}</div>
+        <div class="flow-body">
+          <h3>{esc(row['name'])}</h3>
+          <p>{esc(row['description'])}</p>
+          <p class="meta"><strong>Realises:</strong> {realises}</p>{cred_line}{asym_line}
         </div>
 {link}
       </div>""")
@@ -735,10 +996,11 @@ def build_html(model):
         f'<span class="muted">&mdash; {esc(row["change_mode"])}</span></li>'
         for key, row in model.modes.items())
 
-    # roots: nothing here produces what they need, so the chain starts at them
-    unmet = set(model.unproduced_states())
+    # Roots: nothing here satisfies what they need, so a chain starts at them.
+    unmet_pairs = model.unmet_requirements()
+    unmet_ids = {uc for uc, _requirement in unmet_pairs}
     roots = [uc for uc in model.use_cases
-             if not model.pre_of[uc] or set(model.pre_of[uc]) <= unmet]
+             if not model.requires_of[uc] or uc in unmet_ids]
 
     def chain_items(uc_id, seen):
         if uc_id in seen:
@@ -746,22 +1008,63 @@ def build_html(model):
         seen = seen | {uc_id}
         children = "".join(chain_items(nxt, seen) for nxt in model.enables(uc_id))
         inner = f"<ul>{children}</ul>" if children else ""
-        name = esc(model.use_cases[uc_id]["name"])
+        name = esc(model.label("use-case", uc_id))
+        principal = model.principal_outcome(uc_id)
         return (f'<li><a href="#{esc(uc_id)}">{name}</a>'
-                f'<span class="muted"> leaves '
-                f'{esc(", ".join(model.label("state", s) for s in model.post_of[uc_id]))}'
+                f'<span class="muted"> provides '
+                f'{esc(model.label("condition", principal) if principal else "nothing")}'
                 f'</span>{inner}</li>')
 
     chain_html = "\n".join(f"      {chain_items(r, frozenset())}" for r in roots)
-    unmet_html = ", ".join(f"<code>{esc(s)}</code>" for s in sorted(unmet)) or "none"
+    unmet_html = ", ".join(
+        f'<code>{esc(r["condition_id"])}</code>'
+        for uc, requirement_id in unmet_pairs
+        for r in model.requires_of[uc]
+        if r["requirement_id"] == requirement_id) or "none"
+
+    def stage_line(stream_id, stage):
+        """A stage, its function, its interface and whatever realises it."""
+        stage_id = stage["stage_id"]
+        wants = [r["condition_id"] for r in model.stage_requires
+                 if r["value_stream_id"] == stream_id and r["stage_id"] == stage_id]
+        gives = [r["condition_id"] for r in model.stage_provides
+                 if r["value_stream_id"] == stream_id and r["stage_id"] == stage_id]
+        realised = [uc for uc, pairs in model.stages_realised_by.items()
+                    if (stream_id, stage_id) in pairs]
+        bits = [f'<span class="muted"> &middot; '
+                f'{esc(model.label("function", stage["function_id"]))}</span>']
+        if wants:
+            bits.append(f'<span class="muted"> &middot; needs '
+                        f'{esc(", ".join(model.label("condition", c) for c in wants))}</span>')
+        if gives:
+            bits.append(f'<span class="muted"> &middot; gives '
+                        f'{esc(", ".join(model.label("condition", c) for c in gives))}</span>')
+        if realised:
+            bits.append(" &middot; " + ", ".join(
+                f'<a href="#{esc(uc)}">{esc(model.label("use-case", uc))}</a>'
+                for uc in realised))
+        else:
+            bits.append('<span class="muted"> &middot; no use case yet</span>')
+        return f'<li>{esc(stage["stage_label"])}' + "".join(bits) + '</li>'
+
+    def stream_interface(stream_id):
+        wants = [r["condition_id"] for r in model.stream_requires
+                 if r["value_stream_id"] == stream_id]
+        gives = [r["condition_id"] for r in model.stream_provides
+                 if r["value_stream_id"] == stream_id]
+        if not wants and not gives:
+            return ""
+        return ('<p class="meta"><strong>Stream interface:</strong> '
+                + esc(", ".join(model.label("condition", c) for c in wants) or "nothing")
+                + ' &rarr; '
+                + esc(", ".join(model.label("condition", c) for c in gives) or "nothing")
+                + '</p>')
 
     streams_html = "\n".join(
-        '      <div><h3>' + esc(row["pref_label_en"]) + '</h3><ol class="stages">'
-        + "".join(
-            f'<li>{esc(stage["stage_label"])}'
-            f'<span class="muted"> &middot; {esc(model.label("function", stage["function_id"]))}'
-            f'</span></li>'
-            for stage in model.stages_of[stream_id])
+        '      <div><h3>' + esc(row["pref_label_en"]) + '</h3>'
+        + stream_interface(stream_id)
+        + '<ol class="stages">'
+        + "".join(stage_line(stream_id, stage) for stage in model.stages_of[stream_id])
         + '</ol></div>'
         for stream_id, row in model.value_streams.items())
 
@@ -1084,18 +1387,49 @@ def build_html(model):
   <section>
     <h2>What plugs into what</h2>
     <p class="prose">
-      A use case declares what must already be true to run and what is true once it
-      has. The arrows below are computed from those interfaces; change a postcondition
-      and the chain changes with it.
+      Each use case declares the conditions it requires and the conditions it
+      provides. The arrows below are computed from those interfaces, through the
+      condition hierarchy: a use case providing something <em>narrower</em> than what
+      another asks for still counts as feeding it, which is what lets an alternative
+      upstream flow serve the same downstream need. Nothing here is a list of
+      hand-drawn dependencies.
     </p>
     <ul class="chain">
 {chain_html}
     </ul>
     <p class="legend">
-      <strong>Unmet preconditions:</strong> {unmet_html} &mdash; required by a use case
-      here and left behind by none. Each marks a flow that is outside this repository
+      <strong>Unmet requirements:</strong> {unmet_html} &mdash; required by a use case
+      here and provided by none. Each marks a flow that is outside this repository
       or not yet written down.
     </p>
+  </section>
+
+  <section>
+    <h2>Use case patterns</h2>
+    <p class="prose">
+      The canonical unit: one primary business function, a set of required
+      conditions and one principal outcome, shown in bold. A pattern is a reusable
+      definition, not an implementation &mdash; the implementations are below.
+    </p>
+    <div class="flows">
+{chr(10).join(cards)}
+    </div>
+  </section>
+
+  <section>
+    <h2>Flows &mdash; real implementations</h2>
+    <p class="prose">
+      An actual trust flow, in an actual sector and jurisdiction, naming the
+      credentials it uses. Several flows may realise one pattern &mdash; the same age
+      check in retail and in hospitality, the same qualification issuance for a
+      Matur&auml;t and a vocational certificate &mdash; and one flow may realise several
+      patterns in sequence. Keeping flows out of the taxonomy is the point: the
+      ecosystem adds implementations continuously, and each should find a place among
+      the existing patterns rather than becoming another one.
+    </p>
+    <div class="flows">
+{chr(10).join(flow_cards)}
+    </div>
   </section>
 
   <section>
@@ -1113,13 +1447,11 @@ def build_html(model):
   </section>
 
   <section>
-    <h2>Why these are worth doing</h2>
+    <h2>Decision support</h2>
     <p class="prose">
-      Sector and function say where a use case sits. Neither says why applying a
-      verifiable credential there is worth doing, or how far it reorganises the
-      process. Those are separate axes: the same function in the same sector can sit
-      at either end of both. Both vocabularies are this repository's editorial
-      classifications, not external standards.
+      Secondary by design. None of this takes part in classification or in
+      composition; it is here to help prioritise work, and both vocabularies are
+      this repository's editorial classifications rather than external standards.
     </p>
     <div class="axes">
       <div>
@@ -1138,20 +1470,13 @@ def build_html(model):
   </section>
 
   <section>
-    <h2>Use cases</h2>
-    <div class="flows">
-{chr(10).join(cards)}
-    </div>
-  </section>
-
-  <section>
     <h2>The graph itself</h2>
     <p class="prose">
       This page is generated from the same data as the machine-readable graph:
-      SKOS concept schemes for the sector, function, state, role and credential
-      layers, and <code>ifm:UseCase</code> nodes linking them. A use case is a
-      reusable definition rather than a record of something performed, which is why
-      it is not a <code>schema:Action</code>. Load
+      SKOS concept schemes for the sector, function, condition, role and credential
+      vocabularies; <code>ifm:UseCasePattern</code> nodes carrying a classification
+      and an interface of <code>ifm:requires</code> and <code>ifm:provides</code>; and
+      <code>ifm:Flow</code> nodes recording what actually implements them. Load
       <a href="ifm-graph.ttl">ifm-graph.ttl</a> or
       <a href="ifm-graph.jsonld">ifm-graph.jsonld</a> into any triple store, or read the
       <a href="https://github.com/DIDAS-swiss/industry-function-graph">source data and build script</a>.
@@ -1175,11 +1500,224 @@ def build_html(model):
 
 # --------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------
+# Composition report
+#
+# Worked compositions, the gaps and the overlap candidates, regenerated with
+# everything else so it cannot drift from the data. Everything in it is
+# derived: no file in data/ records which use case enables which, which
+# requirement has no supplier, or which two use cases overlap.
+# --------------------------------------------------------------------------
+
+WORKED_COMPOSITIONS = [
+    ("Electronic identity to an open banking relationship, and its refresh",
+     "eid-held", "kyc-attestation-current",
+     "The chain the ecosystem is actually built on. Note that nothing in it "
+     "names a credential: each step asks for a condition, and the e-ID happens "
+     "to be what substantiates the first one."),
+    ("Education qualification to university admission",
+     "secondary-education-credential-held", "tertiary-enrolment-established",
+     "Admission asks for a verified qualification, not for a Maturitätszeugnis, "
+     "so any flow that can establish the qualification serves it."),
+    ("Education qualification to employment",
+     "secondary-education-credential-held", "employment-relationship-open",
+     "The same two upstream patterns feed a different downstream one. Neither "
+     "the issuance nor the verification pattern knows or cares which."),
+    ("Electronic identity to a proven age threshold",
+     "eid-held", "age-attribute-proven",
+     "One step: age verification is not identity verification, and the "
+     "interface says so - it consumes identity evidence and provides an "
+     "attribute, never an identity."),
+]
+
+
+def build_composition_report(model):
+    lines = [
+        "<!-- DO NOT EDIT: generated by build/build.py -->",
+        "# Composition report",
+        "",
+        "Everything below is derived from the interfaces in `data/`. Nothing here "
+        "is maintained by hand: no file records which use case enables which, "
+        "which requirement has no supplier, or which two use cases overlap.",
+        "",
+        "Regenerate with `python3 build/build.py`; `build/queries.py` answers the "
+        "same questions interactively.",
+        "",
+        "## Worked compositions",
+        "",
+        "A chain is reported only if every step earns its place - drop any one of "
+        "them and the goal is no longer reachable.",
+        "",
+    ]
+    for title, start, goal, note in WORKED_COMPOSITIONS:
+        lines += [f"### {title}", "", note, ""]
+        paths = model.composition_paths(start, goal)
+        if not paths:
+            lines += [f"No path from `{start}` to `{goal}`.", ""]
+            continue
+        for path in paths:
+            steps = [f"**{model.label('condition', start)}**"]
+            for uc_id in path:
+                steps.append(f"`{uc_id}`")
+            steps.append(f"**{model.label('condition', goal)}**")
+            lines.append(" → ".join(steps))
+            lines.append("")
+            for uc_id in path:
+                requires = ", ".join(
+                    model.label("condition", r["condition_id"])
+                    for r in model.requires_of[uc_id]) or "nothing"
+                principal = model.principal_outcome(uc_id)
+                lines.append(f"- `{uc_id}` — needs {requires}; provides "
+                             f"{model.label('condition', principal) if principal else '—'}")
+            lines.append("")
+
+    lines += [
+        "## Alternative evidence for one requirement",
+        "",
+        "The test of whether conditions and credentials are really separate: can "
+        "a second credential satisfy an existing requirement without any "
+        "canonical use case changing?",
+        "",
+    ]
+    for condition_id in sorted(
+            {r["condition_id"] for uc in model.use_cases
+             for r in model.requires_of[uc]}):
+        credentials = model.credentials_for_condition(condition_id)
+        if len(credentials) < 2:
+            continue
+        askers = sorted({uc for uc in model.use_cases
+                         for r in model.requires_of[uc]
+                         if r["condition_id"] == condition_id})
+        lines += [
+            f"**{model.label('condition', condition_id)}** is required by "
+            + ", ".join(f"`{uc}`" for uc in askers) + ".",
+            "",
+            "It can be substantiated by:",
+            "",
+        ]
+        for cred in credentials:
+            issuing = sorted({flow for flow in model.flows
+                              if cred in model.credential_actions(flow, "issues")})
+            lines.append(f"- **{model.label('credential', cred)}** — issued by "
+                         + (", ".join(f"`{f}`" for f in issuing) or "no flow here"))
+        lines += ["",
+                  "No use case pattern names either credential, so a third one can "
+                  "be added to `data/credential-conditions.csv` and every use case "
+                  "requiring this condition accepts it immediately.",
+                  ""]
+
+    lines += ["## Overlapping use case patterns", "",
+              "Candidates for editorial review, not decisions. Two patterns are "
+              "reported when they share a primary function and their interfaces "
+              "relate. Nothing is merged automatically: a shared shape may still "
+              "be genuinely different work.", ""]
+    overlaps = model.overlaps()
+    if not overlaps:
+        lines += ["None detected.", ""]
+    else:
+        lines += ["| Relation | Pattern | Pattern | Shared primary function |",
+                  "|---|---|---|---|"]
+        for verdict, first, second in overlaps:
+            lines.append(f"| {verdict} | `{first}` | `{second}` | "
+                         f"{model.label('function', model.primary_function(first))} |")
+        lines.append("")
+        for verdict, first, second in overlaps:
+            lines += [
+                f"**`{first}` ~ `{second}`** ({verdict})", "",
+                f"- `{first}` needs "
+                + (", ".join(model.label("condition", r["condition_id"])
+                             for r in model.requires_of[first]) or "nothing")
+                + "; provides "
+                + (", ".join(model.label("condition", p["condition_id"])
+                             for p in model.provides_of[first]) or "nothing"),
+                f"- `{second}` needs "
+                + (", ".join(model.label("condition", r["condition_id"])
+                             for r in model.requires_of[second]) or "nothing")
+                + "; provides "
+                + (", ".join(model.label("condition", p["condition_id"])
+                             for p in model.provides_of[second]) or "nothing"),
+                "",
+            ]
+
+    lines += ["## Gaps", "",
+              "Where the classification and the ecosystem do not yet meet.", ""]
+
+    unmet = model.unmet_requirements()
+    lines += ["### Requirements with no upstream provider", ""]
+    if not unmet:
+        lines += ["None: every requirement is satisfied by some use case here.", ""]
+    else:
+        for uc_id, requirement_id in unmet:
+            requirement = next(r for r in model.requires_of[uc_id]
+                               if r["requirement_id"] == requirement_id)
+            lines.append(f"- `{uc_id}` requires "
+                         f"**{model.label('condition', requirement['condition_id'])}** "
+                         f"— no use case here provides it")
+        lines.append("")
+
+    lines += ["### Principal outcomes with no downstream consumer", ""]
+    ends = []
+    for uc_id, provision_id in model.unconsumed_provisions():
+        provision = next(p for p in model.provides_of[uc_id]
+                         if p["provision_id"] == provision_id)
+        if provision.get("principal") == "yes":
+            ends.append((uc_id, provision["condition_id"]))
+    if not ends:
+        lines += ["None.", ""]
+    else:
+        lines += ["Either genuine ends of a chain, or downstream use cases nobody "
+                  "has written down.", ""]
+        for uc_id, condition_id in ends:
+            lines.append(f"- `{uc_id}` provides "
+                         f"**{model.label('condition', condition_id)}**")
+        lines.append("")
+
+    lines += ["### Use case patterns with no implementation", ""]
+    unrealised = model.unrealised_use_cases()
+    if not unrealised:
+        lines += ["None: every pattern has at least one flow.", ""]
+    else:
+        for uc_id in unrealised:
+            lines.append(f"- `{uc_id}`")
+        lines.append("")
+
+    lines += ["### Value stream stages with no use case", ""]
+    unrealised_stages = model.unrealised_stages()
+    if not unrealised_stages:
+        lines += ["None.", ""]
+    else:
+        lines += [f"{len(unrealised_stages)} of {len(model.stage_index)} stages. "
+                  "The graph covers a slice of each stream, and the stages below "
+                  "mark where a use case could be added without inventing a new "
+                  "classification.", ""]
+        current = None
+        for stream_id, stage_id in unrealised_stages:
+            if stream_id != current:
+                current = stream_id
+                lines.append(f"**{model.label('stream', stream_id)}**")
+                lines.append("")
+            lines.append(f"- {model.stage_index[(stream_id, stage_id)]['stage_label']} "
+                         f"(`{stage_id}`)")
+        lines.append("")
+
+    lines += ["### Credentials issued here but verified by no flow here", ""]
+    orphaned = sorted(model.issued_credentials() - model.consumed_credentials())
+    if not orphaned:
+        lines += ["None.", ""]
+    else:
+        for cred in orphaned:
+            lines.append(f"- **{model.label('credential', cred)}**")
+        lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
 OUTPUTS = {
     "ifm-graph.ttl": build_turtle,
     "ifm-graph.jsonld": build_jsonld,
     "matrix.md": build_matrix_md,
     "index.html": build_html,
+    "composition-report.md": build_composition_report,
 }
 
 

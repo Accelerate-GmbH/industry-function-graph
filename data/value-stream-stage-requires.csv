@@ -1,0 +1,9 @@
+value_stream_id,stage_id,condition_id,subject_role,note
+order-to-cash,establish-relationship,identity-verified,subject,
+hire-to-retire,check-qualifications,education-qualification-evidence-available,subject,
+hire-to-retire,agree-and-sign,identity-verified,subject,
+hire-to-retire,agree-and-sign,qualification-verified,subject,
+hire-to-retire,provision-access,employment-relationship-open,subject,
+procure-to-pay,check-accreditations,accreditation-evidence-available,organisation,
+procure-to-pay,source-and-qualify,accreditation-verified,organisation,
+procure-to-pay,agree-and-sign,supplier-qualified,organisation,

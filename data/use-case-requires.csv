@@ -1,0 +1,20 @@
+use_case_id,requirement_id,condition_id,subject_role,evidence_type,context,note
+identity-verification,identity-evidence,identity-evidence-available,subject,,,"Deliberately the broad condition rather than eid-held: any identity credential that satisfies the assurance the interaction needs will do, and the flow names which one."
+qualification-verification,qualification-evidence,education-qualification-evidence-available,subject,,,"Broad on purpose. A Maturität and a federal vocational certificate both satisfy this, and so will qualifications this repository has not modelled."
+accreditation-verification,accreditation-evidence,accreditation-evidence-available,organisation,,,
+age-threshold-verification,identity-evidence,identity-evidence-available,subject,,,"The evidence carries the age attribute; what is required is that it can be presented, not that the subject is identified."
+due-diligence-onboarding,identity,identity-verified,subject,,,
+due-diligence-refresh,relationship,customer-relationship-open,subject,,,
+due-diligence-refresh,prior-due-diligence,due-diligence-evidence-available,subject,,,"Broad: the attestation may have been issued by this institution or by another regulated one."
+credential-recovery-reidentification,relationship,customer-relationship-open,subject,,,
+credential-recovery-reidentification,identity,identity-verified,subject,,,
+legal-capacity-reidentification,relationship,customer-relationship-open,subject,,,
+legal-capacity-reidentification,identity,identity-verified,subject,,,
+education-qualification-issuance,identity,identity-verified,subject,,,The awarding institution establishes who it is issuing to before it issues.
+tertiary-admission,identity,identity-verified,subject,,,
+tertiary-admission,qualification,qualification-verified,subject,,,
+employment-engagement,identity,identity-verified,subject,,,
+employment-engagement,qualification,qualification-verified,subject,,,
+patient-record-matching,identity,identity-verified,subject,,,
+public-service-access,identity,identity-verified,subject,,,
+supplier-qualification,accreditation,accreditation-verified,organisation,,,

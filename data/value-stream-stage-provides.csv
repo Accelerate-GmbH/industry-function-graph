@@ -1,0 +1,10 @@
+value_stream_id,stage_id,condition_id,subject_role,note
+order-to-cash,establish-customer-identity,identity-verified,subject,
+order-to-cash,establish-relationship,customer-relationship-open,subject,
+hire-to-retire,establish-candidate-identity,identity-verified,subject,
+hire-to-retire,check-qualifications,qualification-verified,subject,
+hire-to-retire,recruit-and-employ,employment-relationship-open,subject,
+hire-to-retire,provision-access,access-granted,subject,
+procure-to-pay,establish-supplier-identity,accreditation-verified,organisation,"The stage as modelled here establishes that the supplier is a real, accredited legal entity."
+procure-to-pay,check-accreditations,accreditation-verified,organisation,
+procure-to-pay,source-and-qualify,supplier-qualified,organisation,

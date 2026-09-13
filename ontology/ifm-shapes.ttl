@@ -12,9 +12,10 @@
 # build/validate.py runs exactly this when pyshacl is installed, and skips it
 # with a warning when it is not.
 #
+# What is here is what the RDF can answer on its own: the shape of a use case
+# pattern and its interface, the shape of a flow, and the role/action rules.
 # Constraints that need the CSVs to explain — which alignment row is editorial,
-# which credential type nothing issues — stay in validate.py. What is here is
-# what the RDF can answer on its own.
+# which requirement no upstream use case satisfies — stay in validate.py.
 #
 # SPDX-License-Identifier: CC-BY-4.0
 
@@ -24,16 +25,20 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-ifm:UseCaseShape
+################################################################
+# The canonical unit
+################################################################
+
+ifm:UseCasePatternShape
     a sh:NodeShape ;
-    sh:targetClass ifm:UseCase ;
-    rdfs:label "Use case"@en ;
+    sh:targetClass ifm:UseCasePattern ;
+    rdfs:label "Use case pattern"@en ;
 
     sh:property [
         sh:path ifm:primaryFunction ;
         sh:class ifm:BusinessFunction ;
         sh:minCount 1 ; sh:maxCount 1 ;
-        sh:message "A use case has exactly one primary function: the one thing it exists to do." ;
+        sh:message "A use case pattern has exactly one primary function: the one thing it exists to do." ;
     ] ;
     sh:property [
         sh:path ifm:executesFunction ;
@@ -44,42 +49,33 @@ ifm:UseCaseShape
         sh:path ifm:appliesToSector ;
         sh:class ifm:Sector ;
         sh:minCount 1 ;
-        sh:message "A use case sits in at least one sector." ;
+        sh:message "A use case pattern applies in at least one sector." ;
+    ] ;
+    sh:property [
+        sh:path ifm:requires ;
+        sh:class ifm:Requirement ;
+        sh:message "Requirements must be reified ifm:Requirement nodes, not bare conditions." ;
+    ] ;
+    sh:property [
+        sh:path ifm:provides ;
+        sh:class ifm:Provision ;
+        sh:minCount 1 ;
+        sh:message "A use case that provides nothing leaves no condition behind, so nothing can follow it." ;
     ] ;
     sh:property [
         sh:path ifm:transformationMode ;
         sh:class ifm:TransformationMode ;
         sh:minCount 1 ; sh:maxCount 1 ;
-        sh:message "A use case carries exactly one transformation mode." ;
     ] ;
     sh:property [
-        sh:path ifm:maturity ;
-        sh:minCount 1 ; sh:maxCount 1 ;
-        sh:in ( ifm:Exploratory ifm:Modelled ifm:Live ) ;
-        sh:message "Maturity is one of Exploratory, Modelled or Live." ;
+        sh:path ifm:realisesStage ;
+        sh:class ifm:ValueStreamStage ;
     ] ;
     sh:property [
         sh:path ifm:valueDriver ;
         sh:class ifm:ValueDriver ;
         sh:minCount 1 ;
         sh:message "Record at least one reason applying a credential here is worth doing." ;
-    ] ;
-    sh:property [
-        sh:path ifm:postcondition ;
-        sh:class ifm:State ;
-        sh:minCount 1 ;
-        sh:message "Every use case leaves at least one state behind; nothing can follow one that does not." ;
-    ] ;
-    sh:property [
-        sh:path ifm:precondition ;
-        sh:class ifm:State ;
-        sh:message "Preconditions must come from the shared state vocabulary, or nothing composes against them." ;
-    ] ;
-    sh:property [
-        sh:path ifm:participation ;
-        sh:class ifm:Participation ;
-        sh:minCount 1 ;
-        sh:message "A use case with no participation says nothing about who does the work." ;
     ] ;
     sh:property [
         sh:path ifm:sectionScope ;
@@ -97,10 +93,205 @@ ifm:UseCaseShape
         sh:minCount 1 ; sh:maxCount 1 ;
     ] ;
 
+    # The atomicity rule, as far as the RDF can state it: one principal
+    # outcome. A pattern with several is doing several transformations and
+    # should be split into composable parts.
+    sh:sparql [
+        sh:message "A use case pattern must have exactly one provision marked as its principal outcome." ;
+        sh:prefixes ifm: ;
+        sh:select """
+            SELECT $this WHERE {
+                {
+                    SELECT $this (COUNT(?p) AS ?n) WHERE {
+                        $this <https://didas-swiss.github.io/industry-function-graph/ontology#provides> ?p .
+                        ?p <https://didas-swiss.github.io/industry-function-graph/ontology#principalOutcome> true .
+                    } GROUP BY $this
+                }
+                FILTER (?n != 1)
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        sh:message "A use case pattern must have exactly one provision marked as its principal outcome (it has none)." ;
+        sh:prefixes ifm: ;
+        sh:select """
+            SELECT $this WHERE {
+                FILTER NOT EXISTS {
+                    $this <https://didas-swiss.github.io/industry-function-graph/ontology#provides> ?p .
+                    ?p <https://didas-swiss.github.io/industry-function-graph/ontology#principalOutcome> true .
+                }
+            }
+        """ ;
+    ] .
+
+################################################################
+# The interface
+################################################################
+
+ifm:RequirementShape
+    a sh:NodeShape ;
+    sh:targetClass ifm:Requirement ;
+    rdfs:label "Requirement"@en ;
+    sh:property [
+        sh:path ifm:condition ;
+        sh:class ifm:Condition ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "The condition is the one mandatory part of an interface point." ;
+    ] ;
+    sh:property [
+        sh:path ifm:subjectRole ;
+        sh:class ifm:SubjectRole ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ifm:evidenceType ;
+        sh:class ifm:CredentialType ;
+        sh:maxCount 1 ;
+    ] .
+
+ifm:ProvisionShape
+    a sh:NodeShape ;
+    sh:targetClass ifm:Provision ;
+    rdfs:label "Provision"@en ;
+    sh:property [
+        sh:path ifm:condition ;
+        sh:class ifm:Condition ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ifm:subjectRole ;
+        sh:class ifm:SubjectRole ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ifm:evidenceType ;
+        sh:class ifm:CredentialType ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ifm:principalOutcome ;
+        sh:datatype xsd:boolean ;
+        sh:maxCount 1 ;
+    ] .
+
+ifm:ConditionShape
+    a sh:NodeShape ;
+    sh:targetClass ifm:Condition ;
+    rdfs:label "Condition"@en ;
+    sh:property [
+        sh:path skos:prefLabel ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path skos:definition ;
+        sh:minCount 1 ;
+        sh:message "Without a definition there is no way to tell whether a condition holds." ;
+    ] ;
+    sh:property [
+        sh:path skos:broader ;
+        sh:class ifm:Condition ;
+        sh:maxCount 1 ;
+        sh:message "A condition has at most one broader condition; the lattice is a tree." ;
+    ] .
+
+# A credential is evidence. It can substantiate that evidence is available; it
+# cannot by itself substantiate a fact a relying party must establish, or a
+# business decision. Keeping this rule is what stops credentials from becoming
+# the composition mechanism.
+ifm:SubstantiationShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf ifm:substantiates ;
+    rdfs:label "Credential substantiation"@en ;
+    sh:property [
+        sh:path ifm:substantiates ;
+        sh:class ifm:EvidenceCondition ;
+        sh:message "A credential type may only substantiate an evidence condition." ;
+    ] .
+
+################################################################
+# Value streams as composition templates
+################################################################
+
+ifm:ValueStreamShape
+    a sh:NodeShape ;
+    sh:targetClass ifm:ValueStream ;
+    rdfs:label "Value stream"@en ;
+    sh:property [
+        sh:path ifm:hasStage ;
+        sh:class ifm:ValueStreamStage ;
+        sh:minCount 1 ;
+        sh:message "A value stream is defined by its sequence, so it needs at least one stage." ;
+    ] ;
+    sh:property [
+        sh:path ifm:requires ;
+        sh:class ifm:Requirement ;
+    ] ;
+    sh:property [
+        sh:path ifm:provides ;
+        sh:class ifm:Provision ;
+    ] .
+
+ifm:ValueStreamStageShape
+    a sh:NodeShape ;
+    sh:targetClass ifm:ValueStreamStage ;
+    rdfs:label "Value stream stage"@en ;
+    sh:property [
+        sh:path ifm:position ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ifm:stageFunction ;
+        sh:class ifm:BusinessFunction ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ifm:inValueStream ;
+        sh:class ifm:ValueStream ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:minCount 1 ;
+        sh:message "A stage needs a label saying what happens there." ;
+    ] .
+
+################################################################
+# Realisation
+################################################################
+
+ifm:FlowShape
+    a sh:NodeShape ;
+    sh:targetClass ifm:Flow ;
+    rdfs:label "Flow"@en ;
+    sh:property [
+        sh:path ifm:realisesUseCase ;
+        sh:class ifm:UseCasePattern ;
+        sh:minCount 1 ;
+        sh:message "A flow that implements no canonical pattern either needs one, or is not a flow." ;
+    ] ;
+    sh:property [
+        sh:path ifm:sectorContext ;
+        sh:class ifm:Sector ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ifm:maturity ;
+        sh:in ( ifm:Exploratory ifm:Modelled ifm:Live ) ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ifm:participation ;
+        sh:class ifm:Participation ;
+        sh:minCount 1 ;
+        sh:message "A flow with no participation says nothing about who does the work." ;
+    ] ;
+
     # Live is the only maturity that asserts something about the world outside
     # this graph, so it is the only one that has to point at evidence.
     sh:sparql [
-        sh:message "A use case marked Live must carry ifm:deploymentEvidence." ;
+        sh:message "A flow marked Live must carry ifm:deploymentEvidence." ;
         sh:prefixes ifm: ;
         sh:select """
             SELECT $this WHERE {
@@ -111,50 +302,6 @@ ifm:UseCaseShape
                 }
             }
         """ ;
-    ] .
-
-# The role/action rule, as three shapes: a participation carries only the
-# credential verbs its trust role performs. One party acting in two roles is two
-# participations, which is why a participation is identified within its use case
-# rather than by its role.
-ifm:IssuerParticipationShape
-    a sh:NodeShape ;
-    sh:targetSubjectsOf ifm:issuesCredential ;
-    rdfs:label "Issuing participation"@en ;
-    sh:property [
-        sh:path ifm:trustRole ;
-        sh:hasValue <https://didas-swiss.github.io/industry-function-graph/id/trust-role/issuer> ;
-        sh:message "Only a participation whose trust role is issuer may issue a credential." ;
-    ] .
-
-ifm:HolderParticipationShape
-    a sh:NodeShape ;
-    sh:targetSubjectsOf ifm:presentsCredential ;
-    rdfs:label "Presenting participation"@en ;
-    sh:property [
-        sh:path ifm:trustRole ;
-        sh:hasValue <https://didas-swiss.github.io/industry-function-graph/id/trust-role/holder> ;
-        sh:message "Only a participation whose trust role is holder may present a credential." ;
-    ] .
-
-ifm:HoldingParticipationShape
-    a sh:NodeShape ;
-    sh:targetSubjectsOf ifm:holdsCredential ;
-    rdfs:label "Holding participation"@en ;
-    sh:property [
-        sh:path ifm:trustRole ;
-        sh:hasValue <https://didas-swiss.github.io/industry-function-graph/id/trust-role/holder> ;
-        sh:message "Only a participation whose trust role is holder may hold a credential." ;
-    ] .
-
-ifm:VerifierParticipationShape
-    a sh:NodeShape ;
-    sh:targetSubjectsOf ifm:verifiesCredential ;
-    rdfs:label "Verifying participation"@en ;
-    sh:property [
-        sh:path ifm:trustRole ;
-        sh:hasValue <https://didas-swiss.github.io/industry-function-graph/id/trust-role/verifier> ;
-        sh:message "Only a participation whose trust role is verifier may verify a credential." ;
     ] .
 
 ifm:ParticipationShape
@@ -176,9 +323,10 @@ ifm:ParticipationShape
         sh:message "Name the kind of organisation or person playing the role." ;
     ] ;
     sh:property [
-        sh:path ifm:inUseCase ;
-        sh:class ifm:UseCase ;
+        sh:path ifm:inFlow ;
+        sh:class ifm:Flow ;
         sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A participation belongs to a flow, not to a canonical use case: who does the work is a property of the implementation." ;
     ] ;
     sh:property [
         sh:path ifm:bearsCost ;
@@ -191,21 +339,54 @@ ifm:ParticipationShape
         sh:minCount 1 ; sh:maxCount 1 ;
     ] .
 
+# The role/action rule, as four shapes: a participation carries only the
+# credential verbs its trust role performs. One party acting in two roles is two
+# participations.
+ifm:IssuerParticipationShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf ifm:issuesCredential ;
+    sh:property [
+        sh:path ifm:trustRole ;
+        sh:hasValue <https://didas-swiss.github.io/industry-function-graph/id/trust-role/issuer> ;
+        sh:message "Only a participation whose trust role is issuer may issue a credential." ;
+    ] .
+
+ifm:PresentingParticipationShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf ifm:presentsCredential ;
+    sh:property [
+        sh:path ifm:trustRole ;
+        sh:hasValue <https://didas-swiss.github.io/industry-function-graph/id/trust-role/holder> ;
+        sh:message "Only a participation whose trust role is holder may present a credential." ;
+    ] .
+
+ifm:HoldingParticipationShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf ifm:holdsCredential ;
+    sh:property [
+        sh:path ifm:trustRole ;
+        sh:hasValue <https://didas-swiss.github.io/industry-function-graph/id/trust-role/holder> ;
+        sh:message "Only a participation whose trust role is holder may hold a credential." ;
+    ] .
+
+ifm:VerifierParticipationShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf ifm:verifiesCredential ;
+    sh:property [
+        sh:path ifm:trustRole ;
+        sh:hasValue <https://didas-swiss.github.io/industry-function-graph/id/trust-role/verifier> ;
+        sh:message "Only a participation whose trust role is verifier may verify a credential." ;
+    ] .
+
 ifm:CredentialTypeShape
     a sh:NodeShape ;
     sh:targetClass ifm:CredentialType ;
     rdfs:label "Credential type"@en ;
     sh:property [
         sh:path ifm:credentialFormat ;
-        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
         sh:minCount 1 ; sh:maxCount 1 ;
         sh:message "A credential type with no wire format cannot be implemented." ;
-    ] ;
-    sh:property [
-        sh:path ifm:evidences ;
-        sh:class ifm:State ;
-        sh:maxCount 1 ;
-        sh:message "A credential type provides evidence for at most one state in this model." ;
     ] ;
     sh:property [
         sh:path ifm:codeStatus ;
@@ -213,37 +394,9 @@ ifm:CredentialTypeShape
         sh:minCount 1 ; sh:maxCount 1 ;
     ] .
 
-ifm:ValueStreamShape
-    a sh:NodeShape ;
-    sh:targetClass ifm:ValueStream ;
-    rdfs:label "Value stream"@en ;
-    sh:property [
-        sh:path ifm:hasStage ;
-        sh:class ifm:ValueStreamStage ;
-        sh:minCount 1 ;
-        sh:message "A value stream is defined by its sequence, so it needs at least one stage." ;
-    ] .
-
-ifm:ValueStreamStageShape
-    a sh:NodeShape ;
-    sh:targetClass ifm:ValueStreamStage ;
-    rdfs:label "Value stream stage"@en ;
-    sh:property [
-        sh:path ifm:position ;
-        sh:datatype xsd:integer ;
-        sh:minInclusive 1 ;
-        sh:minCount 1 ; sh:maxCount 1 ;
-    ] ;
-    sh:property [
-        sh:path ifm:stageFunction ;
-        sh:class ifm:BusinessFunction ;
-        sh:minCount 1 ; sh:maxCount 1 ;
-    ] ;
-    sh:property [
-        sh:path rdfs:label ;
-        sh:minCount 1 ;
-        sh:message "A stage needs a label saying what happens there." ;
-    ] .
+################################################################
+# Classification
+################################################################
 
 ifm:SectorShape
     a sh:NodeShape ;

@@ -1,0 +1,5 @@
+value_stream_id,condition_id,subject_role,note
+order-to-cash,identity-evidence-available,subject,"What has to be true before the stream can start: a prospective customer able to present identity evidence."
+hire-to-retire,identity-evidence-available,subject,
+hire-to-retire,education-qualification-evidence-available,subject,
+procure-to-pay,accreditation-evidence-available,organisation,

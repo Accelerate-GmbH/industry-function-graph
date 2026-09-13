@@ -3,9 +3,10 @@
 
     python3 build/validate.py
 
-Catches the mistakes a growing mapping actually makes: a use case pointing at a
-sector code that was renamed, two primary functions, an ISIC class filed under
-the wrong division, a documentation link to a directory that has since moved.
+Checks the three layers and, above all, the boundaries between them: that the
+classification does not smuggle in composability, that composition runs through
+conditions rather than credential identifiers, and that a canonical use case
+stays one coherent transformation.
 
 Exits non-zero on any error. Warnings never fail the build.
 """
@@ -24,18 +25,18 @@ from model import Model  # noqa: E402
 
 # Division and class ids deliberately omit the section letter: letters move
 # between ISIC revisions (finance K->L, education P->Q, health Q->R from Rev. 4
-# to Rev. 5) while the numbers hold, so an id keyed on the letter would have to
-# be rewritten every revision.
+# to Rev. 5) while the numbers hold.
 SECTOR_ID = re.compile(r"^ISIC-([A-V]|\d{2}|\d{4})$")
 SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 CODE_STATUS = {"verified", "provisional"}
-# The concept's own provenance and the confidence of a mapping onto it are
+# A concept's own provenance and the confidence of a mapping onto it are
 # separate questions: a mapping onto a verified concept can still be editorial.
 MAPPING_STATUS = {"editorial", "verified"}
 MATURITY = {"Exploratory", "Modelled", "Live"}
 CHANGE_MODE = {"run", "change"}
 BEARS_COST = {"yes", "no"}
-STATE_KIND = {"evidence", "outcome"}
+CONDITION_KIND = {"evidence", "fact", "outcome", "relationship"}
+PRINCIPAL = {"yes", "no"}
 
 # The credential lifecycle, and which trust role may perform each stage. A role
 # never borrows another role's action: where one organisation issues and also
@@ -52,6 +53,10 @@ ACTIONS_BY_ROLE = {
 }
 GAINS_VALUE = {"direct", "indirect", "none"}
 MATCH_TYPES = {"exactMatch", "closeMatch", "broadMatch", "narrowMatch", "relatedMatch"}
+# Contextual constraints are open-ended by design, but the keys are not: an
+# unrecognised key is a typo that would silently never match anything.
+CONTEXT_KEYS = {"jurisdiction", "sector", "actor-type", "governing-authority",
+                "assurance", "governance-regime"}
 DOC_URL = re.compile(r"^https://\S+$")
 
 errors: list[str] = []
@@ -65,6 +70,10 @@ def error(message):
 def warn(message):
     warnings.append(message)
 
+
+# ======================================================================
+# Classification
+# ======================================================================
 
 def check_sectors(model):
     for sector_id, row in model.sectors.items():
@@ -156,8 +165,7 @@ def check_alignments(model):
                 and row["match_type"] in {"broadMatch", "narrowMatch"}):
             error(f"{where}: {row['target_id']} is enterprise-relative; a hierarchical "
                   f"mapping onto it asserts a core/support classification that the "
-                  f"function itself does not carry. Use closeMatch or relatedMatch, "
-                  f"with the reasoning in `note`")
+                  f"function itself does not carry. Use closeMatch or relatedMatch")
         if row["match_type"] != "relatedMatch" and not row["note"].strip():
             error(f"{where}: a {row['match_type']} needs a note saying why the two "
                   f"concepts are that close")
@@ -167,37 +175,247 @@ def check_alignments(model):
         seen.add(key)
 
 
-def check_axes(model):
-    """The two axes layered on the use case: why, and how far."""
-    for driver_id, row in model.value_drivers.items():
-        if not SLUG.match(driver_id):
-            error(f"value-drivers.csv[{driver_id}]: id must be a lower-case slug")
-        if not row["definition"].strip():
-            error(f"value-drivers.csv[{driver_id}]: a driver needs a definition, or "
-                  f"two people will apply it differently")
-    for mode_id, row in model.modes.items():
-        if not SLUG.match(mode_id):
-            error(f"transformation-modes.csv[{mode_id}]: id must be a lower-case slug")
-        if row["change_mode"] not in CHANGE_MODE:
-            error(f"transformation-modes.csv[{mode_id}]: change_mode "
-                  f"{row['change_mode']!r} not in {sorted(CHANGE_MODE)}")
+# ======================================================================
+# Interface
+# ======================================================================
 
-    for index, row in enumerate(model.uc_value_drivers, start=2):
-        where = f"use-case-value-drivers.csv:{index}"
+def check_conditions(model):
+    for condition_id, row in model.conditions.items():
+        where = f"conditions.csv[{condition_id}]"
+        if not SLUG.match(condition_id):
+            error(f"{where}: id must be a lower-case slug")
+        if not row["definition"].strip():
+            error(f"{where}: needs a definition. Without one there is no way to tell "
+                  f"whether the condition holds")
+        if row["kind"] not in CONDITION_KIND:
+            error(f"{where}: kind {row['kind']!r} not in {sorted(CONDITION_KIND)}")
+        broader = row["broader"].strip()
+        if broader and broader not in model.conditions:
+            error(f"{where}: broader {broader!r} does not exist")
+        elif broader and condition_id not in model.condition_ancestors(broader):
+            parent = model.conditions[broader]
+            if parent["kind"] != row["kind"]:
+                error(f"{where}: is {row['kind']} but sits under {broader}, which is "
+                      f"{parent['kind']}. Subsumption must not cross the kinds: holding "
+                      f"evidence is not the same claim as a relying party having "
+                      f"established something on it")
+        # A cycle would make condition_ancestors loop, and the whole composition
+        # engine runs on that walk.
+        if broader and condition_id in model.condition_ancestors(broader):
+            error(f"{where}: broader cycle through {broader!r}")
+
+    for role_id, row in model.subject_roles.items():
+        if not SLUG.match(role_id):
+            error(f"subject-roles.csv[{role_id}]: id must be a lower-case slug")
+        if not row["definition"].strip():
+            error(f"subject-roles.csv[{role_id}]: needs a definition")
+
+    used = ({r["condition_id"] for r in model.uc_requires}
+            | {r["condition_id"] for r in model.uc_provides}
+            | {r["condition_id"] for r in model.stage_requires}
+            | {r["condition_id"] for r in model.stage_provides}
+            | {r["condition_id"] for r in model.stream_requires}
+            | {r["condition_id"] for r in model.stream_provides}
+            # A condition a credential substantiates is reachable even if no
+            # interface names it directly: a requirement for its broader parent
+            # finds it through the lattice.
+            | {r["condition_id"] for r in model.credential_conditions})
+    orphans = [c for c in model.conditions
+               if c not in used
+               and not any(model.conditions[other]["broader"] == c
+                           for other in model.conditions)]
+    if orphans:
+        warn(f"{len(orphans)} condition(s) appear in no interface and have nothing "
+             f"under them: {', '.join(orphans)}. A condition used by nobody connects "
+             f"nothing")
+
+
+def check_interface_rows(model):
+    """Every requirement and provision, on every kind of composable element."""
+    tables = [
+        ("use-case-requires.csv", model.uc_requires, model.use_cases, "use_case_id", False),
+        ("use-case-provides.csv", model.uc_provides, model.use_cases, "use_case_id", True),
+        ("value-stream-stage-requires.csv", model.stage_requires, None, None, False),
+        ("value-stream-stage-provides.csv", model.stage_provides, None, None, True),
+        ("value-stream-requires.csv", model.stream_requires, model.value_streams,
+         "value_stream_id", False),
+        ("value-stream-provides.csv", model.stream_provides, model.value_streams,
+         "value_stream_id", True),
+    ]
+    for name, rows, owners, owner_key, is_provision in tables:
+        for index, row in enumerate(rows, start=2):
+            where = f"{name}:{index}"
+            if owners is not None and row[owner_key] not in owners:
+                error(f"{where}: unknown {owner_key} {row[owner_key]!r}")
+            if row["condition_id"] not in model.conditions:
+                error(f"{where}: unknown condition {row['condition_id']!r}")
+            role = row.get("subject_role", "").strip()
+            if role and role not in model.subject_roles:
+                error(f"{where}: unknown subject_role {role!r}")
+            evidence = row.get("evidence_type", "").strip()
+            if evidence and evidence not in model.credential_types:
+                error(f"{where}: unknown evidence_type {evidence!r}")
+            if evidence and not is_provision:
+                # Naming a credential in a requirement is what stops an
+                # alternative credential from serving the same business need.
+                warn(f"{where}: requires a specific credential ({evidence}). Prefer "
+                     f"requiring the condition alone, so a second credential can "
+                     f"satisfy it without this interface changing")
+            for key in model.parse_context(row.get("context", "")):
+                if key not in CONTEXT_KEYS:
+                    error(f"{where}: unknown context key {key!r}, not in "
+                          f"{sorted(CONTEXT_KEYS)}")
+            if row.get("context", "").strip() and "=" not in row["context"]:
+                error(f"{where}: context must be `key=value` clauses separated by `;`")
+            if is_provision and "principal" in row:
+                if row["principal"] not in PRINCIPAL:
+                    error(f"{where}: principal {row['principal']!r} not in "
+                          f"{sorted(PRINCIPAL)}")
+
+    for name, rows in (("value-stream-stage-requires.csv", model.stage_requires),
+                       ("value-stream-stage-provides.csv", model.stage_provides)):
+        for index, row in enumerate(rows, start=2):
+            key = (row["value_stream_id"], row["stage_id"])
+            if key not in model.stage_index:
+                error(f"{name}:{index}: unknown stage {key}")
+
+
+def check_use_case_interfaces(model):
+    """The atomicity rule, enforced.
+
+    One primary function, one principal outcome, a coherent set of required
+    conditions. A use case that fails these is not one transformation, and
+    everything downstream - composition, overlap detection, stage realisation -
+    reads it as if it were.
+    """
+    for uc_id, row in model.use_cases.items():
+        where = f"use-cases.csv[{uc_id}]"
+        if not SLUG.match(uc_id):
+            error(f"{where}: id must be a lower-case slug")
+        if not row["description"].strip():
+            error(f"{where}: needs a description")
+        if row["transformation_mode"] not in model.modes:
+            error(f"{where}: transformation_mode {row['transformation_mode']!r} is not "
+                  f"in transformation-modes.csv")
+
+        primaries = [r for r in model.functions_of.get(uc_id, []) if r["role"] == "primary"]
+        if len(primaries) != 1:
+            error(f"{where}: expected exactly one primary function, found "
+                  f"{len(primaries)}")
+        functions = [r["function_id"] for r in model.functions_of.get(uc_id, [])]
+        if len(functions) != len(set(functions)):
+            error(f"{where}: the same function is listed twice")
+        for link in model.functions_of.get(uc_id, []):
+            if link["role"] not in {"primary", "supporting"}:
+                error(f"{where}: role {link['role']!r} must be primary or supporting")
+            if link["function_id"] not in model.functions:
+                error(f"{where}: unknown function {link['function_id']!r}")
+
+        provisions = model.provides_of.get(uc_id, [])
+        if not provisions:
+            error(f"{where}: provides nothing. Nothing can follow a use case that "
+                  f"leaves no condition behind")
+        principals = [p for p in provisions if p.get("principal") == "yes"]
+        if len(principals) != 1:
+            error(f"{where}: expected exactly one principal outcome, found "
+                  f"{len(principals)}. A use case that has several is doing several "
+                  f"transformations: split it, and compose the parts in a flow")
+
+        ids = [p["provision_id"] for p in provisions]
+        if len(ids) != len(set(ids)):
+            error(f"{where}: the same provision_id is used twice")
+        ids = [r["requirement_id"] for r in model.requires_of.get(uc_id, [])]
+        if len(ids) != len(set(ids)):
+            error(f"{where}: the same requirement_id is used twice")
+
+        # A use case that provides what it also requires is not a
+        # transformation; it is a no-op or a mis-modelled refresh.
+        required = {r["condition_id"] for r in model.requires_of.get(uc_id, [])}
+        provided = {p["condition_id"] for p in provisions}
+        for condition in sorted(required & provided):
+            warn(f"{where}: both requires and provides {condition}. Deliberate for a "
+                 f"refresh, a mistake otherwise")
+
+        sectors = model.sectors_of.get(uc_id, [])
+        if not sectors:
+            error(f"{where}: no sector — a use case that applies nowhere is not a use case")
+        if len(sectors) != len(set(sectors)):
+            error(f"{where}: the same sector is listed twice")
+        for sector in sectors:
+            if sector not in model.sectors:
+                error(f"{where}: unknown sector {sector!r}")
+
+        drivers = model.value_drivers_of.get(uc_id, [])
+        if not drivers:
+            error(f"{where}: no value driver. Record at least one reason applying a "
+                  f"credential here is worth doing")
+        if len(drivers) != len(set(drivers)):
+            error(f"{where}: the same value driver is listed twice")
+        for driver in drivers:
+            if driver not in model.value_drivers:
+                error(f"{where}: unknown value driver {driver!r}")
+        if "friction-reduction" in drivers and not model.prior_evidence_of.get(uc_id):
+            error(f"{where}: claims friction-reduction but names no mechanism it "
+                  f"reduces reliance on")
+
+    for index, row in enumerate(model.uc_prior_evidence, start=2):
+        where = f"use-case-prior-evidence.csv:{index}"
         if row["use_case_id"] not in model.use_cases:
             error(f"{where}: unknown use case {row['use_case_id']!r}")
-        if row["value_driver_id"] not in model.value_drivers:
-            error(f"{where}: unknown value driver {row['value_driver_id']!r}")
+        if row["mechanism_id"] not in model.prior_evidence:
+            error(f"{where}: unknown prior evidence mechanism {row['mechanism_id']!r}")
 
-    used = {r["value_driver_id"] for r in model.uc_value_drivers}
-    unused = [d for d in model.value_drivers if d not in used]
-    if unused:
-        warn(f"{len(unused)} of {len(model.value_drivers)} value drivers are not yet "
-             f"claimed by a use case: {', '.join(unused)}")
-    for mode_id in model.modes:
-        if not any(uc["transformation_mode"] == mode_id for uc in model.use_cases.values()):
-            warn(f"transformation-modes.csv[{mode_id}]: no use case is classified here")
 
+def check_named_dependencies(model):
+    """`requiresUseCase` is exceptional, and the validator says so.
+
+    A named dependency composes with exactly one upstream use case and silently
+    excludes every alternative route to the same condition. Where the dependency
+    is already expressible as a condition, it should be.
+    """
+    for index, row in enumerate(model.dependencies, start=2):
+        where = f"use-case-dependencies.csv:{index}"
+        first, second = row["use_case_id"], row["requires_use_case_id"]
+        for field, value in (("use_case_id", first), ("requires_use_case_id", second)):
+            if value not in model.use_cases:
+                error(f"{where}: unknown use case {value!r} in {field}")
+        if first == second:
+            error(f"{where}: a use case cannot require itself")
+        if first in model.use_cases and second in model.use_cases:
+            # `first requires second` means second must run first, so the
+            # question is whether second already enables first through the
+            # interfaces - not the other way round.
+            if first in model.enables(second):
+                error(f"{where}: {first} already composes onto {second} through the "
+                      f"interface, so the named dependency adds nothing and narrows "
+                      f"the graph to one upstream route. Remove it")
+            else:
+                warn(f"{where}: named dependency {first} -> {second}. Prefer stating "
+                     f"the condition {first} actually needs, so an alternative "
+                     f"upstream flow can satisfy it")
+
+    colour: dict[str, int] = {}
+
+    def visit(node, trail):
+        if colour.get(node) == 1:
+            error(f"use-case-dependencies.csv: dependency cycle "
+                  f"{' -> '.join(trail + [node])}")
+            return
+        if colour.get(node) == 2:
+            return
+        colour[node] = 1
+        for nxt in model.depends_on.get(node, []):
+            if nxt in model.use_cases:
+                visit(nxt, trail + [node])
+        colour[node] = 2
+
+    for uc_id in model.use_cases:
+        visit(uc_id, [])
+
+
+# ======================================================================
+# Value streams as composition templates
+# ======================================================================
 
 def check_value_streams(model):
     for stream_id, row in model.value_streams.items():
@@ -216,81 +434,59 @@ def check_value_streams(model):
         positions = [int(st["position"]) for st in stages]
         if positions != list(range(1, len(positions) + 1)):
             error(f"{where}: stage positions must run 1..n with no gaps, got {positions}")
-        seen: set[str] = set()
+        seen_stage, seen_function = set(), set()
         for stage in stages:
-            stage_where = f"{where} stage {stage['position']}"
+            stage_where = f"{where} stage {stage['stage_id']}"
+            if not SLUG.match(stage["stage_id"]):
+                error(f"{stage_where}: stage_id must be a lower-case slug")
+            if stage["stage_id"] in seen_stage:
+                error(f"{stage_where}: stage_id used twice in this stream")
+            seen_stage.add(stage["stage_id"])
             if stage["function_id"] not in model.functions:
                 error(f"{stage_where}: unknown function {stage['function_id']!r}")
             if not stage["stage_label"].strip():
                 error(f"{stage_where}: needs a label saying what happens there")
-            if stage["function_id"] in seen:
+            if stage["function_id"] in seen_function:
                 warn(f"{stage_where}: {stage['function_id']} appears twice in this stream")
-            seen.add(stage["function_id"])
+            seen_function.add(stage["function_id"])
 
-    for index, row in enumerate(model.uc_value_streams, start=2):
-        where = f"use-case-value-streams.csv:{index}"
+    for index, row in enumerate(model.uc_stages, start=2):
+        where = f"use-case-stages.csv:{index}"
         if row["use_case_id"] not in model.use_cases:
             error(f"{where}: unknown use case {row['use_case_id']!r}")
-        if row["value_stream_id"] not in model.value_streams:
-            error(f"{where}: unknown value stream {row['value_stream_id']!r}")
+            continue
+        key = (row["value_stream_id"], row["stage_id"])
+        if key not in model.stage_index:
+            error(f"{where}: unknown stage {key}")
+            continue
+        # A use case realises a stage only if it does that stage's work. The
+        # function is the check the classification can actually make.
+        stage = model.stage_index[key]
+        uc_functions = {r["function_id"] for r in model.functions_of[row["use_case_id"]]}
+        if stage["function_id"] not in uc_functions:
+            error(f"{where}: {row['use_case_id']} realises a stage whose function is "
+                  f"{stage['function_id']}, but does not list that function at all")
+        # And its interface must not contradict the stage's.
+        stage_provides = {r["condition_id"] for r in model.stage_provides
+                          if (r["value_stream_id"], r["stage_id"]) == key}
+        uc_provides = {p["condition_id"] for p in model.provides_of[row["use_case_id"]]}
+        for condition in sorted(stage_provides):
+            if not any(model.condition_satisfies(p, condition) for p in uc_provides):
+                warn(f"{where}: the stage provides {condition}, which "
+                     f"{row['use_case_id']} does not provide or narrow. Either the "
+                     f"stage interface or the use case interface is wrong")
 
-    placed = {r["value_stream_id"] for r in model.uc_value_streams}
-    empty = [v for v in model.value_streams if v not in placed]
-    if empty:
-        warn(f"{len(empty)} of {len(model.value_streams)} value streams have no use case "
-             f"in them yet: {', '.join(empty)}")
+    unrealised = model.unrealised_stages()
+    if unrealised:
+        warn(f"{len(unrealised)} of {len(model.stage_index)} value stream stages have "
+             f"no use case realising them: "
+             f"{', '.join(f'{vs}/{st}' for vs, st in unrealised[:8])}"
+             f"{' …' if len(unrealised) > 8 else ''}")
 
 
-def check_states(model):
-    for state_id, row in model.states.items():
-        if not SLUG.match(state_id):
-            error(f"states.csv[{state_id}]: id must be a lower-case slug")
-        if not row["definition"].strip():
-            error(f"states.csv[{state_id}]: needs a definition. Without one there is "
-                  f"no way to tell whether the state holds")
-        if row["kind"] not in STATE_KIND:
-            error(f"states.csv[{state_id}]: kind {row['kind']!r} not in "
-                  f"{sorted(STATE_KIND)}. An evidence state records possession; an "
-                  f"outcome state records a business or administrative conclusion")
-
-    for table, name in ((model.preconditions, "use-case-preconditions.csv"),
-                        (model.postconditions, "use-case-postconditions.csv")):
-        for index, row in enumerate(table, start=2):
-            where = f"{name}:{index}"
-            if row["use_case_id"] not in model.use_cases:
-                error(f"{where}: unknown use case {row['use_case_id']!r}")
-            if row["state_id"] not in model.states:
-                error(f"{where}: unknown state {row['state_id']!r}")
-
-    for uc_id in model.use_cases:
-        if not model.post_of.get(uc_id):
-            error(f"use-cases.csv[{uc_id}]: no postcondition. Nothing can follow a use "
-                  f"case that leaves no state behind")
-        overlap = set(model.pre_of.get(uc_id, [])) & set(model.post_of.get(uc_id, []))
-        if overlap:
-            warn(f"use-cases.csv[{uc_id}]: {', '.join(sorted(overlap))} is both a pre- "
-                 f"and a postcondition. Deliberate for a refresh, a mistake otherwise")
-
-    # An asserted dependency has to be justified by the interfaces, or one of
-    # the two is wrong and it is worth knowing which.
-    for index, row in enumerate(model.dependencies, start=2):
-        a, b = row["use_case_id"], row["requires_use_case_id"]
-        if a in model.use_cases and b in model.use_cases:
-            if not (set(model.post_of.get(b, [])) & set(model.pre_of.get(a, []))):
-                error(f"use-case-dependencies.csv:{index}: {a} is declared to require "
-                      f"{b}, but nothing {b} leaves true is anything {a} needs. Either "
-                      f"the dependency is wrong or the states are")
-
-    unproduced = model.unproduced_states()
-    if unproduced:
-        warn(f"{len(unproduced)} state(s) are required by a use case here and left "
-             f"behind by none: {', '.join(unproduced)}. Each marks a flow that is "
-             f"outside this repository or not yet written down")
-
-    for group in model.overlaps():
-        warn(f"same interface, so possibly one use case rather than "
-             f"{len(group)}: {', '.join(group)}")
-
+# ======================================================================
+# Realisation
+# ======================================================================
 
 def check_trust_roles(model):
     for table, name in ((model.trust_roles, "trust-roles.csv"),
@@ -303,14 +499,93 @@ def check_trust_roles(model):
 
     for role_id in model.trust_roles:
         if role_id not in ACTIONS_BY_ROLE:
-            error(f"trust-roles.csv[{role_id}]: no credential actions are declared for "
-                  f"this role in build/validate.py. Add it to ACTIONS_BY_ROLE, with an "
-                  f"empty set if the role handles no credential itself")
+            error(f"trust-roles.csv[{role_id}]: no credential actions declared for this "
+                  f"role in build/validate.py. Add it to ACTIONS_BY_ROLE, with an empty "
+                  f"set if the role handles no credential itself")
 
-    for index, row in enumerate(model.participants, start=2):
-        where = f"use-case-participants.csv:{index}"
+
+def check_flows(model):
+    for flow_id, row in model.flows.items():
+        where = f"flows.csv[{flow_id}]"
+        if not SLUG.match(flow_id):
+            error(f"{where}: id must be a lower-case slug")
+        if not row["description"].strip():
+            error(f"{where}: needs a description")
+        sector = row["sector_id"].strip()
+        if sector and sector not in model.sectors:
+            error(f"{where}: unknown sector {sector!r}")
+        if row["maturity"] not in MATURITY:
+            error(f"{where}: maturity {row['maturity']!r} not in {sorted(MATURITY)}")
+        documented = row["documented_by"].strip()
+        if documented and not DOC_URL.match(documented):
+            error(f"{where}: documented_by must be an absolute https URL, got "
+                  f"{documented!r}")
+        if row["maturity"] == "Modelled" and not documented:
+            error(f"{where}: maturity Modelled claims a worked flow, but documented_by "
+                  f"is empty")
+        deployment = row["deployment_evidence"].strip()
+        if deployment and not DOC_URL.match(deployment):
+            error(f"{where}: deployment_evidence must be an absolute https URL")
+        if row["maturity"] == "Live" and not deployment:
+            error(f"{where}: maturity Live claims a production deployment. Record the "
+                  f"evidence in deployment_evidence, or use Modelled")
+        if deployment and row["maturity"] != "Live":
+            warn(f"{where}: carries deployment evidence but is not marked Live")
+        if row["jurisdiction"].strip() and not re.fullmatch(
+                r"[A-Z]{2}", row["jurisdiction"].strip()):
+            error(f"{where}: jurisdiction must be an ISO 3166 alpha-2 code")
+        if not model.realises_of.get(flow_id):
+            error(f"{where}: realises no use case. A flow that implements no canonical "
+                  f"pattern either needs one, or is not a flow")
+
+    seen = set()
+    for index, row in enumerate(model.flow_realises, start=2):
+        where = f"flow-realises.csv:{index}"
+        if row["flow_id"] not in model.flows:
+            error(f"{where}: unknown flow {row['flow_id']!r}")
         if row["use_case_id"] not in model.use_cases:
             error(f"{where}: unknown use case {row['use_case_id']!r}")
+        key = (row["flow_id"], row["step"])
+        if key in seen:
+            error(f"{where}: {row['flow_id']} uses step {row['step']} twice")
+        seen.add(key)
+
+    for flow_id in model.flows:
+        steps = [int(r["step"]) for r in model.flow_realises if r["flow_id"] == flow_id]
+        if sorted(steps) != list(range(1, len(steps) + 1)):
+            error(f"flows.csv[{flow_id}]: realisation steps must run 1..n with no "
+                  f"gaps, got {sorted(steps)}")
+
+    # A flow composing several patterns must be a chain the interfaces allow.
+    for flow_id in model.flows:
+        chain = model.realises_of[flow_id]
+        held: set[str] = set()
+        for position, uc_id in enumerate(chain, start=1):
+            if uc_id not in model.use_cases:
+                continue
+            if position > 1 and not model.runnable(uc_id, held):
+                missing = [r["condition_id"] for r in model.requires_of[uc_id]
+                           if not any(r["condition_id"] in model.condition_ancestors(c)
+                                      for c in held)]
+                warn(f"flows.csv[{flow_id}]: step {position} is {uc_id}, but nothing "
+                     f"earlier in the flow provides {', '.join(missing)}. Either the "
+                     f"flow relies on a condition established outside it, or the order "
+                     f"is wrong")
+            for provision in model.provides_of[uc_id]:
+                held.update(model.condition_ancestors(provision["condition_id"]))
+
+    unrealised = model.unrealised_use_cases()
+    if unrealised:
+        warn(f"{len(unrealised)} use case pattern(s) no flow implements: "
+             f"{', '.join(unrealised)}. Each is a gap between the classification and "
+             f"the ecosystem")
+
+
+def check_participations(model):
+    for index, row in enumerate(model.flow_participants, start=2):
+        where = f"flow-participants.csv:{index}"
+        if row["flow_id"] not in model.flows:
+            error(f"{where}: unknown flow {row['flow_id']!r}")
         if not SLUG.match(row["participation_id"]):
             error(f"{where}: participation_id must be a lower-case slug")
         if row["role_id"] not in model.trust_roles:
@@ -322,23 +597,22 @@ def check_trust_roles(model):
         if row["gains_value"] not in GAINS_VALUE:
             error(f"{where}: gains_value {row['gains_value']!r} not in {sorted(GAINS_VALUE)}")
 
-    # A participation is identified within its use case, not by its role, so
-    # that one party in two capacities is two participations rather than one
-    # participation borrowing a second role's actions.
     seen = set()
-    for row in model.participants:
-        key = (row["use_case_id"], row["participation_id"])
+    for row in model.flow_participants:
+        key = (row["flow_id"], row["participation_id"])
         if key in seen:
-            error(f"use-case-participants.csv: {row['use_case_id']} uses the "
-                  f"participation id {row['participation_id']!r} twice")
+            error(f"flow-participants.csv: {row['flow_id']} uses the participation id "
+                  f"{row['participation_id']!r} twice")
         seen.add(key)
 
-    for index, row in enumerate(model.uc_prior_evidence, start=2):
-        where = f"use-case-prior-evidence.csv:{index}"
-        if row["use_case_id"] not in model.use_cases:
-            error(f"{where}: unknown use case {row['use_case_id']!r}")
-        if row["mechanism_id"] not in model.prior_evidence:
-            error(f"{where}: unknown prior evidence mechanism {row['mechanism_id']!r}")
+    for flow_id in model.flows:
+        roles = {p["role_id"] for p in model.participants_of.get(flow_id, [])}
+        if not roles & {"issuer", "verifier"}:
+            error(f"flows.csv[{flow_id}]: neither an issuer nor a verifier. A flow has "
+                  f"to cover at least one end of a credential exchange")
+        if "holder" not in roles:
+            warn(f"flows.csv[{flow_id}]: no holder named. Check whether this is an "
+                 f"organisation-to-organisation exchange or an omission")
 
 
 def check_credentials(model):
@@ -353,258 +627,147 @@ def check_credentials(model):
         if not row["format"].strip():
             error(f"{where}: `format` is required - a credential with no format cannot "
                   f"be implemented")
-        state = row["evidences_state"]
-        if state and state not in model.states:
-            error(f"{where}: evidences_state {state!r} is not in states.csv")
+        if cred_id not in model.substantiates:
+            warn(f"{where}: substantiates no condition, so nothing can ask for it as "
+                 f"evidence")
 
-    claimed = {}
-    for cred_id, row in model.credential_types.items():
-        state = row["evidences_state"]
-        if state:
-            claimed.setdefault(state, []).append(cred_id)
-    for state, creds in claimed.items():
-        if len(creds) > 1:
-            warn(f"states.csv[{state}]: evidenced by {len(creds)} credential types "
-                 f"({', '.join(creds)}). Two credentials for one state means either the "
-                 f"state is too coarse or one of them is redundant")
+    for index, row in enumerate(model.credential_conditions, start=2):
+        where = f"credential-conditions.csv:{index}"
+        if row["credential_type_id"] not in model.credential_types:
+            error(f"{where}: unknown credential type {row['credential_type_id']!r}")
+        if row["condition_id"] not in model.conditions:
+            error(f"{where}: unknown condition {row['condition_id']!r}")
+        elif model.conditions[row["condition_id"]]["kind"] != "evidence":
+            error(f"{where}: {row['condition_id']} is a "
+                  f"{model.conditions[row['condition_id']]['kind']} condition. A "
+                  f"credential is evidence; it cannot by itself substantiate a fact a "
+                  f"relying party has to establish, or a business outcome")
 
-    role_of = {(p["use_case_id"], p["participation_id"]): p["role_id"]
-               for p in model.participants}
-    for index, row in enumerate(model.participation_credentials, start=2):
-        where = f"participation-credentials.csv:{index}"
+    role_of = {(p["flow_id"], p["participation_id"]): p["role_id"]
+               for p in model.flow_participants}
+    for index, row in enumerate(model.flow_credentials, start=2):
+        where = f"flow-credentials.csv:{index}"
         if row["credential_type_id"] not in model.credential_types:
             error(f"{where}: unknown credential type {row['credential_type_id']!r}")
         if row["action"] not in CREDENTIAL_ACTIONS:
             error(f"{where}: action {row['action']!r} not in {sorted(CREDENTIAL_ACTIONS)}")
             continue
-        key = (row["use_case_id"], row["participation_id"])
+        key = (row["flow_id"], row["participation_id"])
         role = role_of.get(key)
         if role is None:
-            error(f"{where}: {row['use_case_id']} has no participation "
+            error(f"{where}: {row['flow_id']} has no participation "
                   f"{row['participation_id']!r} to attach a credential to")
             continue
-        # The heart of the trust-role model: a role performs its own action and
-        # no other. One party acting in two roles is two participations.
         allowed = ACTIONS_BY_ROLE.get(role, set())
         if row["action"] not in allowed:
             expected = (f"only {' and '.join(sorted(allowed))}" if allowed
                         else "no credential action at all")
             error(f"{where}: the {role} participation {row['participation_id']!r} is "
                   f"recorded as {row['action']!r}, but a {role} performs {expected}. If "
-                  f"one party acts in two roles here, give it a second participation in "
-                  f"use-case-participants.csv rather than letting one role borrow "
-                  f"another's action")
+                  f"one party acts in two roles here, give it a second participation")
 
     check_credential_lifecycle(model)
     check_credential_supply(model)
 
 
 def check_credential_lifecycle(model):
-    """Issued, held, presented, verified - and no half of a pair on its own.
-
-    A use case may cover any part of the lifecycle. What it may not do is record
-    one side of an exchange without the other: a credential verified inside a use
-    case has to have been presented inside it, and one issued has to land with a
-    holder.
-    """
-    for uc_id in model.use_cases:
-        where = f"use-cases.csv[{uc_id}]"
-        issued = model.credential_actions(uc_id, "issues")
-        held = model.credential_actions(uc_id, "holds")
-        presented = model.credential_actions(uc_id, "presents")
-        verified = model.credential_actions(uc_id, "verifies")
+    """Issued, held, presented, verified - and no half of a pair on its own."""
+    for flow_id in model.flows:
+        where = f"flows.csv[{flow_id}]"
+        issued = model.credential_actions(flow_id, "issues")
+        held = model.credential_actions(flow_id, "holds")
+        presented = model.credential_actions(flow_id, "presents")
+        verified = model.credential_actions(flow_id, "verifies")
 
         for cred in sorted(verified - presented):
-            error(f"{where}: {cred} is verified here but never presented. Record the "
-                  f"holder's presentation, or move the verification to the use case "
-                  f"where the presentation happens")
+            error(f"{where}: {cred} is verified here but never presented")
         for cred in sorted(presented - verified):
             error(f"{where}: {cred} is presented here but nobody verifies it. A "
                   f"presentation with no verifier is not an exchange")
         for cred in sorted(issued - held):
-            error(f"{where}: {cred} is issued here but no holder takes possession of "
-                  f"it. Record the holder's `holds`, or the credential goes nowhere")
+            error(f"{where}: {cred} is issued here but no holder takes possession of it")
         for cred in sorted(held - issued):
             error(f"{where}: {cred} is held here but nothing issues it. `holds` marks "
-                  f"the use case where possession begins; a credential obtained "
-                  f"elsewhere and used here records `presents` alone")
-        # Issuing the evidence for a state the same use case demands first is a
-        # lifecycle contradiction: the issuing step is a separate use case.
-        for state in model.pre_of.get(uc_id, []):
-            cred = model.credential_for_state(state)
-            if cred and cred in issued:
-                error(f"{where}: requires {state} as a precondition and also issues "
-                      f"{cred}, the credential that evidences it. The issuing step "
-                      f"belongs in its own use case")
+                  f"the flow where possession begins; a credential obtained elsewhere "
+                  f"and used here records `presents` alone")
 
 
 def check_credential_supply(model):
-    """Credentials nothing issues, and preconditions nobody checks."""
-    issued_anywhere = {link["credential_type_id"]
-                       for links in model.credentials_of.values()
-                       for link in links if link["action"] == "issues"}
+    """Credentials nothing issues, and requirements nobody's evidence can meet."""
+    issued = model.issued_credentials()
+    consumed = model.consumed_credentials()
     referenced = {link["credential_type_id"]
                   for links in model.credentials_of.values() for link in links}
 
     unused = [c for c in model.credential_types if c not in referenced]
     if unused:
-        warn(f"{len(unused)} credential type(s) no participation handles at all: "
-             f"{', '.join(unused)}. Either a use case is missing or the credential may "
-             f"have been added speculatively")
-    unissued = [c for c in model.credential_types
-                if c in referenced and c not in issued_anywhere]
+        warn(f"{len(unused)} credential type(s) no flow handles at all: "
+             f"{', '.join(unused)}")
+    unissued = [c for c in sorted(referenced - issued)]
     if unissued:
-        warn(f"{len(unissued)} credential type(s) are presented or verified here but "
-             f"issued by no use case in this graph: {', '.join(unissued)}. Each marks an "
-             f"issuing flow that is outside the repository or not yet written down")
+        warn(f"{len(unissued)} credential type(s) are presented or verified but issued "
+             f"by no flow here: {', '.join(unissued)}. Each marks an issuing flow "
+             f"outside the repository or not yet written down")
+    unconsumed = [c for c in sorted(issued - consumed)]
+    if unconsumed:
+        warn(f"{len(unconsumed)} credential type(s) are issued but verified by no flow "
+             f"here: {', '.join(unconsumed)}")
 
-    # If a use case needs a state, somebody in it should be checking the
-    # credential that evidences that state.
+    # An evidence condition that nothing can substantiate is a requirement no
+    # implementation can meet, however well the interfaces line up.
     for uc_id in model.use_cases:
-        verified = model.credential_actions(uc_id, "verifies")
-        for state in model.pre_of.get(uc_id, []):
-            cred = model.credential_for_state(state)
-            if cred and cred not in verified:
-                warn(f"use-cases.csv[{uc_id}]: requires {state}, evidenced by {cred}, "
-                     f"but no verifier in this use case checks it")
+        for requirement in model.requires_of[uc_id]:
+            condition = model.conditions[requirement["condition_id"]]
+            if condition["kind"] != "evidence":
+                continue
+            if not model.credentials_for_condition(requirement["condition_id"]):
+                warn(f"use-cases.csv[{uc_id}]: requires evidence condition "
+                     f"{requirement['condition_id']}, which no credential type "
+                     f"substantiates")
 
 
-def check_dependencies(model):
-    for index, row in enumerate(model.dependencies, start=2):
-        where = f"use-case-dependencies.csv:{index}"
-        for field in ("use_case_id", "requires_use_case_id"):
-            if row[field] not in model.use_cases:
-                error(f"{where}: unknown use case {row[field]!r}")
-        if row["use_case_id"] == row["requires_use_case_id"]:
-            error(f"{where}: a use case cannot require itself")
+# ======================================================================
+# Composition
+# ======================================================================
 
-    # A dependency cycle means no valid order to build things in, which is the
-    # whole point of recording dependencies.
-    colour: dict[str, int] = {}
+def check_composition(model):
+    """The interfaces have to actually compose, and the gaps have to be visible."""
+    for uc_id, requirement_id in model.unmet_requirements():
+        requirement = next(r for r in model.requires_of[uc_id]
+                           if r["requirement_id"] == requirement_id)
+        warn(f"use-cases.csv[{uc_id}]: requirement {requirement_id!r} "
+             f"({requirement['condition_id']}) is satisfied by no use case here. "
+             f"Either an upstream use case is missing, or the condition is "
+             f"established outside this graph")
 
-    def visit(node, trail):
-        if colour.get(node) == 1:
-            error(f"use-case-dependencies.csv: dependency cycle "
-                  f"{' -> '.join(trail + [node])}")
-            return
-        if colour.get(node) == 2:
-            return
-        colour[node] = 1
-        for nxt in model.requires_of.get(node, []):
-            if nxt in model.use_cases:
-                visit(nxt, trail + [node])
-        colour[node] = 2
+    unconsumed = model.unconsumed_provisions()
+    principal_unconsumed = []
+    for uc_id, provision_id in unconsumed:
+        provision = next(p for p in model.provides_of[uc_id]
+                         if p["provision_id"] == provision_id)
+        if provision.get("principal") == "yes":
+            principal_unconsumed.append(f"{uc_id}/{provision['condition_id']}")
+    if principal_unconsumed:
+        warn(f"{len(principal_unconsumed)} principal outcome(s) no use case here "
+             f"consumes: {', '.join(principal_unconsumed)}. Ends of the chain, or "
+             f"downstream use cases nobody has written down")
 
-    for uc_id in model.use_cases:
-        visit(uc_id, [])
-
-
-def check_use_cases(model):
-    for uc_id, row in model.use_cases.items():
-        where = f"use-cases.csv[{uc_id}]"
-        if not SLUG.match(uc_id):
-            error(f"{where}: id must be a lower-case slug")
-        mode = row["transformation_mode"]
-        if mode not in model.modes:
-            error(f"{where}: transformation_mode {mode!r} is not in "
-                  f"transformation-modes.csv")
-        drivers = model.value_drivers_of.get(uc_id, [])
-        if not drivers:
-            error(f"{where}: no value driver. Record at least one reason applying a "
-                  f"credential here is worth doing")
-        if len(drivers) != len(set(drivers)):
-            error(f"{where}: the same value driver is listed twice")
-
-        # A use case may cover only part of the credential lifecycle, so an
-        # issuance-only or a verification-only one is legitimate. What it may not
-        # be is a use case in which no credential changes hands at all.
-        roles = {p["role_id"] for p in model.participants_of.get(uc_id, [])}
-        if not roles & {"issuer", "verifier"}:
-            error(f"{where}: neither an issuer nor a verifier. A use case in this graph "
-                  f"has to cover at least one end of a credential exchange")
-        if "holder" not in roles:
-            warn(f"{where}: no holder named. Check whether this is an "
-                 f"organisation-to-organisation exchange or an omission")
-
-        # Friction reduction is easy to claim without evidence. Naming the
-        # mechanism the use case reduces reliance on makes the claim checkable.
-        if "friction-reduction" in drivers and not model.prior_evidence_of.get(uc_id):
-            error(f"{where}: claims friction-reduction but names no mechanism it "
-                  f"reduces reliance on. Add a row to use-case-prior-evidence.csv or "
-                  f"drop the driver")
-
-        if row["maturity"] not in MATURITY:
-            error(f"{where}: maturity {row['maturity']!r} not in {sorted(MATURITY)}")
-        deployment = row["deployment_evidence"].strip()
-        if deployment and not DOC_URL.match(deployment):
-            error(f"{where}: deployment_evidence must be an absolute https URL, "
-                  f"got {deployment!r}")
-        if row["maturity"] == "Live" and not deployment:
-            error(f"{where}: maturity Live claims a production deployment. Record the "
-                  f"evidence for it in deployment_evidence, or use Modelled")
-        if deployment and row["maturity"] != "Live":
-            warn(f"{where}: carries deployment evidence but is not marked Live")
-
-        sectors = model.sectors_of.get(uc_id, [])
-        if not sectors:
-            error(f"{where}: no sector — a use case that sits in no sector is not a use case")
-        if len(sectors) != len(set(sectors)):
-            error(f"{where}: the same sector is listed twice")
-
-        functions = [r["function_id"] for r in model.functions_of.get(uc_id, [])]
-        if len(functions) != len(set(functions)):
-            error(f"{where}: the same function is listed twice")
-        primaries = [r for r in model.functions_of.get(uc_id, []) if r["role"] == "primary"]
-        if len(primaries) != 1:
-            error(f"{where}: expected exactly one primary function, found {len(primaries)}")
-        for link in model.functions_of.get(uc_id, []):
-            if link["role"] not in {"primary", "supporting"}:
-                error(f"{where}: role {link['role']!r} must be primary or supporting")
-
-        documented = row["documented_by"].strip()
-        if documented:
-            # The worked flows live in other repositories, so this checks the shape
-            # of the link, not that it resolves — no network call in CI.
-            if not DOC_URL.match(documented):
-                error(f"{where}: documented_by must be an absolute https URL, "
-                      f"got {documented!r}")
-            if row["maturity"] == "Exploratory":
-                warn(f"{where}: has a worked flow but is still marked Exploratory")
-        elif row["maturity"] != "Exploratory":
-            error(f"{where}: maturity {row['maturity']} claims a worked flow, "
-                  f"but documented_by is empty")
+    for verdict, first, second in model.overlaps():
+        message = (f"{first} and {second} share a primary function and their "
+                   f"interfaces {verdict}")
+        if verdict == "duplicate":
+            error(f"use-cases.csv: {message}. Two use cases with the same function and "
+                  f"the same interface are one use case")
+        else:
+            warn(f"use-cases.csv: {message}. Reported for editorial review, not merged")
 
 
-def check_links(model):
-    for index, row in enumerate(model.uc_sectors, start=2):
-        where = f"use-case-sectors.csv:{index}"
-        if row["use_case_id"] not in model.use_cases:
-            error(f"{where}: unknown use case {row['use_case_id']!r}")
-        if row["sector_id"] not in model.sectors:
-            error(f"{where}: unknown sector {row['sector_id']!r}")
-    for index, row in enumerate(model.uc_functions, start=2):
-        where = f"use-case-functions.csv:{index}"
-        if row["use_case_id"] not in model.use_cases:
-            error(f"{where}: unknown use case {row['use_case_id']!r}")
-        if row["function_id"] not in model.functions:
-            error(f"{where}: unknown function {row['function_id']!r}")
-
-    # The vocabulary is deliberately wider than the seeded use cases, so unused
-    # functions are expected. Report them once as coverage, not one line each.
-    used_functions = {r["function_id"] for r in model.uc_functions}
-    unused = [f for f in model.functions if f not in used_functions]
-    if unused:
-        warn(f"{len(unused)} of {len(model.functions)} functions are not yet exercised "
-             f"by a use case: {', '.join(unused)}")
-
+# ======================================================================
+# Generated artefacts and RDF
+# ======================================================================
 
 def check_generated(model):
-    """Fail if generated/ no longer matches data/.
-
-    build.py --check does the same thing in CI. Having it here too means a local
-    validate run cannot pass while the published graph still describes the
-    previous data.
-    """
+    """Fail if generated/ no longer matches data/."""
     import build as build_module
 
     root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -656,9 +819,9 @@ def check_rdf():
 def check_shacl(root):
     """Run the SHACL shapes over the generated graph, if pyshacl is installed.
 
-    The Python checks above remain the build authority: they see the CSVs and can
-    say which row is wrong. The shapes exist so that a consumer who has only the
-    RDF can check the same structural constraints without this repository.
+    The Python checks remain the build authority: they see the CSVs and can say
+    which row is wrong. The shapes exist so a consumer with only the RDF can
+    check the same structural constraints without this repository.
     """
     try:
         from pyshacl import validate as shacl_validate
@@ -682,14 +845,16 @@ def main():
     check_sectors(model)
     check_functions(model)
     check_alignments(model)
-    check_axes(model)
+    check_conditions(model)
+    check_interface_rows(model)
+    check_use_case_interfaces(model)
+    check_named_dependencies(model)
     check_value_streams(model)
-    check_states(model)
     check_trust_roles(model)
-    check_dependencies(model)
+    check_flows(model)
+    check_participations(model)
     check_credentials(model)
-    check_use_cases(model)
-    check_links(model)
+    check_composition(model)
     check_generated(model)
     check_rdf()
 
@@ -698,12 +863,13 @@ def main():
     for message in errors:
         print(f"error: {message}", file=sys.stderr)
 
-    counts = (f"{len(model.use_cases)} use cases, {len(model.sectors)} sectors, "
-              f"{len(model.functions)} functions, {len(model.alignments)} alignments, "
-              f"{len(model.value_drivers)} value drivers, "
+    counts = (f"{len(model.use_cases)} use case patterns, {len(model.flows)} flows, "
+              f"{len(model.conditions)} conditions, "
+              f"{len(model.uc_requires)} requirements, "
+              f"{len(model.uc_provides)} provisions, "
+              f"{len(model.sectors)} sectors, {len(model.functions)} functions, "
               f"{len(model.value_streams)} value streams, "
-              f"{len(model.participants)} participations, "
-              f"{len(model.states)} states, "
+              f"{len(model.stage_index)} stages, "
               f"{len(model.credential_types)} credential types")
     if errors:
         print(f"\nFAILED: {len(errors)} error(s) in {counts}", file=sys.stderr)

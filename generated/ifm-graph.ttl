@@ -1,6 +1,6 @@
 # Industry-Function Mapping - generated knowledge graph.
 # DO NOT EDIT: regenerate with `python3 build/build.py` from data/*.csv.
-# 12 use cases, 42 sector concepts, 28 function concepts.
+# 15 use cases, 42 sector concepts, 28 function concepts.
 # SPDX-License-Identifier: CC-BY-4.0
 
 @prefix ifm: <https://didas-swiss.github.io/industry-function-graph/ontology#> .
@@ -9,16 +9,20 @@
 @prefix func: <https://didas-swiss.github.io/industry-function-graph/id/function/> .
 @prefix cbf: <https://didas-swiss.github.io/industry-function-graph/id/cbf/> .
 @prefix apqc: <https://didas-swiss.github.io/industry-function-graph/id/apqc/> .
-@prefix uc: <https://didas-swiss.github.io/industry-function-graph/id/use-case/> .
-@prefix driver: <https://didas-swiss.github.io/industry-function-graph/id/value-driver/> .
-@prefix mode: <https://didas-swiss.github.io/industry-function-graph/id/transformation-mode/> .
 @prefix stream: <https://didas-swiss.github.io/industry-function-graph/id/value-stream/> .
 @prefix stage: <https://didas-swiss.github.io/industry-function-graph/id/value-stream-stage/> .
-@prefix role: <https://didas-swiss.github.io/industry-function-graph/id/trust-role/> .
-@prefix prior: <https://didas-swiss.github.io/industry-function-graph/id/prior-evidence/> .
+@prefix uc: <https://didas-swiss.github.io/industry-function-graph/id/use-case/> .
+@prefix cond: <https://didas-swiss.github.io/industry-function-graph/id/condition/> .
+@prefix req: <https://didas-swiss.github.io/industry-function-graph/id/requirement/> .
+@prefix prov: <https://didas-swiss.github.io/industry-function-graph/id/provision/> .
+@prefix srole: <https://didas-swiss.github.io/industry-function-graph/id/subject-role/> .
+@prefix flow: <https://didas-swiss.github.io/industry-function-graph/id/flow/> .
 @prefix part: <https://didas-swiss.github.io/industry-function-graph/id/participation/> .
-@prefix state: <https://didas-swiss.github.io/industry-function-graph/id/state/> .
 @prefix cred: <https://didas-swiss.github.io/industry-function-graph/id/credential-type/> .
+@prefix role: <https://didas-swiss.github.io/industry-function-graph/id/trust-role/> .
+@prefix driver: <https://didas-swiss.github.io/industry-function-graph/id/value-driver/> .
+@prefix mode: <https://didas-swiss.github.io/industry-function-graph/id/transformation-mode/> .
+@prefix prior: <https://didas-swiss.github.io/industry-function-graph/id/prior-evidence/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -75,10 +79,10 @@ scheme:ifm-credential-types
     dct:description "What is actually issued as a separate artefact, held, presented and verified. A credential type provides evidence for a state, which connects this layer to the rest; the evidence may support the state without being equivalent to it. A claim inside another credential, a derived attribute or a business conclusion is not a credential type."@en ;
     dct:source <https://www.w3.org/TR/vc-data-model-2.0/> .
 
-scheme:ifm-states
+scheme:ifm-conditions
     a skos:ConceptScheme ;
-    dct:title "States"@en ;
-    dct:description "What is true, or what a party holds, before and after a use case runs. States are the interface that makes use cases composable: one use case's postcondition is another's precondition, so the chain can be computed from the data. Evidence states record possession; outcome states record a business or administrative conclusion."@en ;
+    dct:title "Conditions"@en ;
+    dct:description "What is true, or what a party holds, before and after a composable element runs. Conditions are the interface that makes use cases compose: one element's provision satisfies another's requirement, so the chain is computed rather than maintained. They form a subsumption lattice through skos:broader, so an interface can be written at the level of generality it actually needs. Evidence conditions record that evidence is available; fact, outcome and relationship conditions record what a relying party established on it."@en ;
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 scheme:ifm-trust-roles
@@ -106,7 +110,7 @@ scheme:ifm-functions
     dct:source <https://didas-swiss.github.io/industry-function-graph/> .
 
 ######################################################################
-# Layer 1 - Sectors (ISIC Rev. 5)
+# Classification - Sectors (ISIC Rev. 5)
 ######################################################################
 
 sector:ISIC-A
@@ -498,7 +502,7 @@ sector:ISIC-8610
     ifm:codeStatus "verified" .
 
 ######################################################################
-# Layer 2a - CBF categories (mapping target)
+# Classification - CBF categories (mapping target)
 ######################################################################
 
 cbf:CBF-CORE
@@ -572,7 +576,7 @@ cbf:CBF-SUP-OTH
     ifm:codeStatus "provisional" .
 
 ######################################################################
-# Layer 2b - APQC PCF categories (mapping target)
+# Classification - APQC PCF categories (mapping target)
 ######################################################################
 
 apqc:apqc-2.0
@@ -641,7 +645,7 @@ apqc:apqc-11.0
     ifm:codeStatus "provisional" .
 
 ######################################################################
-# Layer 2c - Operational business functions (+ alignments)
+# Classification - Business functions (+ alignments)
 ######################################################################
 
 func:identity-proofing
@@ -906,7 +910,1852 @@ func:research-and-development
     ifm:mappingStatus "editorial" .
 
 ######################################################################
-# Layer 4 - Credential types
+# Interface - Conditions (the subsumption lattice)
+######################################################################
+
+cond:identity-evidence-available
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Identity evidence available"@en ;
+    skos:definition "Evidence of who the subject is can be presented to a relying party and checked by it. Says nothing about which credential carries the evidence, or that anyone has checked it yet."@en ;
+    skos:narrower cond:eid-held ;
+    ifm:substantiatedBy cred:eid-credential .
+
+cond:eid-held
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:prefLabel "Electronic identity held"@en ;
+    skos:definition "The subject holds a government-issued electronic identity credential."@en ;
+    skos:broader cond:identity-evidence-available ;
+    ifm:substantiatedBy cred:eid-credential .
+
+cond:education-qualification-evidence-available
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Education qualification evidence available"@en ;
+    skos:definition "Evidence of a completed education or training qualification can be presented and checked. Deliberately broader than any one certificate, so that a flow requiring it can be served by several kinds of qualification."@en ;
+    skos:narrower cond:secondary-education-credential-held .
+
+cond:secondary-education-credential-held
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:prefLabel "Upper-secondary qualification held"@en ;
+    skos:definition "The subject holds a verifiable upper-secondary qualification. In Switzerland that is the gymnasiale Maturität or a federal vocational certificate (EFZ); both sit at this level."@en ;
+    skos:broader cond:education-qualification-evidence-available ;
+    ifm:substantiatedBy cred:secondary-education-certificate, cred:vocational-qualification-certificate .
+
+cond:due-diligence-evidence-available
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Due diligence evidence available"@en ;
+    skos:definition "Evidence that customer due diligence was carried out can be presented and checked."@en ;
+    skos:narrower cond:kyc-attestation-held .
+
+cond:kyc-attestation-held
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:prefLabel "KYC attestation held"@en ;
+    skos:definition "The subject holds a reusable attestation that customer due diligence was completed."@en ;
+    skos:broader cond:due-diligence-evidence-available ;
+    skos:narrower cond:kyc-attestation-current ;
+    ifm:substantiatedBy cred:kyc-attestation .
+
+cond:kyc-attestation-current
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:prefLabel "KYC attestation current"@en ;
+    skos:definition "The due diligence behind the attestation has been re-evaluated within its validity period."@en ;
+    skos:broader cond:kyc-attestation-held ;
+    ifm:substantiatedBy cred:kyc-currency-attestation .
+
+cond:accreditation-evidence-available
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Accreditation evidence available"@en ;
+    skos:definition "Evidence that an organisation meets a published standard can be presented and checked - a quality, conformity or sector accreditation."@en ;
+    skos:narrower cond:supplier-accreditation-held .
+
+cond:supplier-accreditation-held
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:prefLabel "Supplier accreditation held"@en ;
+    skos:definition "The supplier holds current quality, conformity or sector accreditations in verifiable form."@en ;
+    skos:broader cond:accreditation-evidence-available ;
+    ifm:substantiatedBy cred:quality-accreditation-certificate .
+
+cond:employment-evidence-held
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Employment evidence held"@en ;
+    skos:definition "The subject holds verifiable evidence that an employment relationship is in force."@en ;
+    ifm:substantiatedBy cred:employment-attestation .
+
+cond:tertiary-enrolment-evidence-held
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Tertiary enrolment evidence held"@en ;
+    skos:definition "The subject holds verifiable evidence of enrolment at a higher education institution."@en ;
+    ifm:substantiatedBy cred:tertiary-enrolment-attestation .
+
+cond:service-entitlement-evidence-held
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Service entitlement evidence held"@en ;
+    skos:definition "The subject holds verifiable evidence of entitlement to a named public service."@en ;
+    ifm:substantiatedBy cred:service-entitlement-attestation .
+
+cond:supplier-qualification-evidence-held
+    a ifm:EvidenceCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Supplier qualification evidence held"@en ;
+    skos:definition "The buying organisation holds a verifiable record of its own qualification decision."@en ;
+    ifm:substantiatedBy cred:supplier-qualification-record .
+
+cond:identity-verified
+    a ifm:FactCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Identity verified"@en ;
+    skos:definition "The relying party has established that the subject is who they claim to be to a stated level of assurance."@en .
+
+cond:qualification-verified
+    a ifm:FactCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Qualification verified"@en ;
+    skos:definition "The relying party has established that the subject holds the qualification the interaction requires."@en .
+
+cond:accreditation-verified
+    a ifm:FactCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Accreditation verified"@en ;
+    skos:definition "The relying party has established that the organisation's accreditations are genuine and current."@en .
+
+cond:age-attribute-proven
+    a ifm:FactCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Age attribute proven"@en ;
+    skos:definition "A threshold age has been demonstrated to the relying party without disclosing identity. An established fact about an interaction, not something a separate credential attests."@en .
+
+cond:legal-capacity-established
+    a ifm:FactCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Legal capacity established"@en ;
+    skos:definition "The relying party has established that the subject may contract in their own right. Reached from verified attributes rather than from a credential issued for the purpose."@en .
+
+cond:customer-relationship-open
+    a ifm:RelationshipCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Customer relationship open"@en ;
+    skos:definition "A contractual relationship exists between the subject and the organisation."@en .
+
+cond:employment-relationship-open
+    a ifm:RelationshipCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Employment relationship open"@en ;
+    skos:definition "An employment contract is in force between the subject and an employer."@en .
+
+cond:tertiary-enrolment-established
+    a ifm:RelationshipCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Tertiary enrolment established"@en ;
+    skos:definition "The subject is enrolled at a higher education institution."@en .
+
+cond:access-granted
+    a ifm:RelationshipCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Access granted"@en ;
+    skos:definition "The subject can reach the service or premises the relationship entitles them to."@en .
+
+cond:service-entitlement-established
+    a ifm:RelationshipCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Service entitlement established"@en ;
+    skos:definition "The body providing a public service has accepted that the subject is entitled to it."@en .
+
+cond:supplier-qualified
+    a ifm:OutcomeCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Supplier qualified"@en ;
+    skos:definition "The buying organisation has decided that the supplier is eligible to be contracted."@en .
+
+cond:patient-record-linked
+    a ifm:OutcomeCondition, skos:Concept ;
+    skos:inScheme scheme:ifm-conditions ;
+    skos:topConceptOf scheme:ifm-conditions ;
+    skos:prefLabel "Patient record linked"@en ;
+    skos:definition "The clinician has bound the person in front of them to the correct medical record."@en .
+
+######################################################################
+# Interface - Subject roles
+######################################################################
+
+srole:subject
+    a ifm:SubjectRole, skos:Concept ;
+    skos:prefLabel "Subject"@en ;
+    skos:definition "The natural person the condition is about. The default, and the one to leave implicit unless a use case involves more than one party the conditions could apply to."@en .
+
+srole:organisation
+    a ifm:SubjectRole, skos:Concept ;
+    skos:prefLabel "Organisation"@en ;
+    skos:definition "The legal entity the condition is about - a supplier being qualified"@en .
+
+srole:relying-party
+    a ifm:SubjectRole, skos:Concept ;
+    skos:prefLabel "Relying party"@en ;
+    skos:definition "The party that acts on the condition rather than the party it describes. Used where a condition records something the relying party has established rather than something the subject holds."@en .
+
+######################################################################
+# Interface - Requirements and provisions
+######################################################################
+
+req:identity-verification-identity-evidence
+    a ifm:Requirement ;
+    ifm:condition cond:identity-evidence-available ;
+    ifm:subjectRole srole:subject ;
+    skos:scopeNote "Deliberately the broad condition rather than eid-held: any identity credential that satisfies the assurance the interaction needs will do, and the flow names which one."@en .
+
+req:qualification-verification-qualification-evidence
+    a ifm:Requirement ;
+    ifm:condition cond:education-qualification-evidence-available ;
+    ifm:subjectRole srole:subject ;
+    skos:scopeNote "Broad on purpose. A Maturität and a federal vocational certificate both satisfy this, and so will qualifications this repository has not modelled."@en .
+
+req:accreditation-verification-accreditation-evidence
+    a ifm:Requirement ;
+    ifm:condition cond:accreditation-evidence-available ;
+    ifm:subjectRole srole:organisation .
+
+req:age-threshold-verification-identity-evidence
+    a ifm:Requirement ;
+    ifm:condition cond:identity-evidence-available ;
+    ifm:subjectRole srole:subject ;
+    skos:scopeNote "The evidence carries the age attribute; what is required is that it can be presented, not that the subject is identified."@en .
+
+req:due-diligence-onboarding-identity
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:due-diligence-refresh-relationship
+    a ifm:Requirement ;
+    ifm:condition cond:customer-relationship-open ;
+    ifm:subjectRole srole:subject .
+
+req:due-diligence-refresh-prior-due-diligence
+    a ifm:Requirement ;
+    ifm:condition cond:due-diligence-evidence-available ;
+    ifm:subjectRole srole:subject ;
+    skos:scopeNote "Broad: the attestation may have been issued by this institution or by another regulated one."@en .
+
+req:credential-recovery-reidentification-relationship
+    a ifm:Requirement ;
+    ifm:condition cond:customer-relationship-open ;
+    ifm:subjectRole srole:subject .
+
+req:credential-recovery-reidentification-identity
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:legal-capacity-reidentification-relationship
+    a ifm:Requirement ;
+    ifm:condition cond:customer-relationship-open ;
+    ifm:subjectRole srole:subject .
+
+req:legal-capacity-reidentification-identity
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:education-qualification-issuance-identity
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject ;
+    skos:scopeNote "The awarding institution establishes who it is issuing to before it issues."@en .
+
+req:tertiary-admission-identity
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:tertiary-admission-qualification
+    a ifm:Requirement ;
+    ifm:condition cond:qualification-verified ;
+    ifm:subjectRole srole:subject .
+
+req:employment-engagement-identity
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:employment-engagement-qualification
+    a ifm:Requirement ;
+    ifm:condition cond:qualification-verified ;
+    ifm:subjectRole srole:subject .
+
+req:patient-record-matching-identity
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:public-service-access-identity
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:supplier-qualification-accreditation
+    a ifm:Requirement ;
+    ifm:condition cond:accreditation-verified ;
+    ifm:subjectRole srole:organisation .
+
+prov:eid-issuance-eid
+    a ifm:Provision ;
+    ifm:condition cond:eid-held ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject ;
+    ifm:evidenceType cred:eid-credential .
+
+prov:identity-verification-identity
+    a ifm:Provision ;
+    ifm:condition cond:identity-verified ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:qualification-verification-qualification
+    a ifm:Provision ;
+    ifm:condition cond:qualification-verified ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:accreditation-verification-accreditation
+    a ifm:Provision ;
+    ifm:condition cond:accreditation-verified ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:organisation .
+
+prov:age-threshold-verification-age
+    a ifm:Provision ;
+    ifm:condition cond:age-attribute-proven ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:due-diligence-onboarding-relationship
+    a ifm:Provision ;
+    ifm:condition cond:customer-relationship-open ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:due-diligence-onboarding-attestation
+    a ifm:Provision ;
+    ifm:condition cond:kyc-attestation-held ;
+    ifm:subjectRole srole:subject ;
+    ifm:evidenceType cred:kyc-attestation ;
+    skos:scopeNote "The reusable attestation is a secondary output: the principal outcome is the relationship, and an implementation may open one without issuing an attestation."@en .
+
+prov:due-diligence-refresh-currency
+    a ifm:Provision ;
+    ifm:condition cond:kyc-attestation-current ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject ;
+    ifm:evidenceType cred:kyc-currency-attestation .
+
+prov:credential-recovery-reidentification-access
+    a ifm:Provision ;
+    ifm:condition cond:access-granted ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:legal-capacity-reidentification-capacity
+    a ifm:Provision ;
+    ifm:condition cond:legal-capacity-established ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:education-qualification-issuance-qualification-evidence
+    a ifm:Provision ;
+    ifm:condition cond:secondary-education-credential-held ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject ;
+    skos:scopeNote "No evidence_type: the pattern is indifferent to which qualification credential the awarding institution issues, and the flow names it."@en .
+
+prov:tertiary-admission-enrolment
+    a ifm:Provision ;
+    ifm:condition cond:tertiary-enrolment-established ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:tertiary-admission-enrolment-evidence
+    a ifm:Provision ;
+    ifm:condition cond:tertiary-enrolment-evidence-held ;
+    ifm:subjectRole srole:subject ;
+    ifm:evidenceType cred:tertiary-enrolment-attestation .
+
+prov:employment-engagement-employment
+    a ifm:Provision ;
+    ifm:condition cond:employment-relationship-open ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:employment-engagement-employment-evidence
+    a ifm:Provision ;
+    ifm:condition cond:employment-evidence-held ;
+    ifm:subjectRole srole:subject ;
+    ifm:evidenceType cred:employment-attestation .
+
+prov:patient-record-matching-record
+    a ifm:Provision ;
+    ifm:condition cond:patient-record-linked ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:public-service-access-access
+    a ifm:Provision ;
+    ifm:condition cond:access-granted ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:subject .
+
+prov:public-service-access-entitlement
+    a ifm:Provision ;
+    ifm:condition cond:service-entitlement-established ;
+    ifm:subjectRole srole:subject .
+
+prov:public-service-access-entitlement-evidence
+    a ifm:Provision ;
+    ifm:condition cond:service-entitlement-evidence-held ;
+    ifm:subjectRole srole:subject ;
+    ifm:evidenceType cred:service-entitlement-attestation .
+
+prov:supplier-qualification-qualified
+    a ifm:Provision ;
+    ifm:condition cond:supplier-qualified ;
+    ifm:principalOutcome "true"^^xsd:boolean ;
+    ifm:subjectRole srole:organisation .
+
+prov:supplier-qualification-qualification-record
+    a ifm:Provision ;
+    ifm:condition cond:supplier-qualification-evidence-held ;
+    ifm:subjectRole srole:organisation ;
+    ifm:evidenceType cred:supplier-qualification-record .
+
+req:stage-order-to-cash-establish-relationship-identity-verified
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:stage-hire-to-retire-check-qualifications-education-qualification-evidence-available
+    a ifm:Requirement ;
+    ifm:condition cond:education-qualification-evidence-available ;
+    ifm:subjectRole srole:subject .
+
+req:stage-hire-to-retire-agree-and-sign-identity-verified
+    a ifm:Requirement ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+req:stage-hire-to-retire-agree-and-sign-qualification-verified
+    a ifm:Requirement ;
+    ifm:condition cond:qualification-verified ;
+    ifm:subjectRole srole:subject .
+
+req:stage-hire-to-retire-provision-access-employment-relationship-open
+    a ifm:Requirement ;
+    ifm:condition cond:employment-relationship-open ;
+    ifm:subjectRole srole:subject .
+
+req:stage-procure-to-pay-check-accreditations-accreditation-evidence-available
+    a ifm:Requirement ;
+    ifm:condition cond:accreditation-evidence-available ;
+    ifm:subjectRole srole:organisation .
+
+req:stage-procure-to-pay-source-and-qualify-accreditation-verified
+    a ifm:Requirement ;
+    ifm:condition cond:accreditation-verified ;
+    ifm:subjectRole srole:organisation .
+
+req:stage-procure-to-pay-agree-and-sign-supplier-qualified
+    a ifm:Requirement ;
+    ifm:condition cond:supplier-qualified ;
+    ifm:subjectRole srole:organisation .
+
+prov:stage-order-to-cash-establish-customer-identity-identity-verified
+    a ifm:Provision ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+prov:stage-order-to-cash-establish-relationship-customer-relationship-open
+    a ifm:Provision ;
+    ifm:condition cond:customer-relationship-open ;
+    ifm:subjectRole srole:subject .
+
+prov:stage-hire-to-retire-establish-candidate-identity-identity-verified
+    a ifm:Provision ;
+    ifm:condition cond:identity-verified ;
+    ifm:subjectRole srole:subject .
+
+prov:stage-hire-to-retire-check-qualifications-qualification-verified
+    a ifm:Provision ;
+    ifm:condition cond:qualification-verified ;
+    ifm:subjectRole srole:subject .
+
+prov:stage-hire-to-retire-recruit-and-employ-employment-relationship-open
+    a ifm:Provision ;
+    ifm:condition cond:employment-relationship-open ;
+    ifm:subjectRole srole:subject .
+
+prov:stage-hire-to-retire-provision-access-access-granted
+    a ifm:Provision ;
+    ifm:condition cond:access-granted ;
+    ifm:subjectRole srole:subject .
+
+prov:stage-procure-to-pay-establish-supplier-identity-accreditation-verified
+    a ifm:Provision ;
+    ifm:condition cond:accreditation-verified ;
+    ifm:subjectRole srole:organisation ;
+    skos:scopeNote "The stage as modelled here establishes that the supplier is a real, accredited legal entity."@en .
+
+prov:stage-procure-to-pay-check-accreditations-accreditation-verified
+    a ifm:Provision ;
+    ifm:condition cond:accreditation-verified ;
+    ifm:subjectRole srole:organisation .
+
+prov:stage-procure-to-pay-source-and-qualify-supplier-qualified
+    a ifm:Provision ;
+    ifm:condition cond:supplier-qualified ;
+    ifm:subjectRole srole:organisation .
+
+req:stream-order-to-cash-identity-evidence-available
+    a ifm:Requirement ;
+    ifm:condition cond:identity-evidence-available ;
+    ifm:subjectRole srole:subject ;
+    skos:scopeNote "What has to be true before the stream can start: a prospective customer able to present identity evidence."@en .
+
+req:stream-hire-to-retire-identity-evidence-available
+    a ifm:Requirement ;
+    ifm:condition cond:identity-evidence-available ;
+    ifm:subjectRole srole:subject .
+
+req:stream-hire-to-retire-education-qualification-evidence-available
+    a ifm:Requirement ;
+    ifm:condition cond:education-qualification-evidence-available ;
+    ifm:subjectRole srole:subject .
+
+req:stream-procure-to-pay-accreditation-evidence-available
+    a ifm:Requirement ;
+    ifm:condition cond:accreditation-evidence-available ;
+    ifm:subjectRole srole:organisation .
+
+prov:stream-order-to-cash-customer-relationship-open
+    a ifm:Provision ;
+    ifm:condition cond:customer-relationship-open ;
+    ifm:subjectRole srole:subject .
+
+prov:stream-hire-to-retire-employment-relationship-open
+    a ifm:Provision ;
+    ifm:condition cond:employment-relationship-open ;
+    ifm:subjectRole srole:subject .
+
+prov:stream-hire-to-retire-access-granted
+    a ifm:Provision ;
+    ifm:condition cond:access-granted ;
+    ifm:subjectRole srole:subject .
+
+prov:stream-procure-to-pay-supplier-qualified
+    a ifm:Provision ;
+    ifm:condition cond:supplier-qualified ;
+    ifm:subjectRole srole:organisation .
+
+######################################################################
+# Classification - Value streams as composition templates
+######################################################################
+
+stream:procure-to-pay
+    a ifm:ValueStream, ifm:ComposableElement, skos:Concept ;
+    skos:inScheme scheme:ifm-value-streams ;
+    skos:topConceptOf scheme:ifm-value-streams ;
+    skos:prefLabel "Procure to pay"@en ;
+    skos:altLabel "source-to-pay"@en, "purchase-to-pay"@en ;
+    skos:definition "From identifying a need for goods or services through to settling the supplier invoice and retaining the evidence."@en ;
+    ifm:codeStatus "provisional" ;
+    ifm:hasStage stage:procure-to-pay-source-and-qualify, stage:procure-to-pay-establish-supplier-identity, stage:procure-to-pay-assess-risk, stage:procure-to-pay-check-accreditations, stage:procure-to-pay-check-conformity, stage:procure-to-pay-agree-and-sign, stage:procure-to-pay-establish-provenance, stage:procure-to-pay-clear-border, stage:procure-to-pay-goods-receipt, stage:procure-to-pay-invoice-and-pay, stage:procure-to-pay-substantiate-tax, stage:procure-to-pay-retain-audit-trail ;
+    ifm:requires req:stream-procure-to-pay-accreditation-evidence-available ;
+    ifm:provides prov:stream-procure-to-pay-supplier-qualified .
+
+stage:procure-to-pay-source-and-qualify
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "1"^^xsd:integer ;
+    rdfs:label "Source and qualify"@en ;
+    ifm:stageFunction func:sourcing-and-procurement ;
+    ifm:requires req:stage-procure-to-pay-source-and-qualify-accreditation-verified ;
+    ifm:provides prov:stage-procure-to-pay-source-and-qualify-supplier-qualified ;
+    ifm:realisedBy uc:supplier-qualification .
+
+stage:procure-to-pay-establish-supplier-identity
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "2"^^xsd:integer ;
+    rdfs:label "Establish the supplier is a real legal entity"@en ;
+    ifm:stageFunction func:identity-proofing ;
+    ifm:provides prov:stage-procure-to-pay-establish-supplier-identity-accreditation-verified .
+
+stage:procure-to-pay-assess-risk
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "3"^^xsd:integer ;
+    rdfs:label "Assess counterparty and financial risk"@en ;
+    ifm:stageFunction func:credit-and-risk-assessment .
+
+stage:procure-to-pay-check-accreditations
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "4"^^xsd:integer ;
+    rdfs:label "Check accreditations and audit reports"@en ;
+    ifm:stageFunction func:audit-and-assurance ;
+    ifm:requires req:stage-procure-to-pay-check-accreditations-accreditation-evidence-available ;
+    ifm:provides prov:stage-procure-to-pay-check-accreditations-accreditation-verified ;
+    ifm:realisedBy uc:accreditation-verification ;
+    skos:scopeNote "Where ISO 9001 and GMP certificates are presented."@en .
+
+stage:procure-to-pay-check-conformity
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "5"^^xsd:integer ;
+    rdfs:label "Check conformity of what will be supplied"@en ;
+    ifm:stageFunction func:product-compliance .
+
+stage:procure-to-pay-agree-and-sign
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "6"^^xsd:integer ;
+    rdfs:label "Agree and sign"@en ;
+    ifm:stageFunction func:contracting-and-signing ;
+    ifm:requires req:stage-procure-to-pay-agree-and-sign-supplier-qualified .
+
+stage:procure-to-pay-establish-provenance
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "7"^^xsd:integer ;
+    rdfs:label "Establish provenance through delivery"@en ;
+    ifm:stageFunction func:supply-chain-traceability .
+
+stage:procure-to-pay-clear-border
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "8"^^xsd:integer ;
+    rdfs:label "Clear the border"@en ;
+    ifm:stageFunction func:customs-and-trade-facilitation ;
+    skos:scopeNote "Only when the supply crosses one."@en .
+
+stage:procure-to-pay-goods-receipt
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "9"^^xsd:integer ;
+    rdfs:label "Goods receipt against specification"@en ;
+    ifm:stageFunction func:quality-assurance .
+
+stage:procure-to-pay-invoice-and-pay
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "10"^^xsd:integer ;
+    rdfs:label "Invoice and payment"@en ;
+    ifm:stageFunction func:invoicing-and-settlement .
+
+stage:procure-to-pay-substantiate-tax
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "11"^^xsd:integer ;
+    rdfs:label "Substantiate the tax position"@en ;
+    ifm:stageFunction func:tax-administration .
+
+stage:procure-to-pay-retain-audit-trail
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:procure-to-pay ;
+    ifm:position "12"^^xsd:integer ;
+    rdfs:label "Retain the audit trail"@en ;
+    ifm:stageFunction func:records-management .
+
+stream:order-to-cash
+    a ifm:ValueStream, ifm:ComposableElement, skos:Concept ;
+    skos:inScheme scheme:ifm-value-streams ;
+    skos:topConceptOf scheme:ifm-value-streams ;
+    skos:prefLabel "Order to cash"@en ;
+    skos:altLabel "lead-to-cash"@en, "quote-to-cash"@en ;
+    skos:definition "From a customer order through to collected payment and the record of it."@en ;
+    ifm:codeStatus "provisional" ;
+    ifm:hasStage stage:order-to-cash-establish-relationship, stage:order-to-cash-establish-customer-identity, stage:order-to-cash-decide-terms, stage:order-to-cash-agree-and-sign, stage:order-to-cash-deliver, stage:order-to-cash-invoice-and-collect, stage:order-to-cash-handle-requests, stage:order-to-cash-retain-audit-trail ;
+    ifm:requires req:stream-order-to-cash-identity-evidence-available ;
+    ifm:provides prov:stream-order-to-cash-customer-relationship-open .
+
+stage:order-to-cash-establish-relationship
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "1"^^xsd:integer ;
+    rdfs:label "Establish the customer relationship"@en ;
+    ifm:stageFunction func:relationship-onboarding ;
+    ifm:requires req:stage-order-to-cash-establish-relationship-identity-verified ;
+    ifm:provides prov:stage-order-to-cash-establish-relationship-customer-relationship-open ;
+    ifm:realisedBy uc:due-diligence-onboarding .
+
+stage:order-to-cash-establish-customer-identity
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "2"^^xsd:integer ;
+    rdfs:label "Establish who the customer is"@en ;
+    ifm:stageFunction func:identity-proofing ;
+    ifm:provides prov:stage-order-to-cash-establish-customer-identity-identity-verified ;
+    ifm:realisedBy uc:identity-verification .
+
+stage:order-to-cash-decide-terms
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "3"^^xsd:integer ;
+    rdfs:label "Decide the terms to offer"@en ;
+    ifm:stageFunction func:credit-and-risk-assessment .
+
+stage:order-to-cash-agree-and-sign
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "4"^^xsd:integer ;
+    rdfs:label "Agree and sign"@en ;
+    ifm:stageFunction func:contracting-and-signing .
+
+stage:order-to-cash-deliver
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "5"^^xsd:integer ;
+    rdfs:label "Deliver"@en ;
+    ifm:stageFunction func:service-delivery .
+
+stage:order-to-cash-invoice-and-collect
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "6"^^xsd:integer ;
+    rdfs:label "Invoice and collect"@en ;
+    ifm:stageFunction func:invoicing-and-settlement .
+
+stage:order-to-cash-handle-requests
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "7"^^xsd:integer ;
+    rdfs:label "Handle what goes wrong"@en ;
+    ifm:stageFunction func:request-and-complaint-handling .
+
+stage:order-to-cash-retain-audit-trail
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:order-to-cash ;
+    ifm:position "8"^^xsd:integer ;
+    rdfs:label "Retain the audit trail"@en ;
+    ifm:stageFunction func:records-management .
+
+stream:hire-to-retire
+    a ifm:ValueStream, ifm:ComposableElement, skos:Concept ;
+    skos:inScheme scheme:ifm-value-streams ;
+    skos:topConceptOf scheme:ifm-value-streams ;
+    skos:prefLabel "Hire to retire"@en ;
+    skos:altLabel "recruit-to-retire"@en ;
+    skos:definition "From an open role through to a former employee whose entitlements and records are closed out."@en ;
+    ifm:codeStatus "provisional" ;
+    ifm:hasStage stage:hire-to-retire-recruit-and-employ, stage:hire-to-retire-establish-candidate-identity, stage:hire-to-retire-check-qualifications, stage:hire-to-retire-agree-and-sign, stage:hire-to-retire-provision-access, stage:hire-to-retire-retain-employment-record ;
+    ifm:requires req:stream-hire-to-retire-identity-evidence-available, req:stream-hire-to-retire-education-qualification-evidence-available ;
+    ifm:provides prov:stream-hire-to-retire-employment-relationship-open, prov:stream-hire-to-retire-access-granted .
+
+stage:hire-to-retire-recruit-and-employ
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "1"^^xsd:integer ;
+    rdfs:label "Recruit and employ"@en ;
+    ifm:stageFunction func:human-capital-management ;
+    ifm:provides prov:stage-hire-to-retire-recruit-and-employ-employment-relationship-open ;
+    ifm:realisedBy uc:employment-engagement .
+
+stage:hire-to-retire-establish-candidate-identity
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "2"^^xsd:integer ;
+    rdfs:label "Establish who the candidate is"@en ;
+    ifm:stageFunction func:identity-proofing ;
+    ifm:provides prov:stage-hire-to-retire-establish-candidate-identity-identity-verified ;
+    ifm:realisedBy uc:identity-verification .
+
+stage:hire-to-retire-check-qualifications
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "3"^^xsd:integer ;
+    rdfs:label "Check right to work and qualifications"@en ;
+    ifm:stageFunction func:eligibility-verification ;
+    ifm:requires req:stage-hire-to-retire-check-qualifications-education-qualification-evidence-available ;
+    ifm:provides prov:stage-hire-to-retire-check-qualifications-qualification-verified ;
+    ifm:realisedBy uc:qualification-verification .
+
+stage:hire-to-retire-agree-and-sign
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "4"^^xsd:integer ;
+    rdfs:label "Agree and sign the employment contract"@en ;
+    ifm:stageFunction func:contracting-and-signing ;
+    ifm:requires req:stage-hire-to-retire-agree-and-sign-identity-verified, req:stage-hire-to-retire-agree-and-sign-qualification-verified .
+
+stage:hire-to-retire-provision-access
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "5"^^xsd:integer ;
+    rdfs:label "Provision and later revoke access"@en ;
+    ifm:stageFunction func:access-management ;
+    ifm:requires req:stage-hire-to-retire-provision-access-employment-relationship-open ;
+    ifm:provides prov:stage-hire-to-retire-provision-access-access-granted .
+
+stage:hire-to-retire-retain-employment-record
+    a ifm:ValueStreamStage, ifm:ComposableElement ;
+    ifm:inValueStream stream:hire-to-retire ;
+    ifm:position "6"^^xsd:integer ;
+    rdfs:label "Retain the employment record"@en ;
+    ifm:stageFunction func:records-management .
+
+######################################################################
+# Use case patterns (classification + interface)
+######################################################################
+
+uc:eid-issuance
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Electronic identity issuance"@en ;
+    dct:description "An issuing authority identifies a person and issues a state electronic identity into their wallet."@en ;
+    ifm:appliesToSector sector:ISIC-8411 ;
+    ifm:primaryFunction func:certification-and-attestation ;
+    ifm:executesFunction func:identity-proofing, func:records-management, func:regulatory-compliance ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:SingleDivision ;
+    ifm:classScope ifm:SingleClass ;
+    ifm:provides prov:eid-issuance-eid ;
+    ifm:enables uc:age-threshold-verification, uc:identity-verification ;
+    ifm:realisedBy flow:eid-issuance-ch ;
+    ifm:valueDriver driver:reach-and-inclusion, driver:fraud-risk-reduction, driver:data-minimisation, driver:friction-reduction ;
+    ifm:reducesRelianceOn prior:in-person-check, prior:paper-document ;
+    ifm:transformationMode mode:enable ;
+    ifm:changeMode ifm:Change .
+
+uc:identity-verification
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Identity verification"@en ;
+    dct:description "A relying party checks presented identity evidence and establishes who the subject is, to the level of assurance the interaction needs."@en ;
+    ifm:appliesToSector sector:ISIC-6419, sector:ISIC-8411, sector:ISIC-8531, sector:ISIC-8540, sector:ISIC-8610, sector:ISIC-4711, sector:ISIC-5610 ;
+    ifm:primaryFunction func:identity-proofing ;
+    ifm:realisesStage stage:order-to-cash-establish-customer-identity, stage:hire-to-retire-establish-candidate-identity ;
+    ifm:sectionScope ifm:CrossSection ;
+    ifm:divisionScope ifm:CrossDivision ;
+    ifm:classScope ifm:CrossClass ;
+    ifm:requires req:identity-verification-identity-evidence ;
+    ifm:provides prov:identity-verification-identity ;
+    ifm:enables uc:credential-recovery-reidentification, uc:due-diligence-onboarding, uc:education-qualification-issuance, uc:employment-engagement, uc:legal-capacity-reidentification, uc:patient-record-matching, uc:public-service-access, uc:tertiary-admission ;
+    ifm:realisedBy flow:banking-age-of-majority-ch, flow:banking-kyc-onboarding-ch, flow:banking-password-reset-ch, flow:education-efz-issuance-ch, flow:education-immatriculation-ch, flow:education-matura-issuance-ch, flow:egov-portal-ch, flow:eid-presentation-ch, flow:employment-onboarding-ch, flow:healthcare-admission-ch ;
+    ifm:valueDriver driver:friction-reduction, driver:fraud-risk-reduction, driver:data-quality ;
+    ifm:reducesRelianceOn prior:in-person-check, prior:notarised-copy ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run ;
+    skos:scopeNote "Deliberately sector-neutral. Nearly every flow in the ecosystem performs this step, and separating it means each of them composes onto it instead of restating it."@en .
+
+uc:qualification-verification
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Qualification verification"@en ;
+    dct:description "A relying party checks presented evidence of an education or training qualification and establishes that the subject holds it."@en ;
+    ifm:appliesToSector sector:ISIC-8540, sector:ISIC-C ;
+    ifm:primaryFunction func:eligibility-verification ;
+    ifm:realisesStage stage:hire-to-retire-check-qualifications ;
+    ifm:sectionScope ifm:CrossSection ;
+    ifm:divisionScope ifm:CrossDivision ;
+    ifm:classScope ifm:CrossClass ;
+    ifm:requires req:qualification-verification-qualification-evidence ;
+    ifm:provides prov:qualification-verification-qualification ;
+    ifm:enables uc:employment-engagement, uc:tertiary-admission ;
+    ifm:realisedBy flow:education-immatriculation-ch, flow:employment-onboarding-ch ;
+    ifm:valueDriver driver:friction-reduction, driver:fraud-risk-reduction, driver:data-quality ;
+    ifm:reducesRelianceOn prior:paper-document, prior:phone-or-email-check ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run .
+
+uc:accreditation-verification
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Accreditation verification"@en ;
+    dct:description "A relying party checks an organisation's presented accreditations and establishes that they are genuine and current."@en ;
+    ifm:appliesToSector sector:ISIC-2100, sector:ISIC-3030 ;
+    ifm:primaryFunction func:audit-and-assurance ;
+    ifm:realisesStage stage:procure-to-pay-check-accreditations ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:CrossDivision ;
+    ifm:classScope ifm:CrossClass ;
+    ifm:requires req:accreditation-verification-accreditation-evidence ;
+    ifm:provides prov:accreditation-verification-accreditation ;
+    ifm:enables uc:supplier-qualification ;
+    ifm:realisedBy flow:supplier-qualification-aerospace, flow:supplier-qualification-pharma ;
+    ifm:valueDriver driver:compliance-assurance, driver:fraud-risk-reduction, driver:friction-reduction ;
+    ifm:reducesRelianceOn prior:pdf-attachment, prior:phone-or-email-check ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run .
+
+uc:age-threshold-verification
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Age threshold verification"@en ;
+    dct:description "A relying party establishes that the subject is over a stated age, learning nothing else about them."@en ;
+    ifm:appliesToSector sector:ISIC-4711, sector:ISIC-5610 ;
+    ifm:primaryFunction func:eligibility-verification ;
+    ifm:executesFunction func:regulatory-compliance ;
+    ifm:sectionScope ifm:CrossSection ;
+    ifm:divisionScope ifm:CrossDivision ;
+    ifm:classScope ifm:CrossClass ;
+    ifm:requires req:age-threshold-verification-identity-evidence ;
+    ifm:provides prov:age-threshold-verification-age ;
+    ifm:realisedBy flow:hospitality-age-check-ch, flow:retail-age-check-ch ;
+    ifm:valueDriver driver:data-minimisation, driver:fraud-risk-reduction, driver:friction-reduction ;
+    ifm:reducesRelianceOn prior:in-person-check ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change ;
+    skos:scopeNote "Not identity verification: the outcome is an attribute, and the subject is not identified."@en .
+
+uc:due-diligence-onboarding
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Onboarding with regulatory due diligence"@en ;
+    dct:description "A regulated organisation opens a relationship with a customer whose identity is already established, performs the due diligence its supervisor requires, and issues a reusable attestation that it did so."@en ;
+    ifm:appliesToSector sector:ISIC-6419, sector:ISIC-6512 ;
+    ifm:primaryFunction func:relationship-onboarding ;
+    ifm:executesFunction func:regulatory-compliance ;
+    ifm:realisesStage stage:order-to-cash-establish-relationship ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:CrossDivision ;
+    ifm:classScope ifm:CrossClass ;
+    ifm:requires req:due-diligence-onboarding-identity ;
+    ifm:provides prov:due-diligence-onboarding-relationship, prov:due-diligence-onboarding-attestation ;
+    ifm:enables uc:credential-recovery-reidentification, uc:due-diligence-refresh, uc:legal-capacity-reidentification ;
+    ifm:realisedBy flow:banking-kyc-onboarding-ch ;
+    ifm:valueDriver driver:friction-reduction, driver:fraud-risk-reduction, driver:compliance-assurance, driver:data-quality ;
+    ifm:reducesRelianceOn prior:in-person-check, prior:notarised-copy ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change .
+
+uc:due-diligence-refresh
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Periodic due diligence re-evaluation"@en ;
+    dct:description "An organisation re-runs customer due diligence on an existing relationship at the interval its supervisor requires."@en ;
+    ifm:appliesToSector sector:ISIC-6419, sector:ISIC-6512 ;
+    ifm:primaryFunction func:regulatory-compliance ;
+    ifm:executesFunction func:identity-lifecycle-management ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:CrossDivision ;
+    ifm:classScope ifm:CrossClass ;
+    ifm:requires req:due-diligence-refresh-relationship, req:due-diligence-refresh-prior-due-diligence ;
+    ifm:provides prov:due-diligence-refresh-currency ;
+    ifm:realisedBy flow:banking-re-kyc-ch ;
+    ifm:valueDriver driver:friction-reduction, driver:compliance-assurance ;
+    ifm:reducesRelianceOn prior:phone-or-email-check, prior:pdf-attachment ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run .
+
+uc:credential-recovery-reidentification
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Re-identification for credential recovery"@en ;
+    dct:description "A customer who has lost their access credentials is re-identified before access is restored."@en ;
+    ifm:appliesToSector sector:ISIC-6419 ;
+    ifm:primaryFunction func:identity-lifecycle-management ;
+    ifm:executesFunction func:request-and-complaint-handling, func:access-management ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:SingleDivision ;
+    ifm:classScope ifm:SingleClass ;
+    ifm:requires req:credential-recovery-reidentification-relationship, req:credential-recovery-reidentification-identity ;
+    ifm:provides prov:credential-recovery-reidentification-access ;
+    ifm:realisedBy flow:banking-password-reset-ch ;
+    ifm:valueDriver driver:friction-reduction, driver:fraud-risk-reduction, driver:reach-and-inclusion ;
+    ifm:reducesRelianceOn prior:in-person-check ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run .
+
+uc:legal-capacity-reidentification
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Re-identification at a change of legal capacity"@en ;
+    dct:description "A relationship entered at limited legal capacity is re-established at full capacity, typically on reaching majority."@en ;
+    ifm:appliesToSector sector:ISIC-6419 ;
+    ifm:primaryFunction func:identity-lifecycle-management ;
+    ifm:executesFunction func:regulatory-compliance ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:SingleDivision ;
+    ifm:classScope ifm:SingleClass ;
+    ifm:requires req:legal-capacity-reidentification-relationship, req:legal-capacity-reidentification-identity ;
+    ifm:provides prov:legal-capacity-reidentification-capacity ;
+    ifm:realisedBy flow:banking-age-of-majority-ch ;
+    ifm:valueDriver driver:compliance-assurance, driver:friction-reduction ;
+    ifm:reducesRelianceOn prior:in-person-check ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run .
+
+uc:education-qualification-issuance
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Education qualification issuance"@en ;
+    dct:description "An awarding institution issues a completed education or training qualification to the graduate as a verifiable credential."@en ;
+    ifm:appliesToSector sector:ISIC-8531 ;
+    ifm:primaryFunction func:certification-and-attestation ;
+    ifm:executesFunction func:records-management ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:SingleDivision ;
+    ifm:classScope ifm:SingleClass ;
+    ifm:requires req:education-qualification-issuance-identity ;
+    ifm:provides prov:education-qualification-issuance-qualification-evidence ;
+    ifm:enables uc:qualification-verification ;
+    ifm:realisedBy flow:education-efz-issuance-ch, flow:education-matura-issuance-ch ;
+    ifm:valueDriver driver:fraud-risk-reduction, driver:data-quality ;
+    ifm:reducesRelianceOn prior:paper-document ;
+    ifm:transformationMode mode:digitise ;
+    ifm:changeMode ifm:Run ;
+    skos:scopeNote "One pattern for gymnasiale Maturität and federal vocational certificate alike: the transformation and the interface are the same, only the awarding institution and the credential differ."@en .
+
+uc:tertiary-admission
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Tertiary admission"@en ;
+    dct:description "A higher education institution admits a student on established identity and qualification."@en ;
+    ifm:appliesToSector sector:ISIC-8540 ;
+    ifm:primaryFunction func:relationship-onboarding ;
+    ifm:executesFunction func:records-management ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:SingleDivision ;
+    ifm:classScope ifm:SingleClass ;
+    ifm:requires req:tertiary-admission-identity, req:tertiary-admission-qualification ;
+    ifm:provides prov:tertiary-admission-enrolment, prov:tertiary-admission-enrolment-evidence ;
+    ifm:realisedBy flow:education-immatriculation-ch ;
+    ifm:valueDriver driver:friction-reduction, driver:data-quality, driver:fraud-risk-reduction ;
+    ifm:reducesRelianceOn prior:notarised-copy, prior:paper-document ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change .
+
+uc:employment-engagement
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Employment engagement"@en ;
+    dct:description "An employer engages a candidate whose identity and qualifications are already established, and issues evidence of the employment relationship."@en ;
+    ifm:appliesToSector sector:ISIC-C, sector:ISIC-K, sector:ISIC-L, sector:ISIC-Q, sector:ISIC-R ;
+    ifm:primaryFunction func:human-capital-management ;
+    ifm:executesFunction func:contracting-and-signing ;
+    ifm:realisesStage stage:hire-to-retire-recruit-and-employ ;
+    ifm:sectionScope ifm:CrossSection ;
+    ifm:divisionScope ifm:CrossDivision ;
+    ifm:classScope ifm:CrossClass ;
+    ifm:requires req:employment-engagement-identity, req:employment-engagement-qualification ;
+    ifm:provides prov:employment-engagement-employment, prov:employment-engagement-employment-evidence ;
+    ifm:realisedBy flow:employment-onboarding-ch ;
+    ifm:valueDriver driver:friction-reduction, driver:fraud-risk-reduction, driver:data-quality ;
+    ifm:reducesRelianceOn prior:pdf-attachment, prior:phone-or-email-check ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run ;
+    skos:scopeNote "Split out of a single \"employee identity proofing and onboarding\" use case. The identity and qualification checks are separate reusable patterns; what remains here is the engagement itself."@en .
+
+uc:patient-record-matching
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Patient record matching"@en ;
+    dct:description "A care provider binds an identified person to the correct medical record."@en ;
+    ifm:appliesToSector sector:ISIC-8610 ;
+    ifm:primaryFunction func:service-delivery ;
+    ifm:executesFunction func:records-management ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:SingleDivision ;
+    ifm:classScope ifm:SingleClass ;
+    ifm:requires req:patient-record-matching-identity ;
+    ifm:provides prov:patient-record-matching-record ;
+    ifm:realisedBy flow:healthcare-admission-ch ;
+    ifm:valueDriver driver:data-quality, driver:friction-reduction, driver:fraud-risk-reduction ;
+    ifm:reducesRelianceOn prior:in-person-check ;
+    ifm:transformationMode mode:optimise ;
+    ifm:changeMode ifm:Run .
+
+uc:public-service-access
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Public service access"@en ;
+    dct:description "A public administration grants a resident access to an online service and establishes the entitlement that service rests on."@en ;
+    ifm:appliesToSector sector:ISIC-8411 ;
+    ifm:primaryFunction func:access-management ;
+    ifm:executesFunction func:service-delivery, func:entitlement-administration ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:SingleDivision ;
+    ifm:classScope ifm:SingleClass ;
+    ifm:requires req:public-service-access-identity ;
+    ifm:provides prov:public-service-access-access, prov:public-service-access-entitlement, prov:public-service-access-entitlement-evidence ;
+    ifm:realisedBy flow:egov-portal-ch ;
+    ifm:valueDriver driver:friction-reduction, driver:data-minimisation, driver:reach-and-inclusion ;
+    ifm:reducesRelianceOn prior:registry-lookup ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change .
+
+uc:supplier-qualification
+    a ifm:UseCasePattern, ifm:ComposableElement ;
+    rdfs:label "Supplier qualification"@en ;
+    dct:description "A buying organisation decides that a supplier with verified accreditations is eligible to be contracted, and records the decision."@en ;
+    ifm:appliesToSector sector:ISIC-2100, sector:ISIC-3030 ;
+    ifm:primaryFunction func:sourcing-and-procurement ;
+    ifm:executesFunction func:product-compliance, func:quality-assurance, func:supply-chain-traceability, func:regulatory-compliance ;
+    ifm:realisesStage stage:procure-to-pay-source-and-qualify ;
+    ifm:sectionScope ifm:SingleSection ;
+    ifm:divisionScope ifm:CrossDivision ;
+    ifm:classScope ifm:CrossClass ;
+    ifm:requires req:supplier-qualification-accreditation ;
+    ifm:provides prov:supplier-qualification-qualified, prov:supplier-qualification-qualification-record ;
+    ifm:realisedBy flow:supplier-qualification-aerospace, flow:supplier-qualification-pharma ;
+    ifm:valueDriver driver:friction-reduction, driver:compliance-assurance, driver:data-quality, driver:fraud-risk-reduction ;
+    ifm:reducesRelianceOn prior:pdf-attachment, prior:self-declaration, prior:phone-or-email-check ;
+    ifm:transformationMode mode:redesign ;
+    ifm:changeMode ifm:Change .
+
+######################################################################
+# Realisation - Flows (real implementations)
+######################################################################
+
+flow:eid-issuance-ch
+    a ifm:Flow ;
+    rdfs:label "Swiss e-ID issuance"@en ;
+    dct:description "The federal issuer identifies a resident and issues the EID into their wallet."@en ;
+    ifm:realisesUseCase uc:eid-issuance ;
+    ifm:sectorContext sector:ISIC-8411 ;
+    ifm:jurisdiction "CH" ;
+    ifm:governanceReference "E-ID Act (BGEID) of 20 December 2024"@en ;
+    ifm:participation part:eid-issuance-ch-issuer, part:eid-issuance-ch-holder, part:eid-issuance-ch-trust-anchor ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow> .
+
+flow:eid-presentation-ch
+    a ifm:Flow ;
+    rdfs:label "Swiss e-ID presentation and verification"@en ;
+    dct:description "A relying party requests a presentation from the wallet and verifies it against the federal trust infrastructure."@en ;
+    ifm:realisesUseCase uc:identity-verification ;
+    ifm:jurisdiction "CH" ;
+    ifm:governanceReference "E-ID Act (BGEID) of 20 December 2024"@en ;
+    ifm:participation part:eid-presentation-ch-holder, part:eid-presentation-ch-verifier, part:eid-presentation-ch-relying-party, part:eid-presentation-ch-trust-anchor ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow> ;
+    skos:scopeNote "No sector: this is the infrastructure step every sector's flows perform, which is why it is a flow of its own rather than a step inside each of them."@en .
+
+flow:banking-kyc-onboarding-ch
+    a ifm:Flow ;
+    rdfs:label "Swiss bank onboarding with a reusable KYC attestation"@en ;
+    dct:description "A prospective customer opens an account remotely. The bank verifies the e-ID, completes due diligence and issues a reusable KYC attestation."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:due-diligence-onboarding ;
+    ifm:sectorContext sector:ISIC-6419 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:banking-kyc-onboarding-ch-holder, part:banking-kyc-onboarding-ch-verifier, part:banking-kyc-onboarding-ch-relying-party, part:banking-kyc-onboarding-ch-issuer ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential> .
+
+flow:banking-re-kyc-ch
+    a ifm:Flow ;
+    rdfs:label "Swiss bank periodic KYC re-evaluation"@en ;
+    dct:description "The bank re-runs due diligence on an existing relationship at the supervisory interval."@en ;
+    ifm:realisesUseCase uc:due-diligence-refresh ;
+    ifm:sectorContext sector:ISIC-6419 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:banking-re-kyc-ch-holder, part:banking-re-kyc-ch-verifier, part:banking-re-kyc-ch-relying-party, part:banking-re-kyc-ch-issuer ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential> .
+
+flow:banking-password-reset-ch
+    a ifm:Flow ;
+    rdfs:label "Re-identification after a forgotten password"@en ;
+    dct:description "An e-banking customer who has lost their credentials is re-identified before access is restored."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:credential-recovery-reidentification ;
+    ifm:sectorContext sector:ISIC-6419 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:banking-password-reset-ch-holder, part:banking-password-reset-ch-verifier, part:banking-password-reset-ch-relying-party ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password> .
+
+flow:banking-age-of-majority-ch
+    a ifm:Flow ;
+    rdfs:label "Re-identification at the age of majority"@en ;
+    dct:description "A customer onboarded as a minor turns 18 and the relationship is re-established at full legal capacity, with a qualified electronic signature."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:legal-capacity-reidentification ;
+    ifm:sectorContext sector:ISIC-6419 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:banking-age-of-majority-ch-holder, part:banking-age-of-majority-ch-verifier, part:banking-age-of-majority-ch-relying-party ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority> .
+
+flow:education-matura-issuance-ch
+    a ifm:Flow ;
+    rdfs:label "Maturitätszeugnis issuance"@en ;
+    dct:description "An upper-secondary school issues the gymnasiale Maturitätszeugnis to the graduate as a verifiable credential."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:education-qualification-issuance ;
+    ifm:sectorContext sector:ISIC-8531 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:education-matura-issuance-ch-holder, part:education-matura-issuance-ch-verifier, part:education-matura-issuance-ch-issuer ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education> .
+
+flow:education-efz-issuance-ch
+    a ifm:Flow ;
+    rdfs:label "Federal vocational certificate issuance"@en ;
+    dct:description "A vocational school issues the eidgenössisches Fähigkeitszeugnis to the apprentice as a verifiable credential. The same pattern as the Maturität flow, a different credential."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:education-qualification-issuance ;
+    ifm:sectorContext sector:ISIC-8531 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:education-efz-issuance-ch-holder, part:education-efz-issuance-ch-verifier, part:education-efz-issuance-ch-issuer ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
+    ifm:maturity ifm:Exploratory .
+
+flow:education-immatriculation-ch
+    a ifm:Flow ;
+    rdfs:label "Swiss university immatriculation"@en ;
+    dct:description "A university admits a student on the e-ID and an upper-secondary qualification, without re-collecting paper documents."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:qualification-verification, uc:tertiary-admission ;
+    ifm:sectorContext sector:ISIC-8540 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:education-immatriculation-ch-holder, part:education-immatriculation-ch-verifier, part:education-immatriculation-ch-relying-party, part:education-immatriculation-ch-issuer ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Modelled ;
+    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education> .
+
+flow:retail-age-check-ch
+    a ifm:Flow ;
+    rdfs:label "Age check at a retail point of sale"@en ;
+    dct:description "A merchant checks that a customer is over the legal age for a restricted product."@en ;
+    ifm:realisesUseCase uc:age-threshold-verification ;
+    ifm:sectorContext sector:ISIC-4711 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:retail-age-check-ch-holder, part:retail-age-check-ch-verifier, part:retail-age-check-ch-relying-party ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Exploratory .
+
+flow:hospitality-age-check-ch
+    a ifm:Flow ;
+    rdfs:label "Age check in hospitality"@en ;
+    dct:description "A restaurant checks that a guest is over the legal age for a restricted product. The same pattern as the retail flow, a different sector."@en ;
+    ifm:realisesUseCase uc:age-threshold-verification ;
+    ifm:sectorContext sector:ISIC-5610 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:hospitality-age-check-ch-holder, part:hospitality-age-check-ch-verifier, part:hospitality-age-check-ch-relying-party ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Exploratory .
+
+flow:employment-onboarding-ch
+    a ifm:Flow ;
+    rdfs:label "Employee onboarding"@en ;
+    dct:description "An employer identifies a new hire, checks the qualifications the role requires and engages them."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:qualification-verification, uc:employment-engagement ;
+    ifm:sectorContext sector:ISIC-C ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:employment-onboarding-ch-holder, part:employment-onboarding-ch-verifier, part:employment-onboarding-ch-relying-party, part:employment-onboarding-ch-issuer ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Exploratory ;
+    skos:scopeNote "One flow realising three canonical patterns in sequence. Keeping it out of the taxonomy is the point: the three patterns are reusable, this composition of them is not."@en .
+
+flow:healthcare-admission-ch
+    a ifm:Flow ;
+    rdfs:label "Patient identification at admission"@en ;
+    dct:description "A hospital identifies a patient at admission and links them to the right record."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:patient-record-matching ;
+    ifm:sectorContext sector:ISIC-8610 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:healthcare-admission-ch-holder, part:healthcare-admission-ch-verifier, part:healthcare-admission-ch-relying-party ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Exploratory .
+
+flow:egov-portal-ch
+    a ifm:Flow ;
+    rdfs:label "Government service portal access"@en ;
+    dct:description "A resident authenticates to a public-administration service portal and discloses the attributes that service requires."@en ;
+    ifm:realisesUseCase uc:identity-verification, uc:public-service-access ;
+    ifm:sectorContext sector:ISIC-8411 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:egov-portal-ch-holder, part:egov-portal-ch-verifier, part:egov-portal-ch-relying-party, part:egov-portal-ch-issuer ;
+    ifm:costValueAsymmetry "false"^^xsd:boolean ;
+    ifm:maturity ifm:Exploratory .
+
+flow:supplier-qualification-pharma
+    a ifm:Flow ;
+    rdfs:label "Pharmaceutical supplier qualification"@en ;
+    dct:description "A pharmaceutical manufacturer qualifies a supplier against GMP certification."@en ;
+    ifm:realisesUseCase uc:accreditation-verification, uc:supplier-qualification ;
+    ifm:sectorContext sector:ISIC-2100 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:supplier-qualification-pharma-holder-supplier, part:supplier-qualification-pharma-verifier, part:supplier-qualification-pharma-relying-party, part:supplier-qualification-pharma-issuer-buyer, part:supplier-qualification-pharma-holder-buyer, part:supplier-qualification-pharma-trust-anchor ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
+    ifm:maturity ifm:Exploratory .
+
+flow:supplier-qualification-aerospace
+    a ifm:Flow ;
+    rdfs:label "Aerospace supplier qualification"@en ;
+    dct:description "An aerospace manufacturer qualifies a supplier against quality accreditations. The same pattern as the pharmaceutical flow, a different sector."@en ;
+    ifm:realisesUseCase uc:accreditation-verification, uc:supplier-qualification ;
+    ifm:sectorContext sector:ISIC-3030 ;
+    ifm:jurisdiction "CH" ;
+    ifm:participation part:supplier-qualification-aerospace-holder-supplier, part:supplier-qualification-aerospace-verifier, part:supplier-qualification-aerospace-relying-party, part:supplier-qualification-aerospace-issuer-buyer, part:supplier-qualification-aerospace-holder-buyer, part:supplier-qualification-aerospace-trust-anchor ;
+    ifm:costValueAsymmetry "true"^^xsd:boolean ;
+    ifm:maturity ifm:Exploratory .
+
+part:eid-issuance-ch-issuer
+    a ifm:Participation ;
+    ifm:inFlow flow:eid-issuance-ch ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Federal e-ID issuer"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" ;
+    skos:scopeNote "Carries the cost of the credential most other flows here depend on, while the value of verifying it falls to other parties."@en ;
+    ifm:issuesCredential cred:eid-credential .
+
+part:eid-issuance-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:eid-issuance-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Resident"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:eid-credential .
+
+part:eid-issuance-ch-trust-anchor
+    a ifm:Participation ;
+    ifm:inFlow flow:eid-issuance-ch ;
+    ifm:trustRole role:trust-anchor ;
+    ifm:party "Federal trust registry"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" .
+
+part:eid-presentation-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:eid-presentation-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Resident"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:eid-presentation-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:eid-presentation-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Any relying party"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:eid-presentation-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:eid-presentation-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Any relying party"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:eid-presentation-ch-trust-anchor
+    a ifm:Participation ;
+    ifm:inFlow flow:eid-presentation-ch ;
+    ifm:trustRole role:trust-anchor ;
+    ifm:party "Federal trust registry"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" ;
+    skos:scopeNote "Publishes the trust information the verifier resolves against."@en .
+
+part:banking-kyc-onboarding-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-kyc-onboarding-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:kyc-attestation ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:banking-kyc-onboarding-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-kyc-onboarding-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    skos:scopeNote "Checks the presented electronic identity."@en ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:banking-kyc-onboarding-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-kyc-onboarding-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Decides on the verified identity whether to open the relationship."@en .
+
+part:banking-kyc-onboarding-ch-issuer
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-kyc-onboarding-ch ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Issues the reusable attestation. A later verification of it by another regulated institution is a separate flow."@en ;
+    ifm:issuesCredential cred:kyc-attestation .
+
+part:banking-re-kyc-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-re-kyc-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:kyc-currency-attestation ;
+    ifm:presentsCredential cred:kyc-attestation .
+
+part:banking-re-kyc-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-re-kyc-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    skos:scopeNote "Checks the attestation it issued itself earlier."@en ;
+    ifm:verifiesCredential cred:kyc-attestation .
+
+part:banking-re-kyc-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-re-kyc-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Issuer, verifier and relying party are the same institution, which is why this flow needs nobody else's cooperation."@en .
+
+part:banking-re-kyc-ch-issuer
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-re-kyc-ch ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:issuesCredential cred:kyc-currency-attestation .
+
+part:banking-password-reset-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-password-reset-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:banking-password-reset-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-password-reset-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:banking-password-reset-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-password-reset-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:banking-age-of-majority-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-age-of-majority-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:banking-age-of-majority-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-age-of-majority-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:banking-age-of-majority-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:banking-age-of-majority-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Bank"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Establishes legal capacity from the verified date of birth. No credential is issued for that conclusion."@en .
+
+part:education-matura-issuance-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:education-matura-issuance-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Graduate"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:secondary-education-certificate ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:education-matura-issuance-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:education-matura-issuance-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Upper-secondary school"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    skos:scopeNote "Checks the graduate's electronic identity before issuing to it."@en ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:education-matura-issuance-ch-issuer
+    a ifm:Participation ;
+    ifm:inFlow flow:education-matura-issuance-ch ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Upper-secondary school"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" ;
+    skos:scopeNote "Bears the issuing cost; what it gets back is fewer requests for duplicate copies."@en ;
+    ifm:issuesCredential cred:secondary-education-certificate .
+
+part:education-efz-issuance-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:education-efz-issuance-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Apprentice"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:vocational-qualification-certificate ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:education-efz-issuance-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:education-efz-issuance-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Vocational school"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:education-efz-issuance-ch-issuer
+    a ifm:Participation ;
+    ifm:inFlow flow:education-efz-issuance-ch ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Vocational school"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" ;
+    ifm:issuesCredential cred:vocational-qualification-certificate .
+
+part:education-immatriculation-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:education-immatriculation-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Applicant"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:tertiary-enrolment-attestation ;
+    ifm:presentsCredential cred:eid-credential, cred:secondary-education-certificate .
+
+part:education-immatriculation-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:education-immatriculation-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "University"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential, cred:secondary-education-certificate .
+
+part:education-immatriculation-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:education-immatriculation-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "University"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Decides admission on the verified credentials."@en .
+
+part:education-immatriculation-ch-issuer
+    a ifm:Participation ;
+    ifm:inFlow flow:education-immatriculation-ch ;
+    ifm:trustRole role:issuer ;
+    ifm:party "University"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Issues the enrolment attestation as part of admitting the student."@en ;
+    ifm:issuesCredential cred:tertiary-enrolment-attestation .
+
+part:retail-age-check-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:retail-age-check-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Customer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:retail-age-check-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:retail-age-check-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Merchant"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:retail-age-check-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:retail-age-check-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Merchant"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:hospitality-age-check-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:hospitality-age-check-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Guest"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:hospitality-age-check-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:hospitality-age-check-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Restaurant"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:hospitality-age-check-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:hospitality-age-check-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Restaurant"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:employment-onboarding-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:employment-onboarding-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Candidate"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:employment-attestation ;
+    ifm:presentsCredential cred:eid-credential, cred:secondary-education-certificate .
+
+part:employment-onboarding-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:employment-onboarding-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Employer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential, cred:secondary-education-certificate .
+
+part:employment-onboarding-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:employment-onboarding-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Employer"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:employment-onboarding-ch-issuer
+    a ifm:Participation ;
+    ifm:inFlow flow:employment-onboarding-ch ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Employer"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Issues the employment attestation once the hire is confirmed."@en ;
+    ifm:issuesCredential cred:employment-attestation .
+
+part:healthcare-admission-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:healthcare-admission-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Patient"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:healthcare-admission-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:healthcare-admission-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Hospital"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:healthcare-admission-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:healthcare-admission-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Hospital"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:egov-portal-ch-holder
+    a ifm:Participation ;
+    ifm:inFlow flow:egov-portal-ch ;
+    ifm:trustRole role:holder ;
+    ifm:party "Resident"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:service-entitlement-attestation ;
+    ifm:presentsCredential cred:eid-credential .
+
+part:egov-portal-ch-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:egov-portal-ch ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Public administration"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    ifm:verifiesCredential cred:eid-credential .
+
+part:egov-portal-ch-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:egov-portal-ch ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Public administration"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:egov-portal-ch-issuer
+    a ifm:Participation ;
+    ifm:inFlow flow:egov-portal-ch ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Public administration"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "The body that issues the entitlement attestation and the body that relies on the electronic identity are both the state, so the investment returns to the party making it."@en ;
+    ifm:issuesCredential cred:service-entitlement-attestation .
+
+part:supplier-qualification-pharma-holder-supplier
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-pharma ;
+    ifm:trustRole role:holder ;
+    ifm:party "Supplier"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:quality-accreditation-certificate .
+
+part:supplier-qualification-pharma-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-pharma ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    skos:scopeNote "Checks the GMP certification the supplier presents."@en ;
+    ifm:verifiesCredential cred:quality-accreditation-certificate .
+
+part:supplier-qualification-pharma-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-pharma ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:supplier-qualification-pharma-issuer-buyer
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-pharma ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    skos:scopeNote "Records its own qualification decision in verifiable form so that an auditor can check it later."@en ;
+    ifm:issuesCredential cred:supplier-qualification-record .
+
+part:supplier-qualification-pharma-holder-buyer
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-pharma ;
+    ifm:trustRole role:holder ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:supplier-qualification-record .
+
+part:supplier-qualification-pharma-trust-anchor
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-pharma ;
+    ifm:trustRole role:trust-anchor ;
+    ifm:party "Accreditation body"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" ;
+    skos:scopeNote "Accredits the certification bodies whose certificates the buying organisation relies on."@en .
+
+part:supplier-qualification-aerospace-holder-supplier
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-aerospace ;
+    ifm:trustRole role:holder ;
+    ifm:party "Supplier"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:presentsCredential cred:quality-accreditation-certificate .
+
+part:supplier-qualification-aerospace-verifier
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-aerospace ;
+    ifm:trustRole role:verifier ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "none" ;
+    skos:scopeNote "Checks the quality accreditations the supplier presents."@en ;
+    ifm:verifiesCredential cred:quality-accreditation-certificate .
+
+part:supplier-qualification-aerospace-relying-party
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-aerospace ;
+    ifm:trustRole role:relying-party ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" .
+
+part:supplier-qualification-aerospace-issuer-buyer
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-aerospace ;
+    ifm:trustRole role:issuer ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:issuesCredential cred:supplier-qualification-record .
+
+part:supplier-qualification-aerospace-holder-buyer
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-aerospace ;
+    ifm:trustRole role:holder ;
+    ifm:party "Buying organisation"@en ;
+    ifm:bearsCost "false"^^xsd:boolean ;
+    ifm:gainsValue "direct" ;
+    ifm:holdsCredential cred:supplier-qualification-record .
+
+part:supplier-qualification-aerospace-trust-anchor
+    a ifm:Participation ;
+    ifm:inFlow flow:supplier-qualification-aerospace ;
+    ifm:trustRole role:trust-anchor ;
+    ifm:party "Accreditation body"@en ;
+    ifm:bearsCost "true"^^xsd:boolean ;
+    ifm:gainsValue "indirect" .
+
+######################################################################
+# Realisation - Credential types and trust roles
 ######################################################################
 
 cred:eid-credential
@@ -915,7 +2764,7 @@ cred:eid-credential
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Electronic identity credential"@en ;
     skos:definition "The state-issued electronic identity, held in a wallet and presented with selective disclosure. In Switzerland the EID under the E-ID Act (BGEID) of 20 December 2024: issued by fedpol through the federal trust infrastructure (Art. 13), carrying official name, given names, date of birth, sex, place of origin, place of birth, nationality, facial image and the AHV number (Art. 15 para. 1). Art. 10 para. 1 requires that the holder be able to determine which parts of it, and which information derived from them, reach the verifier. No claim schema is recorded here: the statute states the content and this repository has not read a published schema document."@en ;
-    ifm:evidences state:eid-held ;
+    ifm:substantiates cond:eid-held, cond:identity-evidence-available ;
     ifm:credentialFormat "SD-JWT VC" ;
     ifm:trustFramework "swiyu" ;
     ifm:protocolProfile "swiss-profile-issuance:1.0.0, swiss-profile-verification:1.0.0" ;
@@ -927,7 +2776,7 @@ cred:kyc-attestation
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "KYC attestation"@en ;
     skos:definition "A regulated institution's statement that customer due diligence was completed, reusable by another institution. The format is recorded so the attestation can ride the same infrastructure as the electronic identity; no semantic model or trust framework has been chosen for it."@en ;
-    ifm:evidences state:kyc-attestation-held ;
+    ifm:substantiates cond:kyc-attestation-held ;
     ifm:credentialFormat "SD-JWT VC" ;
     ifm:codeStatus "provisional" .
 
@@ -937,7 +2786,7 @@ cred:kyc-currency-attestation
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "KYC currency attestation"@en ;
     skos:definition "A statement that the due diligence behind a KYC attestation was re-evaluated within its validity period. No semantic model or trust framework has been chosen for it."@en ;
-    ifm:evidences state:kyc-attestation-current ;
+    ifm:substantiates cond:kyc-attestation-current ;
     ifm:credentialFormat "SD-JWT VC" ;
     ifm:codeStatus "provisional" .
 
@@ -945,9 +2794,20 @@ cred:secondary-education-certificate
     a ifm:CredentialType, skos:Concept ;
     skos:inScheme scheme:ifm-credential-types ;
     skos:topConceptOf scheme:ifm-credential-types ;
-    skos:prefLabel "Secondary education certificate"@en ;
-    skos:definition "A school-leaving certificate as a verifiable credential. ELM is the schema family to align with and extends the W3C data model; which version of it the European Digital Credentials infrastructure requires is not settled here, so no format version and no trust framework are recorded."@en ;
-    ifm:evidences state:secondary-education-credential-held ;
+    skos:prefLabel "Upper-secondary school-leaving certificate"@en ;
+    skos:definition "A school-leaving certificate as a verifiable credential; in Switzerland the gymnasiale Maturitätszeugnis. ELM is the schema family to align with and extends the W3C data model; which version of it the European Digital Credentials infrastructure requires is not settled here, so no format version and no trust framework are recorded."@en ;
+    ifm:substantiates cond:secondary-education-credential-held ;
+    ifm:credentialFormat "W3C VCDM" ;
+    ifm:semanticModel "European Learning Model (ELM)" ;
+    ifm:codeStatus "provisional" .
+
+cred:vocational-qualification-certificate
+    a ifm:CredentialType, skos:Concept ;
+    skos:inScheme scheme:ifm-credential-types ;
+    skos:topConceptOf scheme:ifm-credential-types ;
+    skos:prefLabel "Vocational qualification certificate"@en ;
+    skos:definition "A completed vocational education and training qualification as a verifiable credential; in Switzerland the eidgenössisches Fähigkeitszeugnis (EFZ). Carried here to show a second credential substantiating the same condition as the school-leaving certificate: no canonical use case changes to admit it. No schema document has been read for it."@en ;
+    ifm:substantiates cond:secondary-education-credential-held ;
     ifm:credentialFormat "W3C VCDM" ;
     ifm:semanticModel "European Learning Model (ELM)" ;
     ifm:codeStatus "provisional" .
@@ -958,7 +2818,7 @@ cred:tertiary-enrolment-attestation
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Tertiary enrolment attestation"@en ;
     skos:definition "A statement that the subject is enrolled at a higher education institution."@en ;
-    ifm:evidences state:tertiary-enrolment-established ;
+    ifm:substantiates cond:tertiary-enrolment-evidence-held ;
     ifm:credentialFormat "W3C VCDM" ;
     ifm:semanticModel "European Learning Model (ELM)" ;
     ifm:codeStatus "provisional" .
@@ -969,7 +2829,7 @@ cred:employment-attestation
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Employment attestation"@en ;
     skos:definition "A statement that an employment contract is in force between the subject and a named employer."@en ;
-    ifm:evidences state:employment-relationship-open ;
+    ifm:substantiates cond:employment-evidence-held ;
     ifm:credentialFormat "W3C VCDM" ;
     ifm:semanticModel "European Learning Model (ELM)" ;
     ifm:codeStatus "provisional" .
@@ -980,7 +2840,7 @@ cred:quality-accreditation-certificate
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Quality accreditation certificate"@en ;
     skos:definition "An accredited body's certificate that an organisation meets a standard - ISO 9001, GMP, sector conformity schemes."@en ;
-    ifm:evidences state:supplier-accreditation-held ;
+    ifm:substantiates cond:supplier-accreditation-held ;
     ifm:credentialFormat "W3C VCDM 2.0" ;
     ifm:semanticModel "UNTP Digital Conformity Credential" ;
     ifm:trustFramework "UN/CEFACT UN Transparency Protocol" ;
@@ -992,7 +2852,7 @@ cred:supplier-qualification-record
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Supplier qualification record"@en ;
     skos:definition "A buying organisation's own record that a supplier passed qualification, presentable to an auditor. The format follows the accreditation certificate the record is derived from; no ecosystem schema or trust framework governs an organisation's internal record."@en ;
-    ifm:evidences state:supplier-qualified ;
+    ifm:substantiates cond:supplier-qualification-evidence-held ;
     ifm:credentialFormat "W3C VCDM 2.0" ;
     ifm:codeStatus "provisional" .
 
@@ -1002,122 +2862,9 @@ cred:service-entitlement-attestation
     skos:topConceptOf scheme:ifm-credential-types ;
     skos:prefLabel "Service entitlement attestation"@en ;
     skos:definition "A statement that the subject is entitled to a named public service. No semantic model or trust framework has been chosen for it."@en ;
-    ifm:evidences state:service-entitlement-established ;
+    ifm:substantiates cond:service-entitlement-evidence-held ;
     ifm:credentialFormat "SD-JWT VC" ;
     ifm:codeStatus "provisional" .
-
-######################################################################
-# Layer 3c - States: the interface that makes use cases composable
-######################################################################
-
-state:eid-held
-    a ifm:EvidenceState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Electronic identity held"@en ;
-    skos:definition "The subject holds a government-issued electronic identity credential."@en .
-
-state:identity-verified
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Identity verified"@en ;
-    skos:definition "The subject's identity has been established to a stated level of assurance by the relying party."@en .
-
-state:kyc-attestation-held
-    a ifm:EvidenceState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "KYC attestation held"@en ;
-    skos:definition "The subject holds a reusable attestation that customer due diligence was completed."@en .
-
-state:kyc-attestation-current
-    a ifm:EvidenceState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "KYC attestation current"@en ;
-    skos:definition "The due diligence behind the attestation has been re-evaluated within its validity period."@en .
-
-state:customer-relationship-open
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Customer relationship open"@en ;
-    skos:definition "A contractual relationship exists between the subject and the organisation."@en .
-
-state:legal-capacity-established
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Legal capacity established"@en ;
-    skos:definition "The relying party has established that the subject may contract in their own right. Reached from verified attributes rather than from a credential issued for the purpose."@en .
-
-state:access-granted
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Access granted"@en ;
-    skos:definition "The subject can reach the service or premises the relationship entitles them to."@en .
-
-state:age-attribute-proven
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Age attribute proven"@en ;
-    skos:definition "A threshold age has been demonstrated to the relying party without disclosing identity. The outcome of an interaction, not something a separate credential attests."@en .
-
-state:secondary-education-credential-held
-    a ifm:EvidenceState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Secondary education credential held"@en ;
-    skos:definition "The subject holds a verifiable school-leaving certificate."@en .
-
-state:tertiary-enrolment-established
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Tertiary enrolment established"@en ;
-    skos:definition "The subject is enrolled at a higher education institution."@en .
-
-state:employment-relationship-open
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Employment relationship open"@en ;
-    skos:definition "An employment contract is in force between the subject and an employer."@en .
-
-state:supplier-accreditation-held
-    a ifm:EvidenceState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Supplier accreditation held"@en ;
-    skos:definition "The supplier holds current quality, conformity or sector accreditations in verifiable form."@en .
-
-state:supplier-qualified
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Supplier qualified"@en ;
-    skos:definition "The buying organisation has accepted the supplier as eligible to be contracted."@en .
-
-state:patient-record-linked
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Patient record linked"@en ;
-    skos:definition "The person in front of the clinician is bound to the correct medical record."@en .
-
-state:service-entitlement-established
-    a ifm:OutcomeState, skos:Concept ;
-    skos:inScheme scheme:ifm-states ;
-    skos:topConceptOf scheme:ifm-states ;
-    skos:prefLabel "Service entitlement established"@en ;
-    skos:definition "The subject's entitlement to a public service has been demonstrated to the body providing it."@en .
-
-######################################################################
-# Layer 3b - Trust roles and the mechanisms a credential displaces
-######################################################################
 
 role:issuer
     a ifm:TrustRole, skos:Concept ;
@@ -1154,466 +2901,8 @@ role:trust-anchor
     skos:prefLabel "Trust anchor"@en ;
     skos:definition "Provides the authoritative trust information a verifier uses to assess other participants: which issuers exist, what they are authorised to attest, and how that changes. How that information is published is an ecosystem decision and is not implied by the role."@en .
 
-prior:paper-document
-    a ifm:PriorEvidenceMechanism, skos:Concept ;
-    skos:inScheme scheme:ifm-prior-evidence ;
-    skos:topConceptOf scheme:ifm-prior-evidence ;
-    skos:prefLabel "Paper document"@en ;
-    skos:definition "An original or certified copy handed over, posted or presented in person."@en .
-
-prior:pdf-attachment
-    a ifm:PriorEvidenceMechanism, skos:Concept ;
-    skos:inScheme scheme:ifm-prior-evidence ;
-    skos:topConceptOf scheme:ifm-prior-evidence ;
-    skos:prefLabel "PDF or scan"@en ;
-    skos:definition "A PDF or scanned document whose authenticity is not machine-verifiable through the trust mechanism the use case relies on. A PDF may carry an electronic signature; where it does and the verifier can check it, it is not this mechanism."@en .
-
-prior:phone-or-email-check
-    a ifm:PriorEvidenceMechanism, skos:Concept ;
-    skos:inScheme scheme:ifm-prior-evidence ;
-    skos:topConceptOf scheme:ifm-prior-evidence ;
-    skos:prefLabel "Phone or email check"@en ;
-    skos:definition "A human contacting the issuing organisation to ask whether a claim is true."@en .
-
-prior:registry-lookup
-    a ifm:PriorEvidenceMechanism, skos:Concept ;
-    skos:inScheme scheme:ifm-prior-evidence ;
-    skos:topConceptOf scheme:ifm-prior-evidence ;
-    skos:prefLabel "Registry lookup"@en ;
-    skos:definition "A verifier querying an authoritative register directly. It gives current data from the source and works wherever the register exists and grants the verifier access; it requires that access, connectivity at the time of the check, and that the register learns which subject was looked up."@en .
-
-prior:in-person-check
-    a ifm:PriorEvidenceMechanism, skos:Concept ;
-    skos:inScheme scheme:ifm-prior-evidence ;
-    skos:topConceptOf scheme:ifm-prior-evidence ;
-    skos:prefLabel "In-person check"@en ;
-    skos:definition "The subject attending in person so a human can inspect a document or their face."@en .
-
-prior:notarised-copy
-    a ifm:PriorEvidenceMechanism, skos:Concept ;
-    skos:inScheme scheme:ifm-prior-evidence ;
-    skos:topConceptOf scheme:ifm-prior-evidence ;
-    skos:prefLabel "Notarised copy"@en ;
-    skos:definition "A third party attesting that a copy matches an original, at a fee and a delay."@en .
-
-prior:self-declaration
-    a ifm:PriorEvidenceMechanism, skos:Concept ;
-    skos:inScheme scheme:ifm-prior-evidence ;
-    skos:topConceptOf scheme:ifm-prior-evidence ;
-    skos:prefLabel "Self-declaration"@en ;
-    skos:definition "The subject asserting something the recipient does not check, accepted where verifying it would cost more than the assessed risk of it being false."@en .
-
-part:eid-issuance-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:eid-issuance ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Federal e-ID issuer"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "indirect" ;
-    skos:scopeNote "Carries the cost of the credential most other use cases here depend on, while the value of verifying it falls to other parties."@en ;
-    ifm:issuesCredential cred:eid-credential .
-
-part:eid-issuance-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:eid-issuance ;
-    ifm:trustRole role:holder ;
-    ifm:party "Resident"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:holdsCredential cred:eid-credential .
-
-part:eid-issuance-trust-anchor
-    a ifm:Participation ;
-    ifm:inUseCase uc:eid-issuance ;
-    ifm:trustRole role:trust-anchor ;
-    ifm:party "Federal trust registry"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "indirect" ;
-    skos:scopeNote "Publishes the trust information verifiers use. No credential is presented or verified inside this use case; that happens in the use cases that consume the credential."@en .
-
-part:banking-kyc-onboarding-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-kyc-onboarding ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Issues the reusable attestation. A later verification of it by another regulated institution is a separate interaction and is not modelled inside onboarding."@en ;
-    ifm:issuesCredential cred:kyc-attestation .
-
-part:banking-kyc-onboarding-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-kyc-onboarding ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    skos:scopeNote "Checks the presented electronic identity."@en ;
-    ifm:verifiesCredential cred:eid-credential .
-
-part:banking-kyc-onboarding-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-kyc-onboarding ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Decides on the verified identity whether to open the relationship."@en .
-
-part:banking-kyc-onboarding-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-kyc-onboarding ;
-    ifm:trustRole role:holder ;
-    ifm:party "Customer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:holdsCredential cred:kyc-attestation ;
-    ifm:presentsCredential cred:eid-credential .
-
-part:banking-re-kyc-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-re-kyc ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:issuesCredential cred:kyc-currency-attestation .
-
-part:banking-re-kyc-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-re-kyc ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    skos:scopeNote "Checks the attestation it issued itself earlier."@en ;
-    ifm:verifiesCredential cred:kyc-attestation .
-
-part:banking-re-kyc-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-re-kyc ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Issuer, verifier and relying party are the same institution, which is why this use case needs nobody else's cooperation."@en .
-
-part:banking-re-kyc-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-re-kyc ;
-    ifm:trustRole role:holder ;
-    ifm:party "Customer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:holdsCredential cred:kyc-currency-attestation ;
-    ifm:presentsCredential cred:kyc-attestation .
-
-part:banking-reidentification-password-reset-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-reidentification-password-reset ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    ifm:verifiesCredential cred:eid-credential .
-
-part:banking-reidentification-password-reset-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-reidentification-password-reset ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:banking-reidentification-password-reset-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-reidentification-password-reset ;
-    ifm:trustRole role:holder ;
-    ifm:party "Customer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:presentsCredential cred:eid-credential .
-
-part:banking-age-of-majority-reidentification-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-age-of-majority-reidentification ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    ifm:verifiesCredential cred:eid-credential .
-
-part:banking-age-of-majority-reidentification-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-age-of-majority-reidentification ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Bank"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Establishes legal capacity from the verified date of birth. No credential is issued for that conclusion."@en .
-
-part:banking-age-of-majority-reidentification-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:banking-age-of-majority-reidentification ;
-    ifm:trustRole role:holder ;
-    ifm:party "Customer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:presentsCredential cred:eid-credential .
-
-part:education-maturitaetszeugnis-issuance-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:education-maturitaetszeugnis-issuance ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Upper-secondary school"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "indirect" ;
-    skos:scopeNote "Bears the issuing cost; what it gets back is fewer requests for duplicate copies."@en ;
-    ifm:issuesCredential cred:secondary-education-certificate .
-
-part:education-maturitaetszeugnis-issuance-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:education-maturitaetszeugnis-issuance ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Upper-secondary school"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    skos:scopeNote "Checks the graduate's electronic identity before issuing to it."@en ;
-    ifm:verifiesCredential cred:eid-credential .
-
-part:education-maturitaetszeugnis-issuance-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:education-maturitaetszeugnis-issuance ;
-    ifm:trustRole role:holder ;
-    ifm:party "Graduate"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:holdsCredential cred:secondary-education-certificate ;
-    ifm:presentsCredential cred:eid-credential .
-
-part:education-university-immatriculation-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:education-university-immatriculation ;
-    ifm:trustRole role:verifier ;
-    ifm:party "University"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    ifm:verifiesCredential cred:eid-credential, cred:secondary-education-certificate .
-
-part:education-university-immatriculation-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:education-university-immatriculation ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "University"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Decides admission on the verified credentials."@en .
-
-part:education-university-immatriculation-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:education-university-immatriculation ;
-    ifm:trustRole role:issuer ;
-    ifm:party "University"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Issues the enrolment attestation as part of admitting the student."@en ;
-    ifm:issuesCredential cred:tertiary-enrolment-attestation .
-
-part:education-university-immatriculation-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:education-university-immatriculation ;
-    ifm:trustRole role:holder ;
-    ifm:party "Applicant"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:holdsCredential cred:tertiary-enrolment-attestation ;
-    ifm:presentsCredential cred:eid-credential, cred:secondary-education-certificate .
-
-part:retail-hospitality-age-verification-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:retail-hospitality-age-verification ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Merchant or restaurant"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    ifm:verifiesCredential cred:eid-credential .
-
-part:retail-hospitality-age-verification-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:retail-hospitality-age-verification ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Merchant or restaurant"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:retail-hospitality-age-verification-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:retail-hospitality-age-verification ;
-    ifm:trustRole role:holder ;
-    ifm:party "Customer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:presentsCredential cred:eid-credential .
-
-part:employment-identity-proofing-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:employment-identity-proofing ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Employer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    ifm:verifiesCredential cred:eid-credential, cred:secondary-education-certificate .
-
-part:employment-identity-proofing-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:employment-identity-proofing ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Employer"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:employment-identity-proofing-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:employment-identity-proofing ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Employer"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Issues the employment attestation once the hire is confirmed."@en ;
-    ifm:issuesCredential cred:employment-attestation .
-
-part:employment-identity-proofing-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:employment-identity-proofing ;
-    ifm:trustRole role:holder ;
-    ifm:party "Candidate"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:holdsCredential cred:employment-attestation ;
-    ifm:presentsCredential cred:eid-credential, cred:secondary-education-certificate .
-
-part:healthcare-patient-identification-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:healthcare-patient-identification ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Hospital"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    ifm:verifiesCredential cred:eid-credential .
-
-part:healthcare-patient-identification-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:healthcare-patient-identification ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Hospital"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:healthcare-patient-identification-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:healthcare-patient-identification ;
-    ifm:trustRole role:holder ;
-    ifm:party "Patient"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:presentsCredential cred:eid-credential .
-
-part:egov-service-access-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:egov-service-access ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Public administration"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    ifm:verifiesCredential cred:eid-credential .
-
-part:egov-service-access-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:egov-service-access ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Public administration"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" .
-
-part:egov-service-access-issuer
-    a ifm:Participation ;
-    ifm:inUseCase uc:egov-service-access ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Public administration"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "The party that issues the entitlement attestation and the party that relies on the electronic identity are both the state, so the investment returns to the body making it."@en ;
-    ifm:issuesCredential cred:service-entitlement-attestation .
-
-part:egov-service-access-holder
-    a ifm:Participation ;
-    ifm:inUseCase uc:egov-service-access ;
-    ifm:trustRole role:holder ;
-    ifm:party "Resident"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:holdsCredential cred:service-entitlement-attestation ;
-    ifm:presentsCredential cred:eid-credential .
-
-part:supplier-qualification-verifier
-    a ifm:Participation ;
-    ifm:inUseCase uc:supplier-qualification ;
-    ifm:trustRole role:verifier ;
-    ifm:party "Buying organisation"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "none" ;
-    skos:scopeNote "Checks the accreditations the supplier presents: GMP certificates for pharmaceuticals, quality accreditations for aerospace."@en ;
-    ifm:verifiesCredential cred:quality-accreditation-certificate .
-
-part:supplier-qualification-relying-party
-    a ifm:Participation ;
-    ifm:inUseCase uc:supplier-qualification ;
-    ifm:trustRole role:relying-party ;
-    ifm:party "Buying organisation"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Decides on the verified accreditations whether the supplier is eligible to be contracted."@en .
-
-part:supplier-qualification-issuer-buyer
-    a ifm:Participation ;
-    ifm:inUseCase uc:supplier-qualification ;
-    ifm:trustRole role:issuer ;
-    ifm:party "Buying organisation"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Records its own qualification decision in verifiable form so that an auditor can check it later."@en ;
-    ifm:issuesCredential cred:supplier-qualification-record .
-
-part:supplier-qualification-holder-buyer
-    a ifm:Participation ;
-    ifm:inUseCase uc:supplier-qualification ;
-    ifm:trustRole role:holder ;
-    ifm:party "Buying organisation"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    skos:scopeNote "Holds the qualification record it issued to itself. Presenting it to an auditor is a separate interaction."@en ;
-    ifm:holdsCredential cred:supplier-qualification-record .
-
-part:supplier-qualification-holder-supplier
-    a ifm:Participation ;
-    ifm:inUseCase uc:supplier-qualification ;
-    ifm:trustRole role:holder ;
-    ifm:party "Supplier"@en ;
-    ifm:bearsCost "false"^^xsd:boolean ;
-    ifm:gainsValue "direct" ;
-    ifm:presentsCredential cred:quality-accreditation-certificate .
-
-part:supplier-qualification-trust-anchor
-    a ifm:Participation ;
-    ifm:inUseCase uc:supplier-qualification ;
-    ifm:trustRole role:trust-anchor ;
-    ifm:party "Accreditation body"@en ;
-    ifm:bearsCost "true"^^xsd:boolean ;
-    ifm:gainsValue "indirect" ;
-    skos:scopeNote "Accredits the certification bodies whose certificates the buying organisation relies on."@en .
-
 ######################################################################
-# Layer 3a - Value drivers and transformation modes
+# Decision support - drivers, modes, prior evidence
 ######################################################################
 
 driver:friction-reduction
@@ -1697,480 +2986,76 @@ mode:enable
     skos:definition "Enables an activity or operating model that was previously impractical or uneconomic at the required level of trust."@en ;
     ifm:changeMode ifm:Change .
 
-######################################################################
-# Layer 2d - Value streams (ordered compositions of functions)
-######################################################################
+prior:paper-document
+    a ifm:PriorEvidenceMechanism, skos:Concept ;
+    skos:inScheme scheme:ifm-prior-evidence ;
+    skos:topConceptOf scheme:ifm-prior-evidence ;
+    skos:prefLabel "Paper document"@en ;
+    skos:definition "An original or certified copy handed over, posted or presented in person."@en .
 
-stream:procure-to-pay
-    a ifm:ValueStream, skos:Concept ;
-    skos:inScheme scheme:ifm-value-streams ;
-    skos:topConceptOf scheme:ifm-value-streams ;
-    skos:prefLabel "Procure to pay"@en ;
-    skos:altLabel "source-to-pay"@en, "purchase-to-pay"@en ;
-    skos:definition "From identifying a need for goods or services through to settling the supplier invoice and retaining the evidence."@en ;
-    ifm:codeStatus "provisional" ;
-    ifm:hasStage stage:procure-to-pay-01, stage:procure-to-pay-02, stage:procure-to-pay-03, stage:procure-to-pay-04, stage:procure-to-pay-05, stage:procure-to-pay-06, stage:procure-to-pay-07, stage:procure-to-pay-08, stage:procure-to-pay-09, stage:procure-to-pay-10, stage:procure-to-pay-11, stage:procure-to-pay-12 .
+prior:pdf-attachment
+    a ifm:PriorEvidenceMechanism, skos:Concept ;
+    skos:inScheme scheme:ifm-prior-evidence ;
+    skos:topConceptOf scheme:ifm-prior-evidence ;
+    skos:prefLabel "PDF or scan"@en ;
+    skos:definition "A PDF or scanned document whose authenticity is not machine-verifiable through the trust mechanism the use case relies on. A PDF may carry an electronic signature; where it does and the verifier can check it, it is not this mechanism."@en .
 
-stage:procure-to-pay-01
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "1"^^xsd:integer ;
-    rdfs:label "Source and qualify"@en ;
-    ifm:stageFunction func:sourcing-and-procurement .
+prior:phone-or-email-check
+    a ifm:PriorEvidenceMechanism, skos:Concept ;
+    skos:inScheme scheme:ifm-prior-evidence ;
+    skos:topConceptOf scheme:ifm-prior-evidence ;
+    skos:prefLabel "Phone or email check"@en ;
+    skos:definition "A human contacting the issuing organisation to ask whether a claim is true."@en .
 
-stage:procure-to-pay-02
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "2"^^xsd:integer ;
-    rdfs:label "Establish the supplier is a real legal entity"@en ;
-    ifm:stageFunction func:identity-proofing .
+prior:registry-lookup
+    a ifm:PriorEvidenceMechanism, skos:Concept ;
+    skos:inScheme scheme:ifm-prior-evidence ;
+    skos:topConceptOf scheme:ifm-prior-evidence ;
+    skos:prefLabel "Registry lookup"@en ;
+    skos:definition "A verifier querying an authoritative register directly. It gives current data from the source and works wherever the register exists and grants the verifier access; it requires that access, connectivity at the time of the check, and that the register learns which subject was looked up."@en .
 
-stage:procure-to-pay-03
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "3"^^xsd:integer ;
-    rdfs:label "Assess counterparty and financial risk"@en ;
-    ifm:stageFunction func:credit-and-risk-assessment .
+prior:in-person-check
+    a ifm:PriorEvidenceMechanism, skos:Concept ;
+    skos:inScheme scheme:ifm-prior-evidence ;
+    skos:topConceptOf scheme:ifm-prior-evidence ;
+    skos:prefLabel "In-person check"@en ;
+    skos:definition "The subject attending in person so a human can inspect a document or their face."@en .
 
-stage:procure-to-pay-04
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "4"^^xsd:integer ;
-    rdfs:label "Check accreditations and audit reports"@en ;
-    ifm:stageFunction func:audit-and-assurance ;
-    skos:scopeNote "Where ISO 9001 and GMP certificates are presented."@en .
+prior:notarised-copy
+    a ifm:PriorEvidenceMechanism, skos:Concept ;
+    skos:inScheme scheme:ifm-prior-evidence ;
+    skos:topConceptOf scheme:ifm-prior-evidence ;
+    skos:prefLabel "Notarised copy"@en ;
+    skos:definition "A third party attesting that a copy matches an original, at a fee and a delay."@en .
 
-stage:procure-to-pay-05
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "5"^^xsd:integer ;
-    rdfs:label "Check conformity of what will be supplied"@en ;
-    ifm:stageFunction func:product-compliance .
-
-stage:procure-to-pay-06
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "6"^^xsd:integer ;
-    rdfs:label "Agree and sign"@en ;
-    ifm:stageFunction func:contracting-and-signing .
-
-stage:procure-to-pay-07
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "7"^^xsd:integer ;
-    rdfs:label "Establish provenance through delivery"@en ;
-    ifm:stageFunction func:supply-chain-traceability .
-
-stage:procure-to-pay-08
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "8"^^xsd:integer ;
-    rdfs:label "Clear the border"@en ;
-    ifm:stageFunction func:customs-and-trade-facilitation ;
-    skos:scopeNote "Only when the supply crosses one."@en .
-
-stage:procure-to-pay-09
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "9"^^xsd:integer ;
-    rdfs:label "Goods receipt against specification"@en ;
-    ifm:stageFunction func:quality-assurance .
-
-stage:procure-to-pay-10
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "10"^^xsd:integer ;
-    rdfs:label "Invoice and payment"@en ;
-    ifm:stageFunction func:invoicing-and-settlement .
-
-stage:procure-to-pay-11
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "11"^^xsd:integer ;
-    rdfs:label "Substantiate the tax position"@en ;
-    ifm:stageFunction func:tax-administration .
-
-stage:procure-to-pay-12
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:procure-to-pay ;
-    ifm:position "12"^^xsd:integer ;
-    rdfs:label "Retain the audit trail"@en ;
-    ifm:stageFunction func:records-management .
-
-stream:order-to-cash
-    a ifm:ValueStream, skos:Concept ;
-    skos:inScheme scheme:ifm-value-streams ;
-    skos:topConceptOf scheme:ifm-value-streams ;
-    skos:prefLabel "Order to cash"@en ;
-    skos:altLabel "lead-to-cash"@en, "quote-to-cash"@en ;
-    skos:definition "From a customer order through to collected payment and the record of it."@en ;
-    ifm:codeStatus "provisional" ;
-    ifm:hasStage stage:order-to-cash-01, stage:order-to-cash-02, stage:order-to-cash-03, stage:order-to-cash-04, stage:order-to-cash-05, stage:order-to-cash-06, stage:order-to-cash-07, stage:order-to-cash-08 .
-
-stage:order-to-cash-01
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:order-to-cash ;
-    ifm:position "1"^^xsd:integer ;
-    rdfs:label "Establish the customer relationship"@en ;
-    ifm:stageFunction func:relationship-onboarding .
-
-stage:order-to-cash-02
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:order-to-cash ;
-    ifm:position "2"^^xsd:integer ;
-    rdfs:label "Establish who the customer is"@en ;
-    ifm:stageFunction func:identity-proofing .
-
-stage:order-to-cash-03
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:order-to-cash ;
-    ifm:position "3"^^xsd:integer ;
-    rdfs:label "Decide the terms to offer"@en ;
-    ifm:stageFunction func:credit-and-risk-assessment .
-
-stage:order-to-cash-04
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:order-to-cash ;
-    ifm:position "4"^^xsd:integer ;
-    rdfs:label "Agree and sign"@en ;
-    ifm:stageFunction func:contracting-and-signing .
-
-stage:order-to-cash-05
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:order-to-cash ;
-    ifm:position "5"^^xsd:integer ;
-    rdfs:label "Deliver"@en ;
-    ifm:stageFunction func:service-delivery .
-
-stage:order-to-cash-06
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:order-to-cash ;
-    ifm:position "6"^^xsd:integer ;
-    rdfs:label "Invoice and collect"@en ;
-    ifm:stageFunction func:invoicing-and-settlement .
-
-stage:order-to-cash-07
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:order-to-cash ;
-    ifm:position "7"^^xsd:integer ;
-    rdfs:label "Handle what goes wrong"@en ;
-    ifm:stageFunction func:request-and-complaint-handling .
-
-stage:order-to-cash-08
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:order-to-cash ;
-    ifm:position "8"^^xsd:integer ;
-    rdfs:label "Retain the audit trail"@en ;
-    ifm:stageFunction func:records-management .
-
-stream:hire-to-retire
-    a ifm:ValueStream, skos:Concept ;
-    skos:inScheme scheme:ifm-value-streams ;
-    skos:topConceptOf scheme:ifm-value-streams ;
-    skos:prefLabel "Hire to retire"@en ;
-    skos:altLabel "recruit-to-retire"@en ;
-    skos:definition "From an open role through to a former employee whose entitlements and records are closed out."@en ;
-    ifm:codeStatus "provisional" ;
-    ifm:hasStage stage:hire-to-retire-01, stage:hire-to-retire-02, stage:hire-to-retire-03, stage:hire-to-retire-04, stage:hire-to-retire-05, stage:hire-to-retire-06 .
-
-stage:hire-to-retire-01
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:hire-to-retire ;
-    ifm:position "1"^^xsd:integer ;
-    rdfs:label "Recruit and employ"@en ;
-    ifm:stageFunction func:human-capital-management .
-
-stage:hire-to-retire-02
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:hire-to-retire ;
-    ifm:position "2"^^xsd:integer ;
-    rdfs:label "Establish who the candidate is"@en ;
-    ifm:stageFunction func:identity-proofing .
-
-stage:hire-to-retire-03
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:hire-to-retire ;
-    ifm:position "3"^^xsd:integer ;
-    rdfs:label "Check right to work and qualifications"@en ;
-    ifm:stageFunction func:eligibility-verification .
-
-stage:hire-to-retire-04
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:hire-to-retire ;
-    ifm:position "4"^^xsd:integer ;
-    rdfs:label "Agree and sign the employment contract"@en ;
-    ifm:stageFunction func:contracting-and-signing .
-
-stage:hire-to-retire-05
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:hire-to-retire ;
-    ifm:position "5"^^xsd:integer ;
-    rdfs:label "Provision and later revoke access"@en ;
-    ifm:stageFunction func:access-management .
-
-stage:hire-to-retire-06
-    a ifm:ValueStreamStage ;
-    ifm:inValueStream stream:hire-to-retire ;
-    ifm:position "6"^^xsd:integer ;
-    rdfs:label "Retain the employment record"@en ;
-    ifm:stageFunction func:records-management .
+prior:self-declaration
+    a ifm:PriorEvidenceMechanism, skos:Concept ;
+    skos:inScheme scheme:ifm-prior-evidence ;
+    skos:topConceptOf scheme:ifm-prior-evidence ;
+    skos:prefLabel "Self-declaration"@en ;
+    skos:definition "The subject asserting something the recipient does not check, accepted where verifying it would cost more than the assessed risk of it being false."@en .
 
 ######################################################################
-# Layer 3 - Use cases (sector x function intersection nodes)
+# Derived - which provisions satisfy which requirements
 ######################################################################
 
-uc:banking-kyc-onboarding
-    a ifm:UseCase ;
-    rdfs:label "Online onboarding and KYC credential issuance"@en ;
-    dct:description "A prospective customer opens a bank account remotely. The bank identifies them against the e-ID and issues a reusable KYC attestation."@en ;
-    ifm:appliesToSector sector:ISIC-6419, sector:ISIC-6512 ;
-    ifm:primaryFunction func:relationship-onboarding ;
-    ifm:executesFunction func:identity-proofing, func:regulatory-compliance ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:CrossDivision ;
-    ifm:classScope ifm:CrossClass ;
-    ifm:participation part:banking-kyc-onboarding-issuer, part:banking-kyc-onboarding-verifier, part:banking-kyc-onboarding-relying-party, part:banking-kyc-onboarding-holder ;
-    ifm:reducesRelianceOn prior:in-person-check, prior:notarised-copy ;
-    ifm:precondition state:eid-held ;
-    ifm:postcondition state:kyc-attestation-held, state:customer-relationship-open ;
-    ifm:enables uc:banking-age-of-majority-reidentification, uc:banking-re-kyc, uc:banking-reidentification-password-reset ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:friction-reduction, driver:fraud-risk-reduction, driver:compliance-assurance, driver:data-quality ;
-    ifm:valueStream stream:order-to-cash ;
-    ifm:transformationMode mode:redesign ;
-    ifm:changeMode ifm:Change ;
-    ifm:maturity ifm:Modelled ;
-    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential> .
+prov:eid-issuance-eid
+    ifm:satisfies req:identity-verification-identity-evidence, req:age-threshold-verification-identity-evidence .
 
-uc:banking-re-kyc
-    a ifm:UseCase ;
-    rdfs:label "Periodic KYC re-evaluation"@en ;
-    dct:description "The bank re-runs customer due diligence on an existing relationship at the interval its supervisor requires, reusing the identity already established."@en ;
-    ifm:appliesToSector sector:ISIC-6419 ;
-    ifm:primaryFunction func:regulatory-compliance ;
-    ifm:executesFunction func:identity-lifecycle-management ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:SingleDivision ;
-    ifm:classScope ifm:SingleClass ;
-    ifm:participation part:banking-re-kyc-issuer, part:banking-re-kyc-verifier, part:banking-re-kyc-relying-party, part:banking-re-kyc-holder ;
-    ifm:reducesRelianceOn prior:phone-or-email-check, prior:pdf-attachment ;
-    ifm:precondition state:customer-relationship-open ;
-    ifm:postcondition state:kyc-attestation-current ;
-    ifm:requiresUseCase uc:banking-kyc-onboarding ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:friction-reduction, driver:compliance-assurance ;
-    ifm:transformationMode mode:optimise ;
-    ifm:changeMode ifm:Run ;
-    ifm:maturity ifm:Modelled ;
-    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential> .
+prov:identity-verification-identity
+    ifm:satisfies req:due-diligence-onboarding-identity, req:credential-recovery-reidentification-identity, req:legal-capacity-reidentification-identity, req:education-qualification-issuance-identity, req:tertiary-admission-identity, req:employment-engagement-identity, req:patient-record-matching-identity, req:public-service-access-identity .
 
-uc:banking-reidentification-password-reset
-    a ifm:UseCase ;
-    rdfs:label "Re-identification after a forgotten password"@en ;
-    dct:description "An existing e-banking customer who has lost their credentials is re-identified before access is restored, without a branch visit."@en ;
-    ifm:appliesToSector sector:ISIC-6419 ;
-    ifm:primaryFunction func:identity-lifecycle-management ;
-    ifm:executesFunction func:request-and-complaint-handling, func:access-management ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:SingleDivision ;
-    ifm:classScope ifm:SingleClass ;
-    ifm:participation part:banking-reidentification-password-reset-verifier, part:banking-reidentification-password-reset-relying-party, part:banking-reidentification-password-reset-holder ;
-    ifm:reducesRelianceOn prior:in-person-check ;
-    ifm:precondition state:customer-relationship-open, state:eid-held ;
-    ifm:postcondition state:access-granted ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:friction-reduction, driver:fraud-risk-reduction, driver:reach-and-inclusion ;
-    ifm:transformationMode mode:optimise ;
-    ifm:changeMode ifm:Run ;
-    ifm:maturity ifm:Modelled ;
-    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password> .
+prov:qualification-verification-qualification
+    ifm:satisfies req:tertiary-admission-qualification, req:employment-engagement-qualification .
 
-uc:banking-age-of-majority-reidentification
-    a ifm:UseCase ;
-    rdfs:label "Re-identification at the age of majority"@en ;
-    dct:description "A customer onboarded as a minor turns 18. The relationship is re-established at full legal capacity, with a qualified electronic signature."@en ;
-    ifm:appliesToSector sector:ISIC-6419 ;
-    ifm:primaryFunction func:identity-lifecycle-management ;
-    ifm:executesFunction func:regulatory-compliance ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:SingleDivision ;
-    ifm:classScope ifm:SingleClass ;
-    ifm:participation part:banking-age-of-majority-reidentification-verifier, part:banking-age-of-majority-reidentification-relying-party, part:banking-age-of-majority-reidentification-holder ;
-    ifm:reducesRelianceOn prior:in-person-check ;
-    ifm:precondition state:customer-relationship-open, state:eid-held ;
-    ifm:postcondition state:legal-capacity-established ;
-    ifm:requiresUseCase uc:banking-kyc-onboarding ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:compliance-assurance, driver:friction-reduction ;
-    ifm:transformationMode mode:optimise ;
-    ifm:changeMode ifm:Run ;
-    ifm:maturity ifm:Modelled ;
-    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority> .
+prov:accreditation-verification-accreditation
+    ifm:satisfies req:supplier-qualification-accreditation .
 
-uc:education-maturitaetszeugnis-issuance
-    a ifm:UseCase ;
-    rdfs:label "Issuance of a Maturitätszeugnis"@en ;
-    dct:description "An upper-secondary school issues the school-leaving certificate to the graduate as a digital attestation."@en ;
-    ifm:appliesToSector sector:ISIC-8531 ;
-    ifm:primaryFunction func:certification-and-attestation ;
-    ifm:executesFunction func:records-management ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:SingleDivision ;
-    ifm:classScope ifm:SingleClass ;
-    ifm:participation part:education-maturitaetszeugnis-issuance-issuer, part:education-maturitaetszeugnis-issuance-verifier, part:education-maturitaetszeugnis-issuance-holder ;
-    ifm:reducesRelianceOn prior:paper-document ;
-    ifm:precondition state:eid-held ;
-    ifm:postcondition state:secondary-education-credential-held ;
-    ifm:enables uc:education-university-immatriculation, uc:employment-identity-proofing ;
-    ifm:costValueAsymmetry "true"^^xsd:boolean ;
-    ifm:valueDriver driver:fraud-risk-reduction, driver:data-quality ;
-    ifm:transformationMode mode:digitise ;
-    ifm:changeMode ifm:Run ;
-    ifm:maturity ifm:Modelled ;
-    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education> .
+prov:due-diligence-onboarding-relationship
+    ifm:satisfies req:due-diligence-refresh-relationship, req:credential-recovery-reidentification-relationship, req:legal-capacity-reidentification-relationship .
 
-uc:education-university-immatriculation
-    a ifm:UseCase ;
-    rdfs:label "University immatriculation"@en ;
-    dct:description "A university admits a student on the strength of the e-ID and the Maturitätszeugnis, without re-collecting or re-checking paper documents."@en ;
-    ifm:appliesToSector sector:ISIC-8540 ;
-    ifm:primaryFunction func:relationship-onboarding ;
-    ifm:executesFunction func:eligibility-verification, func:identity-proofing ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:SingleDivision ;
-    ifm:classScope ifm:SingleClass ;
-    ifm:participation part:education-university-immatriculation-verifier, part:education-university-immatriculation-relying-party, part:education-university-immatriculation-issuer, part:education-university-immatriculation-holder ;
-    ifm:reducesRelianceOn prior:notarised-copy, prior:paper-document ;
-    ifm:precondition state:eid-held, state:secondary-education-credential-held ;
-    ifm:postcondition state:tertiary-enrolment-established ;
-    ifm:requiresUseCase uc:education-maturitaetszeugnis-issuance ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:friction-reduction, driver:data-quality, driver:fraud-risk-reduction ;
-    ifm:transformationMode mode:redesign ;
-    ifm:changeMode ifm:Change ;
-    ifm:maturity ifm:Modelled ;
-    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education> .
+prov:due-diligence-onboarding-attestation
+    ifm:satisfies req:due-diligence-refresh-prior-due-diligence .
 
-uc:retail-hospitality-age-verification
-    a ifm:UseCase ;
-    rdfs:label "Age verification at the point of sale"@en ;
-    dct:description "A merchant or a restaurant checks that a customer is over the legal age for a restricted product, learning nothing else about them."@en ;
-    ifm:appliesToSector sector:ISIC-4711, sector:ISIC-5610 ;
-    ifm:primaryFunction func:eligibility-verification ;
-    ifm:executesFunction func:regulatory-compliance ;
-    ifm:sectionScope ifm:CrossSection ;
-    ifm:divisionScope ifm:CrossDivision ;
-    ifm:classScope ifm:CrossClass ;
-    ifm:participation part:retail-hospitality-age-verification-verifier, part:retail-hospitality-age-verification-relying-party, part:retail-hospitality-age-verification-holder ;
-    ifm:reducesRelianceOn prior:in-person-check ;
-    ifm:precondition state:eid-held ;
-    ifm:postcondition state:age-attribute-proven ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:data-minimisation, driver:fraud-risk-reduction, driver:friction-reduction ;
-    ifm:transformationMode mode:redesign ;
-    ifm:changeMode ifm:Change ;
-    ifm:maturity ifm:Exploratory .
-
-uc:employment-identity-proofing
-    a ifm:UseCase ;
-    rdfs:label "Employee identity proofing and onboarding"@en ;
-    dct:description "An employer identifies a new hire and checks the qualifications the role requires, before provisioning any account."@en ;
-    ifm:appliesToSector sector:ISIC-C, sector:ISIC-K, sector:ISIC-L, sector:ISIC-Q, sector:ISIC-R ;
-    ifm:primaryFunction func:human-capital-management ;
-    ifm:executesFunction func:identity-proofing, func:eligibility-verification ;
-    ifm:sectionScope ifm:CrossSection ;
-    ifm:divisionScope ifm:CrossDivision ;
-    ifm:classScope ifm:CrossClass ;
-    ifm:participation part:employment-identity-proofing-verifier, part:employment-identity-proofing-relying-party, part:employment-identity-proofing-issuer, part:employment-identity-proofing-holder ;
-    ifm:reducesRelianceOn prior:pdf-attachment, prior:phone-or-email-check ;
-    ifm:precondition state:eid-held, state:secondary-education-credential-held ;
-    ifm:postcondition state:employment-relationship-open ;
-    ifm:requiresUseCase uc:education-maturitaetszeugnis-issuance ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:friction-reduction, driver:fraud-risk-reduction, driver:data-quality ;
-    ifm:valueStream stream:hire-to-retire ;
-    ifm:transformationMode mode:optimise ;
-    ifm:changeMode ifm:Run ;
-    ifm:maturity ifm:Exploratory .
-
-uc:healthcare-patient-identification
-    a ifm:UseCase ;
-    rdfs:label "Patient identification at admission"@en ;
-    dct:description "A hospital identifies a patient at admission and links them to the right record."@en ;
-    ifm:appliesToSector sector:ISIC-8610 ;
-    ifm:primaryFunction func:service-delivery ;
-    ifm:executesFunction func:identity-proofing, func:records-management ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:SingleDivision ;
-    ifm:classScope ifm:SingleClass ;
-    ifm:participation part:healthcare-patient-identification-verifier, part:healthcare-patient-identification-relying-party, part:healthcare-patient-identification-holder ;
-    ifm:reducesRelianceOn prior:in-person-check ;
-    ifm:precondition state:eid-held ;
-    ifm:postcondition state:patient-record-linked ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:data-quality, driver:friction-reduction, driver:fraud-risk-reduction ;
-    ifm:transformationMode mode:optimise ;
-    ifm:changeMode ifm:Run ;
-    ifm:maturity ifm:Exploratory .
-
-uc:egov-service-access
-    a ifm:UseCase ;
-    rdfs:label "Access to an online government service"@en ;
-    dct:description "A resident authenticates to a public-administration service portal and discloses the attributes that service requires for the interaction."@en ;
-    ifm:appliesToSector sector:ISIC-8411 ;
-    ifm:primaryFunction func:access-management ;
-    ifm:executesFunction func:identity-proofing, func:service-delivery ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:SingleDivision ;
-    ifm:classScope ifm:SingleClass ;
-    ifm:participation part:egov-service-access-verifier, part:egov-service-access-relying-party, part:egov-service-access-issuer, part:egov-service-access-holder ;
-    ifm:reducesRelianceOn prior:registry-lookup ;
-    ifm:precondition state:eid-held ;
-    ifm:postcondition state:service-entitlement-established ;
-    ifm:costValueAsymmetry "false"^^xsd:boolean ;
-    ifm:valueDriver driver:friction-reduction, driver:data-minimisation, driver:reach-and-inclusion ;
-    ifm:transformationMode mode:redesign ;
-    ifm:changeMode ifm:Change ;
-    ifm:maturity ifm:Exploratory .
-
-uc:supplier-qualification
-    a ifm:UseCase ;
-    rdfs:label "Supplier qualification"@en ;
-    dct:description "A buying organisation qualifies a supplier: that it legally exists, that its quality and conformity accreditations are current, and that what it will supply conforms. Instantiated by any sector that qualifies suppliers against accreditations."@en ;
-    ifm:appliesToSector sector:ISIC-3030, sector:ISIC-2100 ;
-    ifm:primaryFunction func:sourcing-and-procurement ;
-    ifm:executesFunction func:identity-proofing, func:audit-and-assurance, func:product-compliance, func:quality-assurance, func:supply-chain-traceability, func:regulatory-compliance ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:CrossDivision ;
-    ifm:classScope ifm:CrossClass ;
-    ifm:participation part:supplier-qualification-verifier, part:supplier-qualification-relying-party, part:supplier-qualification-issuer-buyer, part:supplier-qualification-holder-buyer, part:supplier-qualification-holder-supplier, part:supplier-qualification-trust-anchor ;
-    ifm:reducesRelianceOn prior:pdf-attachment, prior:self-declaration, prior:phone-or-email-check ;
-    ifm:precondition state:supplier-accreditation-held ;
-    ifm:postcondition state:supplier-qualified ;
-    ifm:costValueAsymmetry "true"^^xsd:boolean ;
-    ifm:valueDriver driver:friction-reduction, driver:compliance-assurance, driver:data-quality, driver:fraud-risk-reduction ;
-    ifm:valueStream stream:procure-to-pay ;
-    ifm:transformationMode mode:redesign ;
-    ifm:changeMode ifm:Change ;
-    ifm:maturity ifm:Exploratory .
-
-uc:eid-issuance
-    a ifm:UseCase ;
-    rdfs:label "Issuance of the electronic identity"@en ;
-    dct:description "The issuing authority identifies a resident and issues the state electronic identity into their wallet. Most other use cases in this graph declare the state it leaves behind as a precondition."@en ;
-    ifm:appliesToSector sector:ISIC-8411 ;
-    ifm:primaryFunction func:certification-and-attestation ;
-    ifm:executesFunction func:identity-proofing, func:records-management, func:regulatory-compliance ;
-    ifm:sectionScope ifm:SingleSection ;
-    ifm:divisionScope ifm:SingleDivision ;
-    ifm:classScope ifm:SingleClass ;
-    ifm:participation part:eid-issuance-issuer, part:eid-issuance-holder, part:eid-issuance-trust-anchor ;
-    ifm:reducesRelianceOn prior:in-person-check, prior:paper-document ;
-    ifm:postcondition state:eid-held ;
-    ifm:enables uc:banking-age-of-majority-reidentification, uc:banking-kyc-onboarding, uc:banking-reidentification-password-reset, uc:education-maturitaetszeugnis-issuance, uc:education-university-immatriculation, uc:egov-service-access, uc:employment-identity-proofing, uc:healthcare-patient-identification, uc:retail-hospitality-age-verification ;
-    ifm:costValueAsymmetry "true"^^xsd:boolean ;
-    ifm:valueDriver driver:reach-and-inclusion, driver:fraud-risk-reduction, driver:data-minimisation, driver:friction-reduction ;
-    ifm:transformationMode mode:enable ;
-    ifm:changeMode ifm:Change ;
-    ifm:maturity ifm:Modelled ;
-    ifm:documentedBy <https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow> .
+prov:education-qualification-issuance-qualification-evidence
+    ifm:satisfies req:qualification-verification-qualification-evidence .

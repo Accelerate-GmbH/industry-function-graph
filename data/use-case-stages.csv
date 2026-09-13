@@ -1,0 +1,8 @@
+use_case_id,value_stream_id,stage_id,note
+due-diligence-onboarding,order-to-cash,establish-relationship,
+identity-verification,order-to-cash,establish-customer-identity,
+identity-verification,hire-to-retire,establish-candidate-identity,"The same canonical use case realises the identity stage of more than one stream, which is what keeping it separate buys."
+qualification-verification,hire-to-retire,check-qualifications,
+employment-engagement,hire-to-retire,recruit-and-employ,
+accreditation-verification,procure-to-pay,check-accreditations,
+supplier-qualification,procure-to-pay,source-and-qualify,

@@ -1,0 +1,26 @@
+id,pref_label_en,kind,broader,definition
+identity-evidence-available,Identity evidence available,evidence,,"Evidence of who the subject is can be presented to a relying party and checked by it. Says nothing about which credential carries the evidence, or that anyone has checked it yet."
+eid-held,Electronic identity held,evidence,identity-evidence-available,The subject holds a government-issued electronic identity credential.
+education-qualification-evidence-available,Education qualification evidence available,evidence,,"Evidence of a completed education or training qualification can be presented and checked. Deliberately broader than any one certificate, so that a flow requiring it can be served by several kinds of qualification."
+secondary-education-credential-held,Upper-secondary qualification held,evidence,education-qualification-evidence-available,"The subject holds a verifiable upper-secondary qualification. In Switzerland that is the gymnasiale Maturität or a federal vocational certificate (EFZ); both sit at this level."
+due-diligence-evidence-available,Due diligence evidence available,evidence,,Evidence that customer due diligence was carried out can be presented and checked.
+kyc-attestation-held,KYC attestation held,evidence,due-diligence-evidence-available,The subject holds a reusable attestation that customer due diligence was completed.
+kyc-attestation-current,KYC attestation current,evidence,kyc-attestation-held,The due diligence behind the attestation has been re-evaluated within its validity period.
+accreditation-evidence-available,Accreditation evidence available,evidence,,"Evidence that an organisation meets a published standard can be presented and checked - a quality, conformity or sector accreditation."
+supplier-accreditation-held,Supplier accreditation held,evidence,accreditation-evidence-available,"The supplier holds current quality, conformity or sector accreditations in verifiable form."
+employment-evidence-held,Employment evidence held,evidence,,The subject holds verifiable evidence that an employment relationship is in force.
+tertiary-enrolment-evidence-held,Tertiary enrolment evidence held,evidence,,The subject holds verifiable evidence of enrolment at a higher education institution.
+service-entitlement-evidence-held,Service entitlement evidence held,evidence,,The subject holds verifiable evidence of entitlement to a named public service.
+supplier-qualification-evidence-held,Supplier qualification evidence held,evidence,,The buying organisation holds a verifiable record of its own qualification decision.
+identity-verified,Identity verified,fact,,The relying party has established that the subject is who they claim to be to a stated level of assurance.
+qualification-verified,Qualification verified,fact,,The relying party has established that the subject holds the qualification the interaction requires.
+accreditation-verified,Accreditation verified,fact,,The relying party has established that the organisation's accreditations are genuine and current.
+age-attribute-proven,Age attribute proven,fact,,"A threshold age has been demonstrated to the relying party without disclosing identity. An established fact about an interaction, not something a separate credential attests."
+legal-capacity-established,Legal capacity established,fact,,"The relying party has established that the subject may contract in their own right. Reached from verified attributes rather than from a credential issued for the purpose."
+customer-relationship-open,Customer relationship open,relationship,,A contractual relationship exists between the subject and the organisation.
+employment-relationship-open,Employment relationship open,relationship,,An employment contract is in force between the subject and an employer.
+tertiary-enrolment-established,Tertiary enrolment established,relationship,,The subject is enrolled at a higher education institution.
+access-granted,Access granted,relationship,,The subject can reach the service or premises the relationship entitles them to.
+service-entitlement-established,Service entitlement established,relationship,,The body providing a public service has accepted that the subject is entitled to it.
+supplier-qualified,Supplier qualified,outcome,,The buying organisation has decided that the supplier is eligible to be contracted.
+patient-record-linked,Patient record linked,outcome,,The clinician has bound the person in front of them to the correct medical record.

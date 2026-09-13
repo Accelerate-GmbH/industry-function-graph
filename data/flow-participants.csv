@@ -1,0 +1,61 @@
+flow_id,participation_id,role_id,party,bears_cost,gains_value,note
+eid-issuance-ch,issuer,issuer,Federal e-ID issuer,yes,indirect,"Carries the cost of the credential most other flows here depend on, while the value of verifying it falls to other parties."
+eid-issuance-ch,holder,holder,Resident,no,direct,
+eid-issuance-ch,trust-anchor,trust-anchor,Federal trust registry,yes,indirect,
+eid-presentation-ch,holder,holder,Resident,no,direct,
+eid-presentation-ch,verifier,verifier,Any relying party,no,none,
+eid-presentation-ch,relying-party,relying-party,Any relying party,no,direct,
+eid-presentation-ch,trust-anchor,trust-anchor,Federal trust registry,yes,indirect,Publishes the trust information the verifier resolves against.
+banking-kyc-onboarding-ch,holder,holder,Customer,no,direct,
+banking-kyc-onboarding-ch,verifier,verifier,Bank,no,none,Checks the presented electronic identity.
+banking-kyc-onboarding-ch,relying-party,relying-party,Bank,no,direct,Decides on the verified identity whether to open the relationship.
+banking-kyc-onboarding-ch,issuer,issuer,Bank,yes,direct,"Issues the reusable attestation. A later verification of it by another regulated institution is a separate flow."
+banking-re-kyc-ch,holder,holder,Customer,no,direct,
+banking-re-kyc-ch,verifier,verifier,Bank,no,none,Checks the attestation it issued itself earlier.
+banking-re-kyc-ch,relying-party,relying-party,Bank,no,direct,"Issuer, verifier and relying party are the same institution, which is why this flow needs nobody else's cooperation."
+banking-re-kyc-ch,issuer,issuer,Bank,yes,direct,
+banking-password-reset-ch,holder,holder,Customer,no,direct,
+banking-password-reset-ch,verifier,verifier,Bank,no,none,
+banking-password-reset-ch,relying-party,relying-party,Bank,no,direct,
+banking-age-of-majority-ch,holder,holder,Customer,no,direct,
+banking-age-of-majority-ch,verifier,verifier,Bank,no,none,
+banking-age-of-majority-ch,relying-party,relying-party,Bank,no,direct,Establishes legal capacity from the verified date of birth. No credential is issued for that conclusion.
+education-matura-issuance-ch,holder,holder,Graduate,no,direct,
+education-matura-issuance-ch,verifier,verifier,Upper-secondary school,no,none,Checks the graduate's electronic identity before issuing to it.
+education-matura-issuance-ch,issuer,issuer,Upper-secondary school,yes,indirect,Bears the issuing cost; what it gets back is fewer requests for duplicate copies.
+education-efz-issuance-ch,holder,holder,Apprentice,no,direct,
+education-efz-issuance-ch,verifier,verifier,Vocational school,no,none,
+education-efz-issuance-ch,issuer,issuer,Vocational school,yes,indirect,
+education-immatriculation-ch,holder,holder,Applicant,no,direct,
+education-immatriculation-ch,verifier,verifier,University,no,none,
+education-immatriculation-ch,relying-party,relying-party,University,no,direct,Decides admission on the verified credentials.
+education-immatriculation-ch,issuer,issuer,University,yes,direct,Issues the enrolment attestation as part of admitting the student.
+retail-age-check-ch,holder,holder,Customer,no,direct,
+retail-age-check-ch,verifier,verifier,Merchant,no,none,
+retail-age-check-ch,relying-party,relying-party,Merchant,no,direct,
+hospitality-age-check-ch,holder,holder,Guest,no,direct,
+hospitality-age-check-ch,verifier,verifier,Restaurant,no,none,
+hospitality-age-check-ch,relying-party,relying-party,Restaurant,no,direct,
+employment-onboarding-ch,holder,holder,Candidate,no,direct,
+employment-onboarding-ch,verifier,verifier,Employer,no,none,
+employment-onboarding-ch,relying-party,relying-party,Employer,no,direct,
+employment-onboarding-ch,issuer,issuer,Employer,yes,direct,Issues the employment attestation once the hire is confirmed.
+healthcare-admission-ch,holder,holder,Patient,no,direct,
+healthcare-admission-ch,verifier,verifier,Hospital,no,none,
+healthcare-admission-ch,relying-party,relying-party,Hospital,no,direct,
+egov-portal-ch,holder,holder,Resident,no,direct,
+egov-portal-ch,verifier,verifier,Public administration,no,none,
+egov-portal-ch,relying-party,relying-party,Public administration,no,direct,
+egov-portal-ch,issuer,issuer,Public administration,yes,direct,"The body that issues the entitlement attestation and the body that relies on the electronic identity are both the state, so the investment returns to the party making it."
+supplier-qualification-pharma,holder-supplier,holder,Supplier,no,direct,
+supplier-qualification-pharma,verifier,verifier,Buying organisation,no,none,Checks the GMP certification the supplier presents.
+supplier-qualification-pharma,relying-party,relying-party,Buying organisation,no,direct,
+supplier-qualification-pharma,issuer-buyer,issuer,Buying organisation,yes,direct,Records its own qualification decision in verifiable form so that an auditor can check it later.
+supplier-qualification-pharma,holder-buyer,holder,Buying organisation,no,direct,
+supplier-qualification-pharma,trust-anchor,trust-anchor,Accreditation body,yes,indirect,Accredits the certification bodies whose certificates the buying organisation relies on.
+supplier-qualification-aerospace,holder-supplier,holder,Supplier,no,direct,
+supplier-qualification-aerospace,verifier,verifier,Buying organisation,no,none,Checks the quality accreditations the supplier presents.
+supplier-qualification-aerospace,relying-party,relying-party,Buying organisation,no,direct,
+supplier-qualification-aerospace,issuer-buyer,issuer,Buying organisation,yes,direct,
+supplier-qualification-aerospace,holder-buyer,holder,Buying organisation,no,direct,
+supplier-qualification-aerospace,trust-anchor,trust-anchor,Accreditation body,yes,indirect,

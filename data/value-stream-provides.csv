@@ -1,0 +1,5 @@
+value_stream_id,condition_id,subject_role,note
+order-to-cash,customer-relationship-open,subject,
+hire-to-retire,employment-relationship-open,subject,
+hire-to-retire,access-granted,subject,
+procure-to-pay,supplier-qualified,organisation,

@@ -1,0 +1,22 @@
+use_case_id,provision_id,condition_id,subject_role,evidence_type,principal,context,note
+eid-issuance,eid,eid-held,subject,eid-credential,yes,,
+identity-verification,identity,identity-verified,subject,,yes,,
+qualification-verification,qualification,qualification-verified,subject,,yes,,
+accreditation-verification,accreditation,accreditation-verified,organisation,,yes,,
+age-threshold-verification,age,age-attribute-proven,subject,,yes,,
+due-diligence-onboarding,relationship,customer-relationship-open,subject,,yes,,
+due-diligence-onboarding,attestation,kyc-attestation-held,subject,kyc-attestation,no,,"The reusable attestation is a secondary output: the principal outcome is the relationship, and an implementation may open one without issuing an attestation."
+due-diligence-refresh,currency,kyc-attestation-current,subject,kyc-currency-attestation,yes,,
+credential-recovery-reidentification,access,access-granted,subject,,yes,,
+legal-capacity-reidentification,capacity,legal-capacity-established,subject,,yes,,
+education-qualification-issuance,qualification-evidence,secondary-education-credential-held,subject,,yes,,"No evidence_type: the pattern is indifferent to which qualification credential the awarding institution issues, and the flow names it."
+tertiary-admission,enrolment,tertiary-enrolment-established,subject,,yes,,
+tertiary-admission,enrolment-evidence,tertiary-enrolment-evidence-held,subject,tertiary-enrolment-attestation,no,,
+employment-engagement,employment,employment-relationship-open,subject,,yes,,
+employment-engagement,employment-evidence,employment-evidence-held,subject,employment-attestation,no,,
+patient-record-matching,record,patient-record-linked,subject,,yes,,
+public-service-access,access,access-granted,subject,,yes,,
+public-service-access,entitlement,service-entitlement-established,subject,,no,,
+public-service-access,entitlement-evidence,service-entitlement-evidence-held,subject,service-entitlement-attestation,no,,
+supplier-qualification,qualified,supplier-qualified,organisation,,yes,,
+supplier-qualification,qualification-record,supplier-qualification-evidence-held,organisation,supplier-qualification-record,no,,

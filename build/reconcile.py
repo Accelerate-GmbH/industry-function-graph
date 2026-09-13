@@ -46,9 +46,14 @@ def families(root: Path) -> dict[tuple[str, str], dict]:
     return found
 
 
-def locate(use_case, model, by_sector) -> tuple[str, str] | None:
-    """Which family a use case's documented_by points at."""
-    link = model.documentation_iri(use_case) or ""
+def locate(flow_id, model, by_sector) -> tuple[str, str] | None:
+    """Which family a flow's documented_by points at.
+
+    The join moved from use cases to flows with the pattern/flow split: a
+    canonical pattern has no documentation of its own, because the documented
+    thing is always an implementation.
+    """
+    link = model.documentation_iri(flow_id) or ""
     if MARKER not in link:
         return None
     path = unquote(link.split(MARKER, 1)[1]).strip("/").split("/")
@@ -79,15 +84,15 @@ def main(argv):
 
     mapped: dict[tuple[str, str], list[str]] = {}
     unlinked = []
-    for use_case in model.use_cases:
-        key = locate(use_case, model, by_sector)
+    for flow_id in model.flows:
+        key = locate(flow_id, model, by_sector)
         if key is None:
-            if model.documentation_iri(use_case):
-                unlinked.append(use_case)
+            if model.documentation_iri(flow_id):
+                unlinked.append(flow_id)
         else:
-            mapped.setdefault(key, []).append(use_case)
+            mapped.setdefault(key, []).append(flow_id)
 
-    print(f"{len(model.use_cases)} use cases here, {len(fams)} families there, "
+    print(f"{len(model.flows)} flows here, {len(fams)} families there, "
           f"{sum(len(v) for v in mapped.values())} joined\n")
 
     differences = 0
@@ -95,18 +100,23 @@ def main(argv):
         label = f"{key[0]}/{key[1]}"
         cases = mapped.get(key, [])
         if not cases:
-            print(f"  {label}: no use case in the graph documents this family")
+            print(f"  {label}: no flow in the graph documents this family")
             differences += 1
             continue
 
         block = family.get("states") or {}
         there_pre = set(map(str, block.get("requires") or []))
         there_post = set(map(str, block.get("establishes") or []))
-        here_pre = {s for c in cases for s in model.pre_of[c]}
-        here_post = {s for c in cases for s in model.post_of[c]}
+        # A flow has no interface of its own: it inherits the union of the
+        # interfaces of the patterns it realises.
+        patterns = [uc for flow in cases for uc in model.realises_of[flow]]
+        here_pre = {r["condition_id"] for uc in patterns
+                    for r in model.requires_of[uc]}
+        here_post = {p["condition_id"] for uc in patterns
+                     for p in model.provides_of[uc]}
 
         fn_there = str((family.get("functions") or {}).get("primary") or "")
-        fn_here = {model.primary_function(c) for c in cases}
+        fn_here = {model.primary_function(uc) for uc in patterns}
 
         notes = []
         if here_pre != there_pre:

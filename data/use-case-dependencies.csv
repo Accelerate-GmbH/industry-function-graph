@@ -1,5 +1,1 @@
 use_case_id,requires_use_case_id,note
-education-university-immatriculation,education-maturitaetszeugnis-issuance,"There is nothing to present until schools issue."
-banking-re-kyc,banking-kyc-onboarding,"Re-evaluation presumes a relationship established this way."
-banking-age-of-majority-reidentification,banking-kyc-onboarding,
-employment-identity-proofing,education-maturitaetszeugnis-issuance,"Qualification checks depend on awarding institutions issuing."

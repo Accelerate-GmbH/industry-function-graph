@@ -1,0 +1,4 @@
+id,pref_label_en,definition
+subject,Subject,"The natural person the condition is about. The default, and the one to leave implicit unless a use case involves more than one party the conditions could apply to."
+organisation,Organisation,The legal entity the condition is about - a supplier being qualified, an employer, an awarding institution.
+relying-party,Relying party,The party that acts on the condition rather than the party it describes. Used where a condition records something the relying party has established rather than something the subject holds.

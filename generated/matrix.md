@@ -3,144 +3,363 @@
 
 Rows are ISIC Rev. 5 sections, columns are business functions. `#` marks a use case where the function is the primary one, `.` marks a supporting function.
 
-| Sector | Identity proofing | Relationship onboarding | Identity lifecycle management | Eligibility verification | Access management | Certification and attestation | Regulatory compliance | Sourcing and procurement | Supply chain traceability | Human capital management | Request and complaint handling | Service delivery | Records management | Quality assurance | Audit and assurance | Product compliance |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **C** Manufacturing | .. |  |  | . |  |  | . | # | . | # |  |  |  | . | . | . |
-| **G** Wholesale and retail trade |  |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |
-| **I** Accommodation and food service activities |  |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |
-| **K** Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities | . |  |  | . |  |  |  |  |  | # |  |  |  |  |  |  |
-| **L** Financial and insurance activities | .. | # | ##. | . | . |  | #.. |  |  | # | . |  |  |  |  |  |
-| **P** Public administration and defence; compulsory social security | .. |  |  |  | # | # | . |  |  |  |  | . | . |  |  |  |
-| **Q** Education | .. | # |  | .. |  | # |  |  |  | # |  |  | . |  |  |  |
-| **R** Human health and social work activities | .. |  |  | . |  |  |  |  |  | # |  | # | . |  |  |  |
+| Sector | Identity proofing | Relationship onboarding | Identity lifecycle management | Eligibility verification | Access management | Certification and attestation | Regulatory compliance | Sourcing and procurement | Supply chain traceability | Human capital management | Request and complaint handling | Service delivery | Records management | Contracting and signing | Quality assurance | Audit and assurance | Product compliance | Entitlement administration |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| **C** Manufacturing |  |  |  | # |  |  | . | # | . | # |  |  |  | . | . | # | . |  |
+| **G** Wholesale and retail trade | # |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |  |  |
+| **I** Accommodation and food service activities | # |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |  |  |
+| **K** Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities |  |  |  |  |  |  |  |  |  | # |  |  |  | . |  |  |  |  |
+| **L** Financial and insurance activities | # | # | ##. |  | . |  | #.. |  |  | # | . |  |  | . |  |  |  |  |
+| **P** Public administration and defence; compulsory social security | #. |  |  |  | # | # | . |  |  |  |  | . | . |  |  |  |  | . |
+| **Q** Education | # | # |  | # |  | # |  |  |  | # |  |  | .. | . |  |  |  |  |
+| **R** Human health and social work activities | # |  |  |  |  |  |  |  |  | # |  | # | . | . |  |  |  |  |
 
 ## Functions reused across sections
 
 Keeping functions independent of sectors makes this visible: a function that appears in more than one section is a candidate for one shared pattern instead of several sector-specific ones.
 
-- **Identity proofing** — 6 sections (C, K, L, P, Q, R)
+- **Identity proofing** — 6 sections (G, I, L, P, Q, R)
 - **Relationship onboarding** — 2 sections (L, Q)
-- **Eligibility verification** — 7 sections (C, G, I, K, L, Q, R)
+- **Eligibility verification** — 4 sections (C, G, I, Q)
 - **Access management** — 2 sections (L, P)
 - **Certification and attestation** — 2 sections (P, Q)
 - **Regulatory compliance** — 5 sections (C, G, I, L, P)
 - **Human capital management** — 5 sections (C, K, L, Q, R)
 - **Service delivery** — 2 sections (P, R)
 - **Records management** — 3 sections (P, Q, R)
+- **Contracting and signing** — 5 sections (C, K, L, Q, R)
 
-## Use cases
+## Use case patterns
 
-### Online onboarding and KYC credential issuance
+Each pattern carries a classification and an interface. The interface is what composes: a pattern providing a condition narrower than what another requires is recognised as feeding it. The principal outcome is in bold.
 
-A prospective customer opens a bank account remotely. The bank identifies them against the e-ID and issues a reusable KYC attestation.
+### Electronic identity issuance
 
-- Sectors: 6419 Other monetary intermediation, 6512 Non-life insurance
+An issuing authority identifies a person and issues a state electronic identity into their wallet.
+
+- Requires: —
+- Provides: **Electronic identity held (subject, as Electronic identity credential)**
+- Enables: Age threshold verification, Identity verification
+- Primary function: Certification and attestation
+- Supporting functions: Identity proofing, Records management, Regulatory compliance
+- Applies in: 8411 General public administration activities · single section · single division · single class
+- Realised by: Swiss e-ID issuance
+
+### Identity verification
+
+A relying party checks presented identity evidence and establishes who the subject is, to the level of assurance the interaction needs.
+
+- Requires: Identity evidence available (subject)
+- Provides: **Identity verified (subject)**
+- Enables: Re-identification for credential recovery, Onboarding with regulatory due diligence, Education qualification issuance, Employment engagement, Re-identification at a change of legal capacity, Patient record matching, Public service access, Tertiary admission
+- Primary function: Identity proofing
+- Applies in: 6419 Other monetary intermediation, 8411 General public administration activities, 8531 General secondary education, 8540 Tertiary education, 8610 Hospital activities, 4711 Non-specialized retail sale with food, beverages or tobacco predominating, 5610 Restaurants and mobile food service activities · cross-section · cross-division · cross-class
+- Realises stage: Order to cash — Establish who the customer is, Hire to retire — Establish who the candidate is
+- Realised by: Re-identification at the age of majority, Swiss bank onboarding with a reusable KYC attestation, Re-identification after a forgotten password, Federal vocational certificate issuance, Swiss university immatriculation, Maturitätszeugnis issuance, Government service portal access, Swiss e-ID presentation and verification, Employee onboarding, Patient identification at admission
+
+### Qualification verification
+
+A relying party checks presented evidence of an education or training qualification and establishes that the subject holds it.
+
+- Requires: Education qualification evidence available (subject)
+- Provides: **Qualification verified (subject)**
+- Enables: Employment engagement, Tertiary admission
+- Primary function: Eligibility verification
+- Applies in: 8540 Tertiary education, C Manufacturing · cross-section · cross-division · cross-class
+- Realises stage: Hire to retire — Check right to work and qualifications
+- Realised by: Swiss university immatriculation, Employee onboarding
+
+### Accreditation verification
+
+A relying party checks an organisation's presented accreditations and establishes that they are genuine and current.
+
+- Requires: Accreditation evidence available (organisation)
+- Provides: **Accreditation verified (organisation)**
+- Enables: Supplier qualification
+- Primary function: Audit and assurance
+- Applies in: 2100 Manufacture of pharmaceuticals, medicinal chemical and botanical products, 3030 Manufacture of air and spacecraft and related machinery · single section · cross-division · cross-class
+- Realises stage: Procure to pay — Check accreditations and audit reports
+- Realised by: Aerospace supplier qualification, Pharmaceutical supplier qualification
+
+### Age threshold verification
+
+A relying party establishes that the subject is over a stated age, learning nothing else about them.
+
+- Requires: Identity evidence available (subject)
+- Provides: **Age attribute proven (subject)**
+- Primary function: Eligibility verification
+- Supporting functions: Regulatory compliance
+- Applies in: 4711 Non-specialized retail sale with food, beverages or tobacco predominating, 5610 Restaurants and mobile food service activities · cross-section · cross-division · cross-class
+- Realised by: Age check in hospitality, Age check at a retail point of sale
+
+### Onboarding with regulatory due diligence
+
+A regulated organisation opens a relationship with a customer whose identity is already established, performs the due diligence its supervisor requires, and issues a reusable attestation that it did so.
+
+- Requires: Identity verified (subject)
+- Provides: **Customer relationship open (subject)**, KYC attestation held (subject, as KYC attestation)
+- Enables: Re-identification for credential recovery, Periodic due diligence re-evaluation, Re-identification at a change of legal capacity
 - Primary function: Relationship onboarding
-- Supporting functions: Identity proofing, Regulatory compliance
-- Scope: single section · cross-division · cross-class · Maturity: modelled
-- Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential)
+- Supporting functions: Regulatory compliance
+- Applies in: 6419 Other monetary intermediation, 6512 Non-life insurance · single section · cross-division · cross-class
+- Realises stage: Order to cash — Establish the customer relationship
+- Realised by: Swiss bank onboarding with a reusable KYC attestation
 
-### Periodic KYC re-evaluation
+### Periodic due diligence re-evaluation
 
-The bank re-runs customer due diligence on an existing relationship at the interval its supervisor requires, reusing the identity already established.
+An organisation re-runs customer due diligence on an existing relationship at the interval its supervisor requires.
 
-- Sectors: 6419 Other monetary intermediation
+- Requires: Customer relationship open (subject), Due diligence evidence available (subject)
+- Provides: **KYC attestation current (subject, as KYC currency attestation)**
 - Primary function: Regulatory compliance
 - Supporting functions: Identity lifecycle management
-- Scope: single section · single division · single class · Maturity: modelled
+- Applies in: 6419 Other monetary intermediation, 6512 Non-life insurance · single section · cross-division · cross-class
+- Realised by: Swiss bank periodic KYC re-evaluation
+
+### Re-identification for credential recovery
+
+A customer who has lost their access credentials is re-identified before access is restored.
+
+- Requires: Customer relationship open (subject), Identity verified (subject)
+- Provides: **Access granted (subject)**
+- Primary function: Identity lifecycle management
+- Supporting functions: Request and complaint handling, Access management
+- Applies in: 6419 Other monetary intermediation · single section · single division · single class
+- Realised by: Re-identification after a forgotten password
+
+### Re-identification at a change of legal capacity
+
+A relationship entered at limited legal capacity is re-established at full capacity, typically on reaching majority.
+
+- Requires: Customer relationship open (subject), Identity verified (subject)
+- Provides: **Legal capacity established (subject)**
+- Primary function: Identity lifecycle management
+- Supporting functions: Regulatory compliance
+- Applies in: 6419 Other monetary intermediation · single section · single division · single class
+- Realised by: Re-identification at the age of majority
+
+### Education qualification issuance
+
+An awarding institution issues a completed education or training qualification to the graduate as a verifiable credential.
+
+- Requires: Identity verified (subject)
+- Provides: **Upper-secondary qualification held (subject)**
+- Enables: Qualification verification
+- Primary function: Certification and attestation
+- Supporting functions: Records management
+- Applies in: 8531 General secondary education · single section · single division · single class
+- Realised by: Federal vocational certificate issuance, Maturitätszeugnis issuance
+
+### Tertiary admission
+
+A higher education institution admits a student on established identity and qualification.
+
+- Requires: Identity verified (subject), Qualification verified (subject)
+- Provides: **Tertiary enrolment established (subject)**, Tertiary enrolment evidence held (subject, as Tertiary enrolment attestation)
+- Primary function: Relationship onboarding
+- Supporting functions: Records management
+- Applies in: 8540 Tertiary education · single section · single division · single class
+- Realised by: Swiss university immatriculation
+
+### Employment engagement
+
+An employer engages a candidate whose identity and qualifications are already established, and issues evidence of the employment relationship.
+
+- Requires: Identity verified (subject), Qualification verified (subject)
+- Provides: **Employment relationship open (subject)**, Employment evidence held (subject, as Employment attestation)
+- Primary function: Human capital management
+- Supporting functions: Contracting and signing
+- Applies in: C Manufacturing, K Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities, L Financial and insurance activities, Q Education, R Human health and social work activities · cross-section · cross-division · cross-class
+- Realises stage: Hire to retire — Recruit and employ
+- Realised by: Employee onboarding
+
+### Patient record matching
+
+A care provider binds an identified person to the correct medical record.
+
+- Requires: Identity verified (subject)
+- Provides: **Patient record linked (subject)**
+- Primary function: Service delivery
+- Supporting functions: Records management
+- Applies in: 8610 Hospital activities · single section · single division · single class
+- Realised by: Patient identification at admission
+
+### Public service access
+
+A public administration grants a resident access to an online service and establishes the entitlement that service rests on.
+
+- Requires: Identity verified (subject)
+- Provides: **Access granted (subject)**, Service entitlement established (subject), Service entitlement evidence held (subject, as Service entitlement attestation)
+- Primary function: Access management
+- Supporting functions: Service delivery, Entitlement administration
+- Applies in: 8411 General public administration activities · single section · single division · single class
+- Realised by: Government service portal access
+
+### Supplier qualification
+
+A buying organisation decides that a supplier with verified accreditations is eligible to be contracted, and records the decision.
+
+- Requires: Accreditation verified (organisation)
+- Provides: **Supplier qualified (organisation)**, Supplier qualification evidence held (organisation, as Supplier qualification record)
+- Primary function: Sourcing and procurement
+- Supporting functions: Product compliance, Quality assurance, Supply chain traceability, Regulatory compliance
+- Applies in: 2100 Manufacture of pharmaceuticals, medicinal chemical and botanical products, 3030 Manufacture of air and spacecraft and related machinery · single section · cross-division · cross-class
+- Realises stage: Procure to pay — Source and qualify
+- Realised by: Aerospace supplier qualification, Pharmaceutical supplier qualification
+
+
+## Flows (real implementations)
+
+A flow is an actual implementation in an actual sector and jurisdiction. Several flows may realise one pattern, and one flow may realise several patterns in sequence.
+
+### Swiss e-ID issuance
+
+The federal issuer identifies a resident and issues the EID into their wallet.
+
+- Realises: Electronic identity issuance
+- Context: 8411 General public administration activities · CH
+- Maturity: modelled
+- Credentials: Electronic identity credential
+- Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow)
+
+### Swiss e-ID presentation and verification
+
+A relying party requests a presentation from the wallet and verifies it against the federal trust infrastructure.
+
+- Realises: Identity verification
+- Context: CH
+- Maturity: modelled
+- Credentials: Electronic identity credential
+- Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow)
+
+### Swiss bank onboarding with a reusable KYC attestation
+
+A prospective customer opens an account remotely. The bank verifies the e-ID, completes due diligence and issues a reusable KYC attestation.
+
+- Realises: Identity verification → Onboarding with regulatory due diligence
+- Context: 6419 Other monetary intermediation · CH
+- Maturity: modelled
+- Credentials: Electronic identity credential, KYC attestation
+- Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential)
+
+### Swiss bank periodic KYC re-evaluation
+
+The bank re-runs due diligence on an existing relationship at the supervisory interval.
+
+- Realises: Periodic due diligence re-evaluation
+- Context: 6419 Other monetary intermediation · CH
+- Maturity: modelled
+- Credentials: KYC attestation, KYC currency attestation
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential)
 
 ### Re-identification after a forgotten password
 
-An existing e-banking customer who has lost their credentials is re-identified before access is restored, without a branch visit.
+An e-banking customer who has lost their credentials is re-identified before access is restored.
 
-- Sectors: 6419 Other monetary intermediation
-- Primary function: Identity lifecycle management
-- Supporting functions: Request and complaint handling, Access management
-- Scope: single section · single division · single class · Maturity: modelled
+- Realises: Identity verification → Re-identification for credential recovery
+- Context: 6419 Other monetary intermediation · CH
+- Maturity: modelled
+- Credentials: Electronic identity credential
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password)
 
 ### Re-identification at the age of majority
 
-A customer onboarded as a minor turns 18. The relationship is re-established at full legal capacity, with a qualified electronic signature.
+A customer onboarded as a minor turns 18 and the relationship is re-established at full legal capacity, with a qualified electronic signature.
 
-- Sectors: 6419 Other monetary intermediation
-- Primary function: Identity lifecycle management
-- Supporting functions: Regulatory compliance
-- Scope: single section · single division · single class · Maturity: modelled
+- Realises: Identity verification → Re-identification at a change of legal capacity
+- Context: 6419 Other monetary intermediation · CH
+- Maturity: modelled
+- Credentials: Electronic identity credential
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority)
 
-### Issuance of a Maturitätszeugnis
+### Maturitätszeugnis issuance
 
-An upper-secondary school issues the school-leaving certificate to the graduate as a digital attestation.
+An upper-secondary school issues the gymnasiale Maturitätszeugnis to the graduate as a verifiable credential.
 
-- Sectors: 8531 General secondary education
-- Primary function: Certification and attestation
-- Supporting functions: Records management
-- Scope: single section · single division · single class · Maturity: modelled
+- Realises: Identity verification → Education qualification issuance
+- Context: 8531 General secondary education · CH
+- Maturity: modelled
+- Credentials: Electronic identity credential, Upper-secondary school-leaving certificate
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education)
 
-### University immatriculation
+### Federal vocational certificate issuance
 
-A university admits a student on the strength of the e-ID and the Maturitätszeugnis, without re-collecting or re-checking paper documents.
+A vocational school issues the eidgenössisches Fähigkeitszeugnis to the apprentice as a verifiable credential. The same pattern as the Maturität flow, a different credential.
 
-- Sectors: 8540 Tertiary education
-- Primary function: Relationship onboarding
-- Supporting functions: Eligibility verification, Identity proofing
-- Scope: single section · single division · single class · Maturity: modelled
+- Realises: Identity verification → Education qualification issuance
+- Context: 8531 General secondary education · CH
+- Maturity: exploratory
+- Credentials: Electronic identity credential, Vocational qualification certificate
+
+### Swiss university immatriculation
+
+A university admits a student on the e-ID and an upper-secondary qualification, without re-collecting paper documents.
+
+- Realises: Identity verification → Qualification verification → Tertiary admission
+- Context: 8540 Tertiary education · CH
+- Maturity: modelled
+- Credentials: Electronic identity credential, Upper-secondary school-leaving certificate, Tertiary enrolment attestation
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education)
 
-### Age verification at the point of sale
+### Age check at a retail point of sale
 
-A merchant or a restaurant checks that a customer is over the legal age for a restricted product, learning nothing else about them.
+A merchant checks that a customer is over the legal age for a restricted product.
 
-- Sectors: 4711 Non-specialized retail sale with food, beverages or tobacco predominating, 5610 Restaurants and mobile food service activities
-- Primary function: Eligibility verification
-- Supporting functions: Regulatory compliance
-- Scope: cross-section · cross-division · cross-class · Maturity: exploratory
+- Realises: Age threshold verification
+- Context: 4711 Non-specialized retail sale with food, beverages or tobacco predominating · CH
+- Maturity: exploratory
+- Credentials: Electronic identity credential
 
-### Employee identity proofing and onboarding
+### Age check in hospitality
 
-An employer identifies a new hire and checks the qualifications the role requires, before provisioning any account.
+A restaurant checks that a guest is over the legal age for a restricted product. The same pattern as the retail flow, a different sector.
 
-- Sectors: C Manufacturing, K Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities, L Financial and insurance activities, Q Education, R Human health and social work activities
-- Primary function: Human capital management
-- Supporting functions: Identity proofing, Eligibility verification
-- Scope: cross-section · cross-division · cross-class · Maturity: exploratory
+- Realises: Age threshold verification
+- Context: 5610 Restaurants and mobile food service activities · CH
+- Maturity: exploratory
+- Credentials: Electronic identity credential
+
+### Employee onboarding
+
+An employer identifies a new hire, checks the qualifications the role requires and engages them.
+
+- Realises: Identity verification → Qualification verification → Employment engagement
+- Context: C Manufacturing · CH
+- Maturity: exploratory
+- Credentials: Electronic identity credential, Employment attestation, Upper-secondary school-leaving certificate
 
 ### Patient identification at admission
 
 A hospital identifies a patient at admission and links them to the right record.
 
-- Sectors: 8610 Hospital activities
-- Primary function: Service delivery
-- Supporting functions: Identity proofing, Records management
-- Scope: single section · single division · single class · Maturity: exploratory
+- Realises: Identity verification → Patient record matching
+- Context: 8610 Hospital activities · CH
+- Maturity: exploratory
+- Credentials: Electronic identity credential
 
-### Access to an online government service
+### Government service portal access
 
-A resident authenticates to a public-administration service portal and discloses the attributes that service requires for the interaction.
+A resident authenticates to a public-administration service portal and discloses the attributes that service requires.
 
-- Sectors: 8411 General public administration activities
-- Primary function: Access management
-- Supporting functions: Identity proofing, Service delivery
-- Scope: single section · single division · single class · Maturity: exploratory
+- Realises: Identity verification → Public service access
+- Context: 8411 General public administration activities · CH
+- Maturity: exploratory
+- Credentials: Electronic identity credential, Service entitlement attestation
 
-### Supplier qualification
+### Pharmaceutical supplier qualification
 
-A buying organisation qualifies a supplier: that it legally exists, that its quality and conformity accreditations are current, and that what it will supply conforms. Instantiated by any sector that qualifies suppliers against accreditations.
+A pharmaceutical manufacturer qualifies a supplier against GMP certification.
 
-- Sectors: 3030 Manufacture of air and spacecraft and related machinery, 2100 Manufacture of pharmaceuticals, medicinal chemical and botanical products
-- Primary function: Sourcing and procurement
-- Supporting functions: Identity proofing, Audit and assurance, Product compliance, Quality assurance, Supply chain traceability, Regulatory compliance
-- Scope: single section · cross-division · cross-class · Maturity: exploratory
+- Realises: Accreditation verification → Supplier qualification
+- Context: 2100 Manufacture of pharmaceuticals, medicinal chemical and botanical products · CH
+- Maturity: exploratory
+- Credentials: Quality accreditation certificate, Supplier qualification record
 
-### Issuance of the electronic identity
+### Aerospace supplier qualification
 
-The issuing authority identifies a resident and issues the state electronic identity into their wallet. Most other use cases in this graph declare the state it leaves behind as a precondition.
+An aerospace manufacturer qualifies a supplier against quality accreditations. The same pattern as the pharmaceutical flow, a different sector.
 
-- Sectors: 8411 General public administration activities
-- Primary function: Certification and attestation
-- Supporting functions: Identity proofing, Records management, Regulatory compliance
-- Scope: single section · single division · single class · Maturity: modelled
-- Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow)
+- Realises: Accreditation verification → Supplier qualification
+- Context: 3030 Manufacture of air and spacecraft and related machinery · CH
+- Maturity: exploratory
+- Credentials: Quality accreditation certificate, Supplier qualification record
