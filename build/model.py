@@ -28,14 +28,15 @@ SCHEMES = {
         "description": "Local SKOS rendering of the International Standard Industrial "
                        "Classification of All Economic Activities, Revision 5. All 22 "
                        "sections, plus the divisions and classes the mapped use cases "
-                       "actually reach. ISIC is the primary scheme here. It is de facto "
-                       "equivalent to NOGA 2025 at section and division level: checked "
-                       "against the NOGA subset codified in the DIDAS Trust Flow Diagram "
-                       "Repository, all 22 section letters and all 23 of its divisions "
-                       "agree, with three section titles differing in spelling only. A "
-                       "division number is therefore a usable join key between this graph "
-                       "and a NOGA-classified sector. The equivalence does not extend "
-                       "below division level.",
+                       "actually reach. ISIC is the primary scheme here. It agrees with "
+                       "NOGA 2025 at section and division level: checked against the NOGA "
+                       "subset codified in the DIDAS Trust Flow Diagram Repository, all 22 "
+                       "section letters and all 23 of its divisions agree, with three "
+                       "section titles differing in spelling only. A division number is "
+                       "therefore a usable join key between this graph and a "
+                       "NOGA-classified sector. The agreement does not extend below "
+                       "division level.",
+        "version": "Rev. 5",
         "source": "https://unstats.un.org/unsd/classifications/Econ/isic",
     },
     "cbf": {
@@ -43,14 +44,23 @@ SCHEMES = {
         "description": "Business function categories following the UNECE/Eurostat "
                        "Classification of Business Functions. Labels are seeded here and "
                        "carry codeStatus 'provisional' until checked against the official "
-                       "publication; no notations are invented.",
-        "source": "https://unece.org/trade/statistics",
+                       "publication; no notations are invented. Core and support in CBF "
+                       "are relative to the enterprise, so no IFM function is hung under "
+                       "either as a broader concept.",
+        "version": "edition not confirmed; check against the UN Manual on the "
+                   "Classification of Business Functions",
+        "source": "https://unstats.un.org/unsd/classifications/Econ/Download/"
+                  "Manual_on_the_Classification_of_Business_Functions_WEB_2024-08-19.pdf",
     },
     "apqc-pcf": {
         "title": "APQC Process Classification Framework (referenced categories)",
         "description": "Only the cross-industry PCF categories an alignment actually "
                        "references. The framework itself is published by APQC and is not "
-                       "redistributed here.",
+                       "redistributed here. The labels carried here follow the "
+                       "13-category cross-industry structure.",
+        "version": "Cross-Industry, 13-category structure; the point release these "
+                   "labels were seeded from has not been confirmed against the APQC "
+                   "publication",
         "source": "https://www.apqc.org/process-frameworks",
     },
     "ifm-value-drivers": {
@@ -70,9 +80,12 @@ SCHEMES = {
     },
     "ifm-credential-types": {
         "title": "Credential types",
-        "description": "What is actually issued, presented and checked. A credential "
-                       "type evidences a state, which connects this layer to the "
-                       "rest: holding the credential satisfies the state.",
+        "description": "What is actually issued as a separate artefact, held, presented "
+                       "and verified. A credential type provides evidence for a state, "
+                       "which connects this layer to the rest; the evidence may support "
+                       "the state without being equivalent to it. A claim inside another "
+                       "credential, a derived attribute or a business conclusion is not a "
+                       "credential type.",
         "source": "https://www.w3.org/TR/vc-data-model-2.0/",
     },
     "ifm-states": {
@@ -80,22 +93,27 @@ SCHEMES = {
         "description": "What is true, or what a party holds, before and after a use "
                        "case runs. States are the interface that makes use cases "
                        "composable: one use case's postcondition is another's "
-                       "precondition, so the chain can be computed from the data.",
+                       "precondition, so the chain can be computed from the data. "
+                       "Evidence states record possession; outcome states record a "
+                       "business or administrative conclusion.",
         "source": BASE,
     },
     "ifm-trust-roles": {
         "title": "Trust roles",
         "description": "Who does what in a credential exchange: issuer, holder, "
-                       "verifier, trust anchor. Recorded per use case together with who "
-                       "bears the cost and who gains the value, which are often "
-                       "different parties.",
+                       "verifier, relying party, trust anchor. Verifier and relying party "
+                       "are separate roles that often belong to the same organisation. "
+                       "Recorded per use case together with who bears the cost and who "
+                       "gains the value, which are often different parties.",
         "source": BASE,
     },
-    "ifm-replaced-evidence": {
-        "title": "Replaced evidence",
-        "description": "What the credential displaces: a paper document, an uncheckable "
-                       "PDF, a phone call, an in-person visit. Recording it is how a "
-                       "friction-reduction claim becomes measurable.",
+    "ifm-prior-evidence": {
+        "title": "Prior evidence mechanisms",
+        "description": "How the same assurance is obtained today without a verifiable "
+                       "credential: a paper document, a PDF, a phone call, a register "
+                       "lookup, an in-person visit. Naming the mechanism is how a "
+                       "friction-reduction claim becomes checkable. The entries describe "
+                       "mechanisms; they do not rank them.",
         "source": BASE,
     },
     "ifm-value-streams": {
@@ -103,9 +121,10 @@ SCHEMES = {
         "description": "End-to-end sequences of functions that produce an outcome for "
                        "a customer or the organisation. The concept follows ArchiMate's "
                        "Value Stream element, which describes the value created rather "
-                       "than the steps taken. The catalogue is this repository's own, "
-                       "because no openly licensed one exists. A function appears in "
-                       "several streams.",
+                       "than the steps taken. The catalogue and the stage decomposition "
+                       "are this repository's editorial models, because no openly "
+                       "licensed catalogue exists; each is one modelled sequence rather "
+                       "than the universal one. A function appears in several streams.",
         "source": "https://pubs.opengroup.org/architecture/archimate32-doc/",
     },
     "ifm-functions": {
@@ -137,7 +156,7 @@ class Model:
         self.states = {r["id"]: r for r in _read("states.csv")}
         self.credential_types = {r["id"]: r for r in _read("credential-types.csv")}
         self.trust_roles = {r["id"]: r for r in _read("trust-roles.csv")}
-        self.evidence = {r["id"]: r for r in _read("replaced-evidence.csv")}
+        self.prior_evidence = {r["id"]: r for r in _read("prior-evidence.csv")}
         self.stream_stages = sorted(_read("value-stream-functions.csv"),
                                     key=lambda r: (r["value_stream_id"], int(r["position"])))
         self.modes = {r["id"]: r for r in _read("transformation-modes.csv")}
@@ -147,10 +166,14 @@ class Model:
         self.uc_value_drivers = _read("use-case-value-drivers.csv")
         self.uc_value_streams = _read("use-case-value-streams.csv")
         self.participation_credentials = _read("participation-credentials.csv")
+        # Keyed on the participation, not on the role: one use case can hold two
+        # participations with the same trust role - one party in two capacities,
+        # or two parties in the same capacity - and each handles its own
+        # credentials.
         self.credentials_of = {}
         for row in self.participation_credentials:
             self.credentials_of.setdefault(
-                (row["use_case_id"], row["role_id"]), []).append(row)
+                (row["use_case_id"], row["participation_id"]), []).append(row)
 
         self.preconditions = _read("use-case-preconditions.csv")
         self.postconditions = _read("use-case-postconditions.csv")
@@ -162,15 +185,16 @@ class Model:
         self.post_of = {uc: [] for uc in self.use_cases}
         for row in self.postconditions:
             self.post_of.setdefault(row["use_case_id"], []).append(row["state_id"])
-        self.uc_replaces = _read("use-case-replaces.csv")
+        self.uc_prior_evidence = _read("use-case-prior-evidence.csv")
         self.dependencies = _read("use-case-dependencies.csv")
 
         self.participants_of = {uc: [] for uc in self.use_cases}
         for row in self.participants:
             self.participants_of.setdefault(row["use_case_id"], []).append(row)
-        self.replaces_of = {uc: [] for uc in self.use_cases}
-        for row in self.uc_replaces:
-            self.replaces_of.setdefault(row["use_case_id"], []).append(row["evidence_id"])
+        self.prior_evidence_of = {uc: [] for uc in self.use_cases}
+        for row in self.uc_prior_evidence:
+            self.prior_evidence_of.setdefault(row["use_case_id"], []).append(
+                row["mechanism_id"])
         self.requires_of = {uc: [] for uc in self.use_cases}
         for row in self.dependencies:
             self.requires_of.setdefault(row["use_case_id"], []).append(
@@ -218,8 +242,59 @@ class Model:
                 out.append(section)
         return sorted(out, key=lambda s: self.sectors[s]["notation"])
 
-    def scope_of(self, uc_id):
-        return "CrossSector" if len(self.sections_of_use_case(uc_id)) > 1 else "SectorSpecific"
+    def divisions_of_use_case(self, uc_id):
+        """(divisions reached, spans a whole section).
+
+        A class contributes its parent division. A link to a whole section
+        reaches every division under it, which the second element records
+        because the set of those divisions is not enumerated here.
+        """
+        divisions, whole_section = [], False
+        for sector_id in self.sectors_of.get(uc_id, []):
+            row = self.sectors.get(sector_id)
+            if row is None:
+                continue
+            if row["level"] == "section":
+                whole_section = True
+            elif row["level"] == "division":
+                divisions.append(sector_id)
+            elif row["level"] == "class" and row["broader"]:
+                divisions.append(row["broader"])
+        return sorted(set(divisions)), whole_section
+
+    def classes_of_use_case(self, uc_id):
+        """(classes reached, spans a whole section or division)."""
+        classes, whole = [], False
+        for sector_id in self.sectors_of.get(uc_id, []):
+            row = self.sectors.get(sector_id)
+            if row is None:
+                continue
+            if row["level"] == "class":
+                classes.append(sector_id)
+            else:
+                whole = True
+        return sorted(set(classes)), whole
+
+    def scope_of(self, uc_id, level):
+        """Cross or single at one ISIC level.
+
+        Derived per level rather than as one flag. "Cross-sector" in ordinary
+        usage and "more than one ISIC section" are different claims: banking and
+        insurance are different industries inside section L, and a use case
+        covering both is single-section but cross-division.
+        """
+        if level == "section":
+            wide = len(self.sections_of_use_case(uc_id)) > 1
+            return "CrossSection" if wide else "SingleSection"
+        if level == "division":
+            divisions, whole_section = self.divisions_of_use_case(uc_id)
+            wide = whole_section or len(divisions) > 1
+            return "CrossDivision" if wide else "SingleDivision"
+        if level == "class":
+            classes, whole = self.classes_of_use_case(uc_id)
+            wide = whole or len(classes) > 1
+            return "CrossClass" if wide else "SingleClass"
+        raise ValueError(f"unknown classification level {level!r}")
 
     def change_mode_of(self, uc_id):
         """run or change - derived from the transformation mode, not typed in."""
@@ -249,11 +324,22 @@ class Model:
         return sorted(needed - produced)
 
     def credential_for_state(self, state_id):
-        """The credential type whose possession makes a state true, if there is one."""
+        """The credential type that provides evidence for a state, if there is one.
+
+        Evidence, not equivalence: a state can also be established without any
+        credential, and holding one does not oblige a relying party to accept it.
+        """
         for key, row in self.credential_types.items():
             if row["evidences_state"] == state_id:
                 return key
         return None
+
+    def credential_actions(self, uc_id, action):
+        """Credential types on which some participation performs `action`."""
+        return {link["credential_type_id"]
+                for (case, _part), links in self.credentials_of.items()
+                if case == uc_id
+                for link in links if link["action"] == action}
 
     def interface(self, uc_id):
         """Preconditions, postconditions and primary function, as a comparable key."""
@@ -278,7 +364,11 @@ class Model:
                 if p["bears_cost"] == "yes" and p["gains_value"] != "direct"]
 
     def is_asymmetric(self, uc_id):
-        """True when at least one party bears cost without direct value. Derived."""
+        """True when at least one participation bears cost without direct value.
+
+        Derived from two editorial yes/no judgements. An indicator of where
+        funding or coordination may be needed, not an economic result.
+        """
         return bool(self.bears_cost_without_value(uc_id))
 
     def primary_function(self, uc_id):
@@ -317,7 +407,7 @@ class Model:
                  "cbf": self.cbf, "apqc-pcf": self.apqc,
                  "driver": self.value_drivers, "mode": self.modes,
                  "stream": self.value_streams, "role": self.trust_roles,
-                 "evidence": self.evidence, "state": self.states,
+                 "prior-evidence": self.prior_evidence, "state": self.states,
                  "credential": self.credential_types}[kind]
         row = table.get(ident, {})
         return row.get("pref_label_en", ident)

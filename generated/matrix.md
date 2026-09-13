@@ -3,7 +3,7 @@
 
 Rows are ISIC Rev. 5 sections, columns are business functions. `#` marks a use case where the function is the primary one, `.` marks a supporting function.
 
-| Sector | Identity proofing | Customer onboarding | Identity lifecycle management | Eligibility verification | Access management | Certification and attestation | Regulatory compliance | Sourcing and procurement | Supply chain traceability | Human capital management | Customer service | Service delivery | Records management | Quality assurance | Audit and assurance | Product compliance |
+| Sector | Identity proofing | Relationship onboarding | Identity lifecycle management | Eligibility verification | Access management | Certification and attestation | Regulatory compliance | Sourcing and procurement | Supply chain traceability | Human capital management | Request and complaint handling | Service delivery | Records management | Quality assurance | Audit and assurance | Product compliance |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | **C** Manufacturing | .. |  |  | . |  |  | . | # | . | # |  |  |  | . | . | . |
 | **G** Wholesale and retail trade |  |  |  | # |  |  | . |  |  |  |  |  |  |  |  |  |
@@ -16,10 +16,10 @@ Rows are ISIC Rev. 5 sections, columns are business functions. `#` marks a use c
 
 ## Functions reused across sections
 
-This is the point of keeping functions independent of sectors: a function that appears in more than one section is a candidate for one shared pattern instead of several sector-specific ones.
+Keeping functions independent of sectors makes this visible: a function that appears in more than one section is a candidate for one shared pattern instead of several sector-specific ones.
 
 - **Identity proofing** — 6 sections (C, K, L, P, Q, R)
-- **Customer onboarding** — 2 sections (L, Q)
+- **Relationship onboarding** — 2 sections (L, Q)
 - **Eligibility verification** — 7 sections (C, G, I, K, L, Q, R)
 - **Access management** — 2 sections (L, P)
 - **Certification and attestation** — 2 sections (P, Q)
@@ -35,9 +35,9 @@ This is the point of keeping functions independent of sectors: a function that a
 A prospective customer opens a bank account remotely. The bank identifies them against the e-ID and issues a reusable KYC attestation.
 
 - Sectors: 6419 Other monetary intermediation, 6512 Non-life insurance
-- Primary function: Customer onboarding
+- Primary function: Relationship onboarding
 - Supporting functions: Identity proofing, Regulatory compliance
-- Scope: sector-specific · Maturity: modelled
+- Scope: single section · cross-division · cross-class · Maturity: modelled
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential)
 
 ### Periodic KYC re-evaluation
@@ -47,7 +47,7 @@ The bank re-runs customer due diligence on an existing relationship at the inter
 - Sectors: 6419 Other monetary intermediation
 - Primary function: Regulatory compliance
 - Supporting functions: Identity lifecycle management
-- Scope: sector-specific · Maturity: modelled
+- Scope: single section · single division · single class · Maturity: modelled
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential)
 
 ### Re-identification after a forgotten password
@@ -56,8 +56,8 @@ An existing e-banking customer who has lost their credentials is re-identified b
 
 - Sectors: 6419 Other monetary intermediation
 - Primary function: Identity lifecycle management
-- Supporting functions: Customer service, Access management
-- Scope: sector-specific · Maturity: modelled
+- Supporting functions: Request and complaint handling, Access management
+- Scope: single section · single division · single class · Maturity: modelled
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password)
 
 ### Re-identification at the age of majority
@@ -67,7 +67,7 @@ A customer onboarded as a minor turns 18. The relationship is re-established at 
 - Sectors: 6419 Other monetary intermediation
 - Primary function: Identity lifecycle management
 - Supporting functions: Regulatory compliance
-- Scope: sector-specific · Maturity: modelled
+- Scope: single section · single division · single class · Maturity: modelled
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority)
 
 ### Issuance of a Maturitätszeugnis
@@ -77,7 +77,7 @@ An upper-secondary school issues the school-leaving certificate to the graduate 
 - Sectors: 8531 General secondary education
 - Primary function: Certification and attestation
 - Supporting functions: Records management
-- Scope: sector-specific · Maturity: modelled
+- Scope: single section · single division · single class · Maturity: modelled
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education)
 
 ### University immatriculation
@@ -85,9 +85,9 @@ An upper-secondary school issues the school-leaving certificate to the graduate 
 A university admits a student on the strength of the e-ID and the Maturitätszeugnis, without re-collecting or re-checking paper documents.
 
 - Sectors: 8540 Tertiary education
-- Primary function: Customer onboarding
+- Primary function: Relationship onboarding
 - Supporting functions: Eligibility verification, Identity proofing
-- Scope: sector-specific · Maturity: modelled
+- Scope: single section · single division · single class · Maturity: modelled
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education)
 
 ### Age verification at the point of sale
@@ -97,7 +97,7 @@ A merchant or a restaurant checks that a customer is over the legal age for a re
 - Sectors: 4711 Non-specialized retail sale with food, beverages or tobacco predominating, 5610 Restaurants and mobile food service activities
 - Primary function: Eligibility verification
 - Supporting functions: Regulatory compliance
-- Scope: cross-sector · Maturity: exploratory
+- Scope: cross-section · cross-division · cross-class · Maturity: exploratory
 
 ### Employee identity proofing and onboarding
 
@@ -106,7 +106,7 @@ An employer identifies a new hire and checks the qualifications the role require
 - Sectors: C Manufacturing, K Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities, L Financial and insurance activities, Q Education, R Human health and social work activities
 - Primary function: Human capital management
 - Supporting functions: Identity proofing, Eligibility verification
-- Scope: cross-sector · Maturity: exploratory
+- Scope: cross-section · cross-division · cross-class · Maturity: exploratory
 
 ### Patient identification at admission
 
@@ -115,16 +115,16 @@ A hospital identifies a patient at admission and links them to the right record.
 - Sectors: 8610 Hospital activities
 - Primary function: Service delivery
 - Supporting functions: Identity proofing, Records management
-- Scope: sector-specific · Maturity: exploratory
+- Scope: single section · single division · single class · Maturity: exploratory
 
 ### Access to an online government service
 
-A resident authenticates to a public-administration service portal and proves the attributes the service is entitled to see.
+A resident authenticates to a public-administration service portal and discloses the attributes that service requires for the interaction.
 
 - Sectors: 8411 General public administration activities
 - Primary function: Access management
 - Supporting functions: Identity proofing, Service delivery
-- Scope: sector-specific · Maturity: exploratory
+- Scope: single section · single division · single class · Maturity: exploratory
 
 ### Supplier qualification
 
@@ -133,14 +133,14 @@ A buying organisation qualifies a supplier: that it legally exists, that its qua
 - Sectors: 3030 Manufacture of air and spacecraft and related machinery, 2100 Manufacture of pharmaceuticals, medicinal chemical and botanical products
 - Primary function: Sourcing and procurement
 - Supporting functions: Identity proofing, Audit and assurance, Product compliance, Quality assurance, Supply chain traceability, Regulatory compliance
-- Scope: sector-specific · Maturity: exploratory
+- Scope: single section · cross-division · cross-class · Maturity: exploratory
 
 ### Issuance of the electronic identity
 
-The issuing authority identifies a resident and issues the state electronic identity into their wallet. It is the root of the ecosystem: most other use cases here cannot start until this one has.
+The issuing authority identifies a resident and issues the state electronic identity into their wallet. Most other use cases in this graph declare the state it leaves behind as a precondition.
 
 - Sectors: 8411 General public administration activities
 - Primary function: Certification and attestation
 - Supporting functions: Identity proofing, Records management, Regulatory compliance
-- Scope: sector-specific · Maturity: modelled
+- Scope: single section · single division · single class · Maturity: modelled
 - Worked flow: [https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow)

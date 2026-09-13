@@ -1,0 +1,8 @@
+id,pref_label_en,definition
+paper-document,Paper document,"An original or certified copy handed over, posted or presented in person."
+pdf-attachment,PDF or scan,"A PDF or scanned document whose authenticity is not machine-verifiable through the trust mechanism the use case relies on. A PDF may carry an electronic signature; where it does and the verifier can check it, it is not this mechanism."
+phone-or-email-check,Phone or email check,A human contacting the issuing organisation to ask whether a claim is true.
+registry-lookup,Registry lookup,"A verifier querying an authoritative register directly. It gives current data from the source and works wherever the register exists and grants the verifier access; it requires that access, connectivity at the time of the check, and that the register learns which subject was looked up."
+in-person-check,In-person check,The subject attending in person so a human can inspect a document or their face.
+notarised-copy,Notarised copy,"A third party attesting that a copy matches an original, at a fee and a delay."
+self-declaration,Self-declaration,"The subject asserting something the recipient does not check, accepted where verifying it would cost more than the assessed risk of it being false."

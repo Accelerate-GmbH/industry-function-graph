@@ -1,5 +1,5 @@
 id,change_mode,pref_label_en,definition
 digitise,run,Digitise,"The process keeps its shape. A paper or PDF artefact becomes a credential, and the sequence of steps does not change."
 optimise,run,Optimise,"Steps, hand-offs or waiting are removed and the channel may change, but the process is recognisably the same one."
-redesign,change,Redesign,"An existing process is reorganised around verifiable data. Roles, sequence or who holds what change, and the previous process cannot be recovered from the new one."
-enable,change,Enable,"The activity was not viable before, because the trust it depends on could not be established at acceptable cost."
+redesign,change,Redesign,"An existing process is materially reorganised around verifiable data, including changes to roles, sequence or information custody."
+enable,change,Enable,"Enables an activity or operating model that was previously impractical or uneconomic at the required level of trust."

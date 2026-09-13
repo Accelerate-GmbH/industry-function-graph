@@ -1,5 +1,6 @@
 id,pref_label_en,definition
-issuer,Issuer,"Makes a signed statement about a subject, and bears the cost of being able to make it credibly."
-holder,Holder,"Keeps the credential and decides when, and to whom, to present it."
-verifier,Verifier,"Checks a presented credential and acts on the result."
-trust-anchor,Trust anchor,"Publishes the registry or accreditation that lets a verifier decide an issuer is credible."
+issuer,Issuer,"Makes a signed statement about a subject and is accountable for the process behind it, including the cost of being able to make it credibly."
+holder,Holder,"The party a credential is issued to. It keeps the credential and decides when, to whom and in what detail to present it. A holder may be a natural person, an organisation, or a system acting under an organisation's control."
+verifier,Verifier,"Performs the technical checks on a presented credential or presentation: signature, issuer authority, status, holder binding and freshness. It establishes whether the evidence is valid, not what should follow from it."
+relying-party,Relying party,"Acts on the outcome of verification to reach a business or administrative decision. Often the same organisation as the verifier, and recorded separately because the two can be separated and carry different accountability."
+trust-anchor,Trust anchor,"Provides the authoritative trust information a verifier uses to assess other participants: which issuers exist, what they are authorised to attest, and how that changes. How that information is published is an ecosystem decision and is not implied by the role."

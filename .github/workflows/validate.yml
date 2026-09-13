@@ -27,8 +27,11 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install rdflib
-        run: pip install rdflib
+      # Optional in validate.py so that a plain Python 3 checkout still works;
+      # required here, because CI is where the RDF parse, the Turtle/JSON-LD
+      # equivalence check and the SHACL shapes have to actually run.
+      - name: Install rdflib and pyshacl
+        run: pip install rdflib pyshacl
 
       - name: Validate the data
         run: python3 build/validate.py

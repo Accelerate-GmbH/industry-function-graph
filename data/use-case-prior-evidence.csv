@@ -1,4 +1,4 @@
-use_case_id,evidence_id
+use_case_id,mechanism_id
 banking-kyc-onboarding,in-person-check
 banking-kyc-onboarding,notarised-copy
 banking-re-kyc,phone-or-email-check

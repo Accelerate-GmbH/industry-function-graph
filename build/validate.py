@@ -29,10 +29,27 @@ from model import Model  # noqa: E402
 SECTOR_ID = re.compile(r"^ISIC-([A-V]|\d{2}|\d{4})$")
 SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 CODE_STATUS = {"verified", "provisional"}
+# The concept's own provenance and the confidence of a mapping onto it are
+# separate questions: a mapping onto a verified concept can still be editorial.
+MAPPING_STATUS = {"editorial", "verified"}
 MATURITY = {"Exploratory", "Modelled", "Live"}
 CHANGE_MODE = {"run", "change"}
 BEARS_COST = {"yes", "no"}
-CREDENTIAL_ACTIONS = {"issues", "presents", "verifies"}
+STATE_KIND = {"evidence", "outcome"}
+
+# The credential lifecycle, and which trust role may perform each stage. A role
+# never borrows another role's action: where one organisation issues and also
+# verifies, that is two participations, not one participation with two verbs.
+CREDENTIAL_ACTIONS = {"issues", "holds", "presents", "verifies"}
+ACTIONS_BY_ROLE = {
+    "issuer": {"issues"},
+    "holder": {"holds", "presents"},
+    "verifier": {"verifies"},
+    # A relying party acts on the outcome of verification rather than on the
+    # credential; a trust anchor publishes the information verification rests on.
+    "relying-party": set(),
+    "trust-anchor": set(),
+}
 GAINS_VALUE = {"direct", "indirect", "none"}
 MATCH_TYPES = {"exactMatch", "closeMatch", "broadMatch", "narrowMatch", "relatedMatch"}
 DOC_URL = re.compile(r"^https://\S+$")
@@ -129,8 +146,21 @@ def check_alignments(model):
             error(f"{where}: {row['target_id']!r} is not in scheme {row['target_scheme']}")
         if row["match_type"] not in MATCH_TYPES:
             error(f"{where}: match_type {row['match_type']!r} is not a SKOS mapping relation")
-        if row["status"] not in CODE_STATUS:
-            error(f"{where}: bad status {row['status']!r}")
+        if row["mapping_status"] not in MAPPING_STATUS:
+            error(f"{where}: mapping_status {row['mapping_status']!r} not in "
+                  f"{sorted(MAPPING_STATUS)}")
+        # CBF's core/support split is relative to the enterprise, not to the
+        # activity, so a context-free hierarchical mapping onto it would bake one
+        # enterprise's viewpoint into the vocabulary.
+        if (row["target_id"] in {"CBF-CORE", "CBF-SUP"}
+                and row["match_type"] in {"broadMatch", "narrowMatch"}):
+            error(f"{where}: {row['target_id']} is enterprise-relative; a hierarchical "
+                  f"mapping onto it asserts a core/support classification that the "
+                  f"function itself does not carry. Use closeMatch or relatedMatch, "
+                  f"with the reasoning in `note`")
+        if row["match_type"] != "relatedMatch" and not row["note"].strip():
+            error(f"{where}: a {row['match_type']} needs a note saying why the two "
+                  f"concepts are that close")
         key = (row["function_id"], row["target_scheme"], row["target_id"])
         if key in seen:
             error(f"{where}: duplicate alignment {key}")
@@ -218,6 +248,10 @@ def check_states(model):
         if not row["definition"].strip():
             error(f"states.csv[{state_id}]: needs a definition. Without one there is "
                   f"no way to tell whether the state holds")
+        if row["kind"] not in STATE_KIND:
+            error(f"states.csv[{state_id}]: kind {row['kind']!r} not in "
+                  f"{sorted(STATE_KIND)}. An evidence state records possession; an "
+                  f"outcome state records a business or administrative conclusion")
 
     for table, name in ((model.preconditions, "use-case-preconditions.csv"),
                         (model.postconditions, "use-case-postconditions.csv")):
@@ -249,8 +283,9 @@ def check_states(model):
 
     unproduced = model.unproduced_states()
     if unproduced:
-        warn(f"{len(unproduced)} state(s) are needed but produced by no use case here - "
-             f"open sockets for the ecosystem to fill: {', '.join(unproduced)}")
+        warn(f"{len(unproduced)} state(s) are required by a use case here and left "
+             f"behind by none: {', '.join(unproduced)}. Each marks a flow that is "
+             f"outside this repository or not yet written down")
 
     for group in model.overlaps():
         warn(f"same interface, so possibly one use case rather than "
@@ -259,17 +294,25 @@ def check_states(model):
 
 def check_trust_roles(model):
     for table, name in ((model.trust_roles, "trust-roles.csv"),
-                        (model.evidence, "replaced-evidence.csv")):
+                        (model.prior_evidence, "prior-evidence.csv")):
         for key, row in table.items():
             if not SLUG.match(key):
                 error(f"{name}[{key}]: id must be a lower-case slug")
             if not row["definition"].strip():
                 error(f"{name}[{key}]: needs a definition")
 
+    for role_id in model.trust_roles:
+        if role_id not in ACTIONS_BY_ROLE:
+            error(f"trust-roles.csv[{role_id}]: no credential actions are declared for "
+                  f"this role in build/validate.py. Add it to ACTIONS_BY_ROLE, with an "
+                  f"empty set if the role handles no credential itself")
+
     for index, row in enumerate(model.participants, start=2):
         where = f"use-case-participants.csv:{index}"
         if row["use_case_id"] not in model.use_cases:
             error(f"{where}: unknown use case {row['use_case_id']!r}")
+        if not SLUG.match(row["participation_id"]):
+            error(f"{where}: participation_id must be a lower-case slug")
         if row["role_id"] not in model.trust_roles:
             error(f"{where}: unknown trust role {row['role_id']!r}")
         if not row["party"].strip():
@@ -279,20 +322,23 @@ def check_trust_roles(model):
         if row["gains_value"] not in GAINS_VALUE:
             error(f"{where}: gains_value {row['gains_value']!r} not in {sorted(GAINS_VALUE)}")
 
+    # A participation is identified within its use case, not by its role, so
+    # that one party in two capacities is two participations rather than one
+    # participation borrowing a second role's actions.
     seen = set()
     for row in model.participants:
-        key = (row["use_case_id"], row["role_id"])
+        key = (row["use_case_id"], row["participation_id"])
         if key in seen:
-            error(f"use-case-participants.csv: {row['use_case_id']} names role "
-                  f"{row['role_id']} twice")
+            error(f"use-case-participants.csv: {row['use_case_id']} uses the "
+                  f"participation id {row['participation_id']!r} twice")
         seen.add(key)
 
-    for index, row in enumerate(model.uc_replaces, start=2):
-        where = f"use-case-replaces.csv:{index}"
+    for index, row in enumerate(model.uc_prior_evidence, start=2):
+        where = f"use-case-prior-evidence.csv:{index}"
         if row["use_case_id"] not in model.use_cases:
             error(f"{where}: unknown use case {row['use_case_id']!r}")
-        if row["evidence_id"] not in model.evidence:
-            error(f"{where}: unknown evidence {row['evidence_id']!r}")
+        if row["mechanism_id"] not in model.prior_evidence:
+            error(f"{where}: unknown prior evidence mechanism {row['mechanism_id']!r}")
 
 
 def check_credentials(model):
@@ -322,34 +368,100 @@ def check_credentials(model):
                  f"({', '.join(creds)}). Two credentials for one state means either the "
                  f"state is too coarse or one of them is redundant")
 
+    role_of = {(p["use_case_id"], p["participation_id"]): p["role_id"]
+               for p in model.participants}
     for index, row in enumerate(model.participation_credentials, start=2):
         where = f"participation-credentials.csv:{index}"
-        key = (row["use_case_id"], row["role_id"])
-        if key not in model.credentials_of:
-            continue
         if row["credential_type_id"] not in model.credential_types:
             error(f"{where}: unknown credential type {row['credential_type_id']!r}")
         if row["action"] not in CREDENTIAL_ACTIONS:
             error(f"{where}: action {row['action']!r} not in {sorted(CREDENTIAL_ACTIONS)}")
-        if not any(p["role_id"] == row["role_id"]
-                   for p in model.participants_of.get(row["use_case_id"], [])):
-            error(f"{where}: {row['use_case_id']} has no {row['role_id']} participation "
-                  f"to attach a credential to")
+            continue
+        key = (row["use_case_id"], row["participation_id"])
+        role = role_of.get(key)
+        if role is None:
+            error(f"{where}: {row['use_case_id']} has no participation "
+                  f"{row['participation_id']!r} to attach a credential to")
+            continue
+        # The heart of the trust-role model: a role performs its own action and
+        # no other. One party acting in two roles is two participations.
+        allowed = ACTIONS_BY_ROLE.get(role, set())
+        if row["action"] not in allowed:
+            expected = (f"only {' and '.join(sorted(allowed))}" if allowed
+                        else "no credential action at all")
+            error(f"{where}: the {role} participation {row['participation_id']!r} is "
+                  f"recorded as {row['action']!r}, but a {role} performs {expected}. If "
+                  f"one party acts in two roles here, give it a second participation in "
+                  f"use-case-participants.csv rather than letting one role borrow "
+                  f"another's action")
+
+    check_credential_lifecycle(model)
+    check_credential_supply(model)
+
+
+def check_credential_lifecycle(model):
+    """Issued, held, presented, verified - and no half of a pair on its own.
+
+    A use case may cover any part of the lifecycle. What it may not do is record
+    one side of an exchange without the other: a credential verified inside a use
+    case has to have been presented inside it, and one issued has to land with a
+    holder.
+    """
+    for uc_id in model.use_cases:
+        where = f"use-cases.csv[{uc_id}]"
+        issued = model.credential_actions(uc_id, "issues")
+        held = model.credential_actions(uc_id, "holds")
+        presented = model.credential_actions(uc_id, "presents")
+        verified = model.credential_actions(uc_id, "verifies")
+
+        for cred in sorted(verified - presented):
+            error(f"{where}: {cred} is verified here but never presented. Record the "
+                  f"holder's presentation, or move the verification to the use case "
+                  f"where the presentation happens")
+        for cred in sorted(presented - verified):
+            error(f"{where}: {cred} is presented here but nobody verifies it. A "
+                  f"presentation with no verifier is not an exchange")
+        for cred in sorted(issued - held):
+            error(f"{where}: {cred} is issued here but no holder takes possession of "
+                  f"it. Record the holder's `holds`, or the credential goes nowhere")
+        for cred in sorted(held - issued):
+            error(f"{where}: {cred} is held here but nothing issues it. `holds` marks "
+                  f"the use case where possession begins; a credential obtained "
+                  f"elsewhere and used here records `presents` alone")
+        # Issuing the evidence for a state the same use case demands first is a
+        # lifecycle contradiction: the issuing step is a separate use case.
+        for state in model.pre_of.get(uc_id, []):
+            cred = model.credential_for_state(state)
+            if cred and cred in issued:
+                error(f"{where}: requires {state} as a precondition and also issues "
+                      f"{cred}, the credential that evidences it. The issuing step "
+                      f"belongs in its own use case")
+
+
+def check_credential_supply(model):
+    """Credentials nothing issues, and preconditions nobody checks."""
+    issued_anywhere = {link["credential_type_id"]
+                       for links in model.credentials_of.values()
+                       for link in links if link["action"] == "issues"}
     referenced = {link["credential_type_id"]
                   for links in model.credentials_of.values() for link in links}
+
     unused = [c for c in model.credential_types if c not in referenced]
     if unused:
-        warn(f"{len(unused)} credential type(s) no participation issues, presents or "
-             f"verifies: {', '.join(unused)}. Either a use case is missing or the "
-             f"credential may have been added speculatively")
+        warn(f"{len(unused)} credential type(s) no participation handles at all: "
+             f"{', '.join(unused)}. Either a use case is missing or the credential may "
+             f"have been added speculatively")
+    unissued = [c for c in model.credential_types
+                if c in referenced and c not in issued_anywhere]
+    if unissued:
+        warn(f"{len(unissued)} credential type(s) are presented or verified here but "
+             f"issued by no use case in this graph: {', '.join(unissued)}. Each marks an "
+             f"issuing flow that is outside the repository or not yet written down")
 
     # If a use case needs a state, somebody in it should be checking the
     # credential that evidences that state.
     for uc_id in model.use_cases:
-        verified = {link["credential_type_id"]
-                    for (case, _role), links in model.credentials_of.items()
-                    if case == uc_id
-                    for link in links if link["action"] == "verifies"}
+        verified = model.credential_actions(uc_id, "verifies")
         for state in model.pre_of.get(uc_id, []):
             cred = model.credential_for_state(state)
             if cred and cred not in verified:
@@ -403,23 +515,35 @@ def check_use_cases(model):
         if len(drivers) != len(set(drivers)):
             error(f"{where}: the same value driver is listed twice")
 
+        # A use case may cover only part of the credential lifecycle, so an
+        # issuance-only or a verification-only one is legitimate. What it may not
+        # be is a use case in which no credential changes hands at all.
         roles = {p["role_id"] for p in model.participants_of.get(uc_id, [])}
-        for required in ("issuer", "verifier"):
-            if required not in roles:
-                error(f"{where}: no {required}. A credential exchange needs both an "
-                      f"issuer and a verifier")
+        if not roles & {"issuer", "verifier"}:
+            error(f"{where}: neither an issuer nor a verifier. A use case in this graph "
+                  f"has to cover at least one end of a credential exchange")
         if "holder" not in roles:
             warn(f"{where}: no holder named. Check whether this is an "
                  f"organisation-to-organisation exchange or an omission")
 
-        # Friction reduction is easy to claim without evidence. Requiring the
-        # replaced evidence makes the claim checkable.
-        if "friction-reduction" in drivers and not model.replaces_of.get(uc_id):
-            error(f"{where}: claims friction-reduction but names nothing it replaces. "
-                  f"Add a row to use-case-replaces.csv or drop the driver")
+        # Friction reduction is easy to claim without evidence. Naming the
+        # mechanism the use case reduces reliance on makes the claim checkable.
+        if "friction-reduction" in drivers and not model.prior_evidence_of.get(uc_id):
+            error(f"{where}: claims friction-reduction but names no mechanism it "
+                  f"reduces reliance on. Add a row to use-case-prior-evidence.csv or "
+                  f"drop the driver")
 
         if row["maturity"] not in MATURITY:
             error(f"{where}: maturity {row['maturity']!r} not in {sorted(MATURITY)}")
+        deployment = row["deployment_evidence"].strip()
+        if deployment and not DOC_URL.match(deployment):
+            error(f"{where}: deployment_evidence must be an absolute https URL, "
+                  f"got {deployment!r}")
+        if row["maturity"] == "Live" and not deployment:
+            error(f"{where}: maturity Live claims a production deployment. Record the "
+                  f"evidence for it in deployment_evidence, or use Modelled")
+        if deployment and row["maturity"] != "Live":
+            warn(f"{where}: carries deployment evidence but is not marked Live")
 
         sectors = model.sectors_of.get(uc_id, [])
         if not sectors:
@@ -474,6 +598,31 @@ def check_links(model):
              f"by a use case: {', '.join(unused)}")
 
 
+def check_generated(model):
+    """Fail if generated/ no longer matches data/.
+
+    build.py --check does the same thing in CI. Having it here too means a local
+    validate run cannot pass while the published graph still describes the
+    previous data.
+    """
+    import build as build_module
+
+    root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+    stale, missing = [], []
+    for name, builder in build_module.OUTPUTS.items():
+        path = os.path.join(root, "generated", name)
+        if not os.path.exists(path):
+            missing.append(name)
+            continue
+        with open(path, encoding="utf-8") as fh:
+            if fh.read() != builder(model):
+                stale.append(name)
+    for name in missing:
+        error(f"generated/{name}: missing — run python3 build/build.py")
+    for name in stale:
+        error(f"generated/{name}: does not match data/ — run python3 build/build.py")
+
+
 def check_rdf():
     """Parse the generated graph if rdflib is installed; skip cleanly if not."""
     try:
@@ -485,6 +634,7 @@ def check_rdf():
     root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
     graphs = {}
     for name, fmt in (("ontology/ifm.ttl", "turtle"),
+                      ("ontology/ifm-shapes.ttl", "turtle"),
                       ("generated/ifm-graph.ttl", "turtle"),
                       ("generated/ifm-graph.jsonld", "json-ld")):
         path = os.path.join(root, name)
@@ -499,6 +649,32 @@ def check_rdf():
     jsonld = graphs.get("generated/ifm-graph.jsonld")
     if ttl is not None and jsonld is not None and not ttl.isomorphic(jsonld):
         error("generated/ifm-graph.ttl and ifm-graph.jsonld are not the same graph")
+    if ttl is not None and graphs.get("ontology/ifm-shapes.ttl") is not None:
+        check_shacl(root)
+
+
+def check_shacl(root):
+    """Run the SHACL shapes over the generated graph, if pyshacl is installed.
+
+    The Python checks above remain the build authority: they see the CSVs and can
+    say which row is wrong. The shapes exist so that a consumer who has only the
+    RDF can check the same structural constraints without this repository.
+    """
+    try:
+        from pyshacl import validate as shacl_validate
+    except ImportError:
+        warn("pyshacl not installed — skipped SHACL validation of the generated RDF "
+             "(pip install pyshacl to enable)")
+        return
+    conforms, _results_graph, results_text = shacl_validate(
+        os.path.join(root, "generated", "ifm-graph.ttl"),
+        shacl_graph=os.path.join(root, "ontology", "ifm-shapes.ttl"),
+        ont_graph=os.path.join(root, "ontology", "ifm.ttl"),
+        data_graph_format="turtle", shacl_graph_format="turtle",
+        ont_graph_format="turtle", advanced=True, inference="none")
+    if not conforms:
+        error("generated/ifm-graph.ttl does not satisfy ontology/ifm-shapes.ttl:\n"
+              + results_text.strip())
 
 
 def main():
@@ -514,6 +690,7 @@ def main():
     check_credentials(model)
     check_use_cases(model)
     check_links(model)
+    check_generated(model)
     check_rdf()
 
     for message in warnings:

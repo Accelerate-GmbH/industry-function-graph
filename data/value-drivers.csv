@@ -1,8 +1,8 @@
 id,pref_label_en,definition
 friction-reduction,Friction reduction,"Removing steps, waiting time, re-keying or intermediaries from an exchange that already happens."
-fraud-prevention,Fraud prevention,"Making forgery, impersonation or misrepresentation of a claim impractical, instead of detecting it after the fact."
+fraud-risk-reduction,Fraud risk reduction,"Reducing selected forms of forgery, tampering, impersonation or misrepresentation through cryptographically verifiable evidence and governed trust relationships."
 compliance-assurance,Compliance assurance,"Producing evidence a supervisor or auditor will accept as a by-product of doing the work, instead of as a separate exercise."
-data-quality,Data quality,"Removing transcription, reconciliation and staleness errors by carrying the data in a form a machine can check."
-data-minimisation,Data minimisation,"Proving what a counterparty is entitled to know without disclosing the rest, which can make an exchange permissible where full disclosure would not be."
+data-quality,Data quality,"Reducing transcription, reconciliation and staleness errors, and enabling machine-verifiable provenance and freshness where the credential format and the issuer's practice support it."
+data-minimisation,Data minimisation,"Limiting disclosure to the attributes required for a defined interaction, where the credential format and the governance model support it. Which attributes are required is a governance question, not one the format settles."
 reach-and-inclusion,Reach and inclusion,"Serving counterparties who could not be served before - remote, cross-border, or without a pre-existing relationship."
 new-revenue,New revenue,"Making a chargeable service, a market or a pricing model possible that verifiable data is a precondition for."

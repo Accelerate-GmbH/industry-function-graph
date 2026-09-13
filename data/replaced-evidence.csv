@@ -1,8 +1,0 @@
-id,pref_label_en,definition
-paper-document,Paper document,"An original or certified copy handed over, posted or presented in person."
-pdf-attachment,PDF or scan,"An unsigned digital file whose authenticity nobody can check, and which is therefore trusted on appearance."
-phone-or-email-check,Phone or email check,A human contacting the issuing organisation to ask whether a claim is true.
-registry-lookup,Registry lookup,"A verifier querying a register directly, which works only where one exists and grants access."
-in-person-check,In-person check,The subject attending in person so a human can inspect a document or their face.
-notarised-copy,Notarised copy,"A third party attesting that a copy matches an original, at a fee and a delay."
-self-declaration,Self-declaration,"The subject asserting something unsupported, accepted because verifying it would cost more than the risk of it being false."

@@ -12,12 +12,11 @@
     "stream": "https://didas-swiss.github.io/industry-function-graph/id/value-stream/",
     "stage": "https://didas-swiss.github.io/industry-function-graph/id/value-stream-stage/",
     "role": "https://didas-swiss.github.io/industry-function-graph/id/trust-role/",
-    "evidence": "https://didas-swiss.github.io/industry-function-graph/id/replaced-evidence/",
+    "prior": "https://didas-swiss.github.io/industry-function-graph/id/prior-evidence/",
     "part": "https://didas-swiss.github.io/industry-function-graph/id/participation/",
     "state": "https://didas-swiss.github.io/industry-function-graph/id/state/",
     "cred": "https://didas-swiss.github.io/industry-function-graph/id/credential-type/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
-    "schema": "https://schema.org/",
     "dct": "http://purl.org/dc/terms/",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "owl": "http://www.w3.org/2002/07/owl#",
@@ -54,8 +53,11 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "Local SKOS rendering of the International Standard Industrial Classification of All Economic Activities, Revision 5. All 22 sections, plus the divisions and classes the mapped use cases actually reach. ISIC is the primary scheme here. It is de facto equivalent to NOGA 2025 at section and division level: checked against the NOGA subset codified in the DIDAS Trust Flow Diagram Repository, all 22 section letters and all 23 of its divisions agree, with three section titles differing in spelling only. A division number is therefore a usable join key between this graph and a NOGA-classified sector. The equivalence does not extend below division level.",
+        "@value": "Local SKOS rendering of the International Standard Industrial Classification of All Economic Activities, Revision 5. All 22 sections, plus the divisions and classes the mapped use cases actually reach. ISIC is the primary scheme here. It agrees with NOGA 2025 at section and division level: checked against the NOGA subset codified in the DIDAS Trust Flow Diagram Repository, all 22 section letters and all 23 of its divisions agree, with three section titles differing in spelling only. A division number is therefore a usable join key between this graph and a NOGA-classified sector. The agreement does not extend below division level.",
         "@language": "en"
+      },
+      "ifm:schemeVersion": {
+        "@value": "Rev. 5"
       },
       "dct:source": {
         "@id": "https://unstats.un.org/unsd/classifications/Econ/isic"
@@ -71,11 +73,14 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "Business function categories following the UNECE/Eurostat Classification of Business Functions. Labels are seeded here and carry codeStatus 'provisional' until checked against the official publication; no notations are invented.",
+        "@value": "Business function categories following the UNECE/Eurostat Classification of Business Functions. Labels are seeded here and carry codeStatus 'provisional' until checked against the official publication; no notations are invented. Core and support in CBF are relative to the enterprise, so no IFM function is hung under either as a broader concept.",
         "@language": "en"
       },
+      "ifm:schemeVersion": {
+        "@value": "edition not confirmed; check against the UN Manual on the Classification of Business Functions"
+      },
       "dct:source": {
-        "@id": "https://unece.org/trade/statistics"
+        "@id": "https://unstats.un.org/unsd/classifications/Econ/Download/Manual_on_the_Classification_of_Business_Functions_WEB_2024-08-19.pdf"
       }
     },
     {
@@ -88,8 +93,11 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "Only the cross-industry PCF categories an alignment actually references. The framework itself is published by APQC and is not redistributed here.",
+        "@value": "Only the cross-industry PCF categories an alignment actually references. The framework itself is published by APQC and is not redistributed here. The labels carried here follow the 13-category cross-industry structure.",
         "@language": "en"
+      },
+      "ifm:schemeVersion": {
+        "@value": "Cross-Industry, 13-category structure; the point release these labels were seeded from has not been confirmed against the APQC publication"
       },
       "dct:source": {
         "@id": "https://www.apqc.org/process-frameworks"
@@ -139,7 +147,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "What is actually issued, presented and checked. A credential type evidences a state, which connects this layer to the rest: holding the credential satisfies the state.",
+        "@value": "What is actually issued as a separate artefact, held, presented and verified. A credential type provides evidence for a state, which connects this layer to the rest; the evidence may support the state without being equivalent to it. A claim inside another credential, a derived attribute or a business conclusion is not a credential type.",
         "@language": "en"
       },
       "dct:source": {
@@ -156,7 +164,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "What is true, or what a party holds, before and after a use case runs. States are the interface that makes use cases composable: one use case's postcondition is another's precondition, so the chain can be computed from the data.",
+        "@value": "What is true, or what a party holds, before and after a use case runs. States are the interface that makes use cases composable: one use case's postcondition is another's precondition, so the chain can be computed from the data. Evidence states record possession; outcome states record a business or administrative conclusion.",
         "@language": "en"
       },
       "dct:source": {
@@ -173,7 +181,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "Who does what in a credential exchange: issuer, holder, verifier, trust anchor. Recorded per use case together with who bears the cost and who gains the value, which are often different parties.",
+        "@value": "Who does what in a credential exchange: issuer, holder, verifier, relying party, trust anchor. Verifier and relying party are separate roles that often belong to the same organisation. Recorded per use case together with who bears the cost and who gains the value, which are often different parties.",
         "@language": "en"
       },
       "dct:source": {
@@ -181,16 +189,16 @@
       }
     },
     {
-      "@id": "scheme:ifm-replaced-evidence",
+      "@id": "scheme:ifm-prior-evidence",
       "@type": [
         "skos:ConceptScheme"
       ],
       "dct:title": {
-        "@value": "Replaced evidence",
+        "@value": "Prior evidence mechanisms",
         "@language": "en"
       },
       "dct:description": {
-        "@value": "What the credential displaces: a paper document, an uncheckable PDF, a phone call, an in-person visit. Recording it is how a friction-reduction claim becomes measurable.",
+        "@value": "How the same assurance is obtained today without a verifiable credential: a paper document, a PDF, a phone call, a register lookup, an in-person visit. Naming the mechanism is how a friction-reduction claim becomes checkable. The entries describe mechanisms; they do not rank them.",
         "@language": "en"
       },
       "dct:source": {
@@ -207,7 +215,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "End-to-end sequences of functions that produce an outcome for a customer or the organisation. The concept follows ArchiMate's Value Stream element, which describes the value created rather than the steps taken. The catalogue is this repository's own, because no openly licensed one exists. A function appears in several streams.",
+        "@value": "End-to-end sequences of functions that produce an outcome for a customer or the organisation. The concept follows ArchiMate's Value Stream element, which describes the value created rather than the steps taken. The catalogue and the stage decomposition are this repository's editorial models, because no openly licensed catalogue exists; each is one modelled sequence rather than the universal one. A function appears in several streams.",
         "@language": "en"
       },
       "dct:source": {
@@ -1777,19 +1785,24 @@
       "skos:narrower": {
         "@id": "func:identity-lifecycle-management"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ADM"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-11.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ADM"
+        },
+        {
+          "@id": "apqc:apqc-11.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       },
       "skos:editorialNote": {
-        "@value": "Administrative where it is a gate on a relationship; becomes core for identity service providers.",
+        "@value": "Administrative where it is a gate on a relationship; core for identity service providers. Related rather than broader for that reason.",
         "@language": "en"
       }
     },
     {
-      "@id": "func:customer-onboarding",
+      "@id": "func:relationship-onboarding",
       "@type": [
         "ifm:BusinessFunction",
         "skos:Concept"
@@ -1801,19 +1814,48 @@
         "@id": "scheme:ifm-functions"
       },
       "skos:prefLabel": {
-        "@value": "Customer onboarding",
+        "@value": "Relationship onboarding",
         "@language": "en"
       },
+      "skos:altLabel": [
+        {
+          "@value": "customer onboarding",
+          "@language": "en"
+        },
+        {
+          "@value": "client onboarding",
+          "@language": "en"
+        },
+        {
+          "@value": "admission",
+          "@language": "en"
+        }
+      ],
       "skos:definition": {
-        "@value": "Establishing a new customer or member relationship, including the due diligence that regulation attaches to it.",
+        "@value": "Establishing a new relationship between an organisation and a counterparty - customer, member, student, patient or supplier - including the due diligence attached to it.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-MKT"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-MKT"
+        },
+        {
+          "@id": "apqc:apqc-3.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-3.0"
-      }
+      "skos:editorialNote": [
+        {
+          "@value": "CBF's marketing and sales category is the closest fit for a commercial relationship; it does not cover admission to a school or enrolment with a public body, which this function also spans.",
+          "@language": "en"
+        },
+        {
+          "@value": "APQC's category is commercial (\"Market and Sell Products and Services\"). Recorded as the external commercial reading of this function, not as its definition.",
+          "@language": "en"
+        }
+      ]
     },
     {
       "@id": "func:identity-lifecycle-management",
@@ -1835,8 +1877,11 @@
       "skos:broader": {
         "@id": "func:identity-proofing"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-ADM"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -1859,8 +1904,11 @@
         "@value": "Checking whether a subject meets a stated condition — age, residency, licence, membership — without necessarily identifying them.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-ADM"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -1883,11 +1931,16 @@
         "@value": "Granting, restricting and revoking access to systems, premises or services.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ICT"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-8.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ICT"
+        },
+        {
+          "@id": "apqc:apqc-8.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -1909,13 +1962,6 @@
       "skos:definition": {
         "@value": "Issuing an authoritative statement about a subject, a product or a process — a diploma, a certificate, an accreditation.",
         "@language": "en"
-      },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-CORE"
-      },
-      "skos:editorialNote": {
-        "@value": "Core for schools, laboratories and certification bodies; support elsewhere. See README on the core/support relativity.",
-        "@language": "en"
       }
     },
     {
@@ -1935,14 +1981,19 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Meeting statutory and regulatory obligations, including record-keeping and supervisory reporting.",
+        "@value": "Performing the record-keeping, control and supervisory-reporting work that statutory and regulatory obligations require.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ADM"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-11.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ADM"
+        },
+        {
+          "@id": "apqc:apqc-11.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -1968,8 +2019,11 @@
       "skos:narrower": {
         "@id": "func:supply-chain-traceability"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-DIST"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       },
       "skos:editorialNote": {
         "@value": "CBF has no separate procurement category; distribution and logistics is the closest fit.",
@@ -1996,8 +2050,11 @@
       "skos:broader": {
         "@id": "func:sourcing-and-procurement"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-DIST"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2020,15 +2077,20 @@
         "@value": "Hiring, employing and offboarding people, and administering their qualifications and entitlements.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ADM"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-7.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ADM"
+        },
+        {
+          "@id": "apqc:apqc-7.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
-      "@id": "func:customer-service",
+      "@id": "func:request-and-complaint-handling",
       "@type": [
         "ifm:BusinessFunction",
         "skos:Concept"
@@ -2040,18 +2102,37 @@
         "@id": "scheme:ifm-functions"
       },
       "skos:prefLabel": {
-        "@value": "Customer service",
+        "@value": "Request and complaint handling",
         "@language": "en"
       },
+      "skos:altLabel": [
+        {
+          "@value": "customer service",
+          "@language": "en"
+        },
+        {
+          "@value": "service desk",
+          "@language": "en"
+        }
+      ],
       "skos:definition": {
-        "@value": "Handling requests, incidents and complaints from an existing customer relationship.",
+        "@value": "Handling requests, incidents and complaints arising from an existing relationship.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-MKT"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-MKT"
+        },
+        {
+          "@id": "apqc:apqc-6.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-6.0"
+      "skos:editorialNote": {
+        "@value": "CBF places help desks and call centres in this category.",
+        "@language": "en"
       }
     },
     {
@@ -2074,8 +2155,15 @@
         "@value": "Performing and delivering the service the organisation exists to provide.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:closeMatch": {
         "@id": "cbf:CBF-CORE"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
+      },
+      "skos:editorialNote": {
+        "@value": "The one alignment to CBF-CORE that is not enterprise-relative: CBF defines the core function as producing the output the enterprise exists to supply, which is how this function is defined. Whose output it is still varies; the identity of the activity does not.",
+        "@language": "en"
       }
     },
     {
@@ -2098,8 +2186,11 @@
         "@value": "Maintaining an authoritative register or record and answering queries against it.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-ADM"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2122,8 +2213,11 @@
         "@value": "Concluding an agreement and applying a signature that binds the parties to it.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-ADM"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2146,11 +2240,16 @@
         "@value": "Billing for goods or services delivered, and settling the payment that follows.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ADM"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-9.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ADM"
+        },
+        {
+          "@id": "apqc:apqc-9.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2173,11 +2272,16 @@
         "@value": "Judging the creditworthiness or risk of a counterparty before committing to a transaction or a relationship.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ADM"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-11.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ADM"
+        },
+        {
+          "@id": "apqc:apqc-11.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2200,11 +2304,16 @@
         "@value": "Assessing and settling a claim made under a policy, a warranty or a guarantee.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-MKT"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-6.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-MKT"
+        },
+        {
+          "@id": "apqc:apqc-6.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       },
       "skos:editorialNote": {
         "@value": "After-sales in CBF terms; core for an insurer.",
@@ -2231,8 +2340,11 @@
         "@value": "Inspecting and testing that output conforms to a specification before it leaves the organisation.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-ENG"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2255,11 +2367,16 @@
         "@value": "Examining records, processes or claims against a standard, independently of whoever produced them.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ADM"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-11.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ADM"
+        },
+        {
+          "@id": "apqc:apqc-11.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       },
       "skos:editorialNote": {
         "@value": "Core for an audit firm; support everywhere else.",
@@ -2286,8 +2403,11 @@
         "@value": "Demonstrating that a product meets the regulatory and standards requirements of the markets it is placed on.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-ENG"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2310,8 +2430,11 @@
         "@value": "Declaring goods to an authority and clearing them across a border.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-DIST"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2334,11 +2457,16 @@
         "@value": "Registering, maintaining, servicing and transferring a physical asset over its life.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-OTH"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-10.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-OTH"
+        },
+        {
+          "@id": "apqc:apqc-10.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2361,11 +2489,16 @@
         "@value": "Measuring and disclosing environmental and social performance, to a regulator or to the market.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ADM"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-11.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ADM"
+        },
+        {
+          "@id": "apqc:apqc-11.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2388,11 +2521,16 @@
         "@value": "Determining, declaring and substantiating a tax obligation.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ADM"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-9.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ADM"
+        },
+        {
+          "@id": "apqc:apqc-9.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2415,8 +2553,11 @@
         "@value": "Obtaining, recording and honouring a subject's permission for data about them to be used.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-ADM"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2439,11 +2580,16 @@
         "@value": "Releasing data to another party with its origin, integrity and permitted use demonstrable.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-ICT"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-8.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-ICT"
+        },
+        {
+          "@id": "apqc:apqc-8.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2466,8 +2612,11 @@
         "@value": "Granting and maintaining a benefit, subsidy or allowance once eligibility has been established.",
         "@language": "en"
       },
-      "skos:broadMatch": {
+      "skos:relatedMatch": {
         "@id": "cbf:CBF-SUP-ADM"
+      },
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2490,11 +2639,16 @@
         "@value": "Systematic work to create new knowledge, products or processes.",
         "@language": "en"
       },
-      "skos:broadMatch": {
-        "@id": "cbf:CBF-SUP-RND"
-      },
-      "skos:relatedMatch": {
-        "@id": "apqc:apqc-2.0"
+      "skos:relatedMatch": [
+        {
+          "@id": "cbf:CBF-SUP-RND"
+        },
+        {
+          "@id": "apqc:apqc-2.0"
+        }
+      ],
+      "ifm:mappingStatus": {
+        "@value": "editorial"
       }
     },
     {
@@ -2514,7 +2668,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The state-issued electronic identity, held in a wallet and presented with selective disclosure. In Switzerland the EID under the E-ID Act (BGEID) of 20 December 2024: issued by fedpol through the federal trust infrastructure (Art. 13), carrying official name, given names, date of birth, sex, place of origin, place of birth, nationality, facial image and the AHV number (Art. 15 para. 1). Art. 10 para. 1 requires that the holder be able to determine which parts of it, and which information derived from them, reach the verifier.",
+        "@value": "The state-issued electronic identity, held in a wallet and presented with selective disclosure. In Switzerland the EID under the E-ID Act (BGEID) of 20 December 2024: issued by fedpol through the federal trust infrastructure (Art. 13), carrying official name, given names, date of birth, sex, place of origin, place of birth, nationality, facial image and the AHV number (Art. 15 para. 1). Art. 10 para. 1 requires that the holder be able to determine which parts of it, and which information derived from them, reach the verifier. No claim schema is recorded here: the statute states the content and this repository has not read a published schema document.",
         "@language": "en"
       },
       "ifm:evidences": {
@@ -2523,8 +2677,11 @@
       "ifm:credentialFormat": {
         "@value": "SD-JWT VC"
       },
-      "ifm:ecosystem": {
+      "ifm:trustFramework": {
         "@value": "swiyu"
+      },
+      "ifm:protocolProfile": {
+        "@value": "swiss-profile-issuance:1.0.0, swiss-profile-verification:1.0.0"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -2547,7 +2704,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A regulated institution's statement that customer due diligence was completed, reusable by another institution.",
+        "@value": "A regulated institution's statement that customer due diligence was completed, reusable by another institution. The format is recorded so the attestation can ride the same infrastructure as the electronic identity; no semantic model or trust framework has been chosen for it.",
         "@language": "en"
       },
       "ifm:evidences": {
@@ -2577,7 +2734,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A statement that the due diligence behind a KYC attestation was re-evaluated within its validity period.",
+        "@value": "A statement that the due diligence behind a KYC attestation was re-evaluated within its validity period. No semantic model or trust framework has been chosen for it.",
         "@language": "en"
       },
       "ifm:evidences": {
@@ -2585,69 +2742,6 @@
       },
       "ifm:credentialFormat": {
         "@value": "SD-JWT VC"
-      },
-      "ifm:codeStatus": {
-        "@value": "provisional"
-      }
-    },
-    {
-      "@id": "cred:legal-capacity-attestation",
-      "@type": [
-        "ifm:CredentialType",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:ifm-credential-types"
-      },
-      "skos:topConceptOf": {
-        "@id": "scheme:ifm-credential-types"
-      },
-      "skos:prefLabel": {
-        "@value": "Legal capacity attestation",
-        "@language": "en"
-      },
-      "skos:definition": {
-        "@value": "A statement that the subject may contract in their own right, typically after reaching majority.",
-        "@language": "en"
-      },
-      "ifm:evidences": {
-        "@id": "state:legal-capacity-established"
-      },
-      "ifm:credentialFormat": {
-        "@value": "SD-JWT VC"
-      },
-      "ifm:codeStatus": {
-        "@value": "provisional"
-      }
-    },
-    {
-      "@id": "cred:age-attestation",
-      "@type": [
-        "ifm:CredentialType",
-        "skos:Concept"
-      ],
-      "skos:inScheme": {
-        "@id": "scheme:ifm-credential-types"
-      },
-      "skos:topConceptOf": {
-        "@id": "scheme:ifm-credential-types"
-      },
-      "skos:prefLabel": {
-        "@value": "Age attestation",
-        "@language": "en"
-      },
-      "skos:definition": {
-        "@value": "A statement that the subject is over a threshold age. Not a predicate proof: SD-JWT discloses a claim or withholds it and cannot prove a property of a withheld claim. In swiyu the electronic identity carries an age_over_18 claim of its own, which the holder discloses instead of the date of birth, so no separate credential is issued.",
-        "@language": "en"
-      },
-      "ifm:evidences": {
-        "@id": "state:age-attribute-proven"
-      },
-      "ifm:credentialFormat": {
-        "@value": "SD-JWT VC"
-      },
-      "ifm:ecosystem": {
-        "@value": "swiyu"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -2670,7 +2764,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A school-leaving certificate as a verifiable credential. The European Learning Model is the schema family to align with; ELM extends the W3C data model, and which version of it the European Digital Credentials infrastructure requires is not settled here.",
+        "@value": "A school-leaving certificate as a verifiable credential. ELM is the schema family to align with and extends the W3C data model; which version of it the European Digital Credentials infrastructure requires is not settled here, so no format version and no trust framework are recorded.",
         "@language": "en"
       },
       "ifm:evidences": {
@@ -2679,8 +2773,8 @@
       "ifm:credentialFormat": {
         "@value": "W3C VCDM"
       },
-      "ifm:ecosystem": {
-        "@value": "ELM"
+      "ifm:semanticModel": {
+        "@value": "European Learning Model (ELM)"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -2712,8 +2806,8 @@
       "ifm:credentialFormat": {
         "@value": "W3C VCDM"
       },
-      "ifm:ecosystem": {
-        "@value": "ELM"
+      "ifm:semanticModel": {
+        "@value": "European Learning Model (ELM)"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -2745,8 +2839,8 @@
       "ifm:credentialFormat": {
         "@value": "W3C VCDM"
       },
-      "ifm:ecosystem": {
-        "@value": "ELM"
+      "ifm:semanticModel": {
+        "@value": "European Learning Model (ELM)"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -2778,8 +2872,11 @@
       "ifm:credentialFormat": {
         "@value": "W3C VCDM 2.0"
       },
-      "ifm:ecosystem": {
-        "@value": "UN/CEFACT"
+      "ifm:semanticModel": {
+        "@value": "UNTP Digital Conformity Credential"
+      },
+      "ifm:trustFramework": {
+        "@value": "UN/CEFACT UN Transparency Protocol"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -2802,7 +2899,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A buying organisation's own record that a supplier passed qualification, presentable to an auditor.",
+        "@value": "A buying organisation's own record that a supplier passed qualification, presentable to an auditor. The format follows the accreditation certificate the record is derived from; no ecosystem schema or trust framework governs an organisation's internal record.",
         "@language": "en"
       },
       "ifm:evidences": {
@@ -2810,9 +2907,6 @@
       },
       "ifm:credentialFormat": {
         "@value": "W3C VCDM 2.0"
-      },
-      "ifm:ecosystem": {
-        "@value": "UN/CEFACT"
       },
       "ifm:codeStatus": {
         "@value": "provisional"
@@ -2835,7 +2929,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A statement that the subject is entitled to a named public service.",
+        "@value": "A statement that the subject is entitled to a named public service. No semantic model or trust framework has been chosen for it.",
         "@language": "en"
       },
       "ifm:evidences": {
@@ -2851,7 +2945,7 @@
     {
       "@id": "state:eid-held",
       "@type": [
-        "ifm:State",
+        "ifm:EvidenceState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -2872,7 +2966,7 @@
     {
       "@id": "state:identity-verified",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -2893,7 +2987,7 @@
     {
       "@id": "state:kyc-attestation-held",
       "@type": [
-        "ifm:State",
+        "ifm:EvidenceState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -2914,7 +3008,7 @@
     {
       "@id": "state:kyc-attestation-current",
       "@type": [
-        "ifm:State",
+        "ifm:EvidenceState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -2935,7 +3029,7 @@
     {
       "@id": "state:customer-relationship-open",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -2956,7 +3050,7 @@
     {
       "@id": "state:legal-capacity-established",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -2970,14 +3064,14 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The subject's capacity to contract in their own right has been established.",
+        "@value": "The relying party has established that the subject may contract in their own right. Reached from verified attributes rather than from a credential issued for the purpose.",
         "@language": "en"
       }
     },
     {
       "@id": "state:access-granted",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -2998,7 +3092,7 @@
     {
       "@id": "state:age-attribute-proven",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -3012,14 +3106,14 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A threshold age has been demonstrated without disclosing identity.",
+        "@value": "A threshold age has been demonstrated to the relying party without disclosing identity. The outcome of an interaction, not something a separate credential attests.",
         "@language": "en"
       }
     },
     {
       "@id": "state:secondary-education-credential-held",
       "@type": [
-        "ifm:State",
+        "ifm:EvidenceState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -3040,7 +3134,7 @@
     {
       "@id": "state:tertiary-enrolment-established",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -3061,7 +3155,7 @@
     {
       "@id": "state:employment-relationship-open",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -3082,7 +3176,7 @@
     {
       "@id": "state:supplier-accreditation-held",
       "@type": [
-        "ifm:State",
+        "ifm:EvidenceState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -3103,7 +3197,7 @@
     {
       "@id": "state:supplier-qualified",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -3124,7 +3218,7 @@
     {
       "@id": "state:patient-record-linked",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -3145,7 +3239,7 @@
     {
       "@id": "state:service-entitlement-established",
       "@type": [
-        "ifm:State",
+        "ifm:OutcomeState",
         "skos:Concept"
       ],
       "skos:inScheme": {
@@ -3159,7 +3253,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The subject's entitlement to a public service has been demonstrated.",
+        "@value": "The subject's entitlement to a public service has been demonstrated to the body providing it.",
         "@language": "en"
       }
     },
@@ -3180,7 +3274,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Makes a signed statement about a subject, and bears the cost of being able to make it credibly.",
+        "@value": "Makes a signed statement about a subject and is accountable for the process behind it, including the cost of being able to make it credibly.",
         "@language": "en"
       }
     },
@@ -3201,7 +3295,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Keeps the credential and decides when, and to whom, to present it.",
+        "@value": "The party a credential is issued to. It keeps the credential and decides when, to whom and in what detail to present it. A holder may be a natural person, an organisation, or a system acting under an organisation's control.",
         "@language": "en"
       }
     },
@@ -3222,7 +3316,28 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Checks a presented credential and acts on the result.",
+        "@value": "Performs the technical checks on a presented credential or presentation: signature, issuer authority, status, holder binding and freshness. It establishes whether the evidence is valid, not what should follow from it.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "role:relying-party",
+      "@type": [
+        "ifm:TrustRole",
+        "skos:Concept"
+      ],
+      "skos:inScheme": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:topConceptOf": {
+        "@id": "scheme:ifm-trust-roles"
+      },
+      "skos:prefLabel": {
+        "@value": "Relying party",
+        "@language": "en"
+      },
+      "skos:definition": {
+        "@value": "Acts on the outcome of verification to reach a business or administrative decision. Often the same organisation as the verifier, and recorded separately because the two can be separated and carry different accountability.",
         "@language": "en"
       }
     },
@@ -3243,21 +3358,21 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Publishes the registry or accreditation that lets a verifier decide an issuer is credible.",
+        "@value": "Provides the authoritative trust information a verifier uses to assess other participants: which issuers exist, what they are authorised to attest, and how that changes. How that information is published is an ecosystem decision and is not implied by the role.",
         "@language": "en"
       }
     },
     {
-      "@id": "evidence:paper-document",
+      "@id": "prior:paper-document",
       "@type": [
-        "ifm:ReplacedEvidence",
+        "ifm:PriorEvidenceMechanism",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:prefLabel": {
         "@value": "Paper document",
@@ -3269,37 +3384,37 @@
       }
     },
     {
-      "@id": "evidence:pdf-attachment",
+      "@id": "prior:pdf-attachment",
       "@type": [
-        "ifm:ReplacedEvidence",
+        "ifm:PriorEvidenceMechanism",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:prefLabel": {
         "@value": "PDF or scan",
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "An unsigned digital file whose authenticity nobody can check, and which is therefore trusted on appearance.",
+        "@value": "A PDF or scanned document whose authenticity is not machine-verifiable through the trust mechanism the use case relies on. A PDF may carry an electronic signature; where it does and the verifier can check it, it is not this mechanism.",
         "@language": "en"
       }
     },
     {
-      "@id": "evidence:phone-or-email-check",
+      "@id": "prior:phone-or-email-check",
       "@type": [
-        "ifm:ReplacedEvidence",
+        "ifm:PriorEvidenceMechanism",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:prefLabel": {
         "@value": "Phone or email check",
@@ -3311,37 +3426,37 @@
       }
     },
     {
-      "@id": "evidence:registry-lookup",
+      "@id": "prior:registry-lookup",
       "@type": [
-        "ifm:ReplacedEvidence",
+        "ifm:PriorEvidenceMechanism",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:prefLabel": {
         "@value": "Registry lookup",
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A verifier querying a register directly, which works only where one exists and grants access.",
+        "@value": "A verifier querying an authoritative register directly. It gives current data from the source and works wherever the register exists and grants the verifier access; it requires that access, connectivity at the time of the check, and that the register learns which subject was looked up.",
         "@language": "en"
       }
     },
     {
-      "@id": "evidence:in-person-check",
+      "@id": "prior:in-person-check",
       "@type": [
-        "ifm:ReplacedEvidence",
+        "ifm:PriorEvidenceMechanism",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:prefLabel": {
         "@value": "In-person check",
@@ -3353,16 +3468,16 @@
       }
     },
     {
-      "@id": "evidence:notarised-copy",
+      "@id": "prior:notarised-copy",
       "@type": [
-        "ifm:ReplacedEvidence",
+        "ifm:PriorEvidenceMechanism",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:prefLabel": {
         "@value": "Notarised copy",
@@ -3374,23 +3489,106 @@
       }
     },
     {
-      "@id": "evidence:self-declaration",
+      "@id": "prior:self-declaration",
       "@type": [
-        "ifm:ReplacedEvidence",
+        "ifm:PriorEvidenceMechanism",
         "skos:Concept"
       ],
       "skos:inScheme": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:topConceptOf": {
-        "@id": "scheme:ifm-replaced-evidence"
+        "@id": "scheme:ifm-prior-evidence"
       },
       "skos:prefLabel": {
         "@value": "Self-declaration",
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The subject asserting something unsupported, accepted because verifying it would cost more than the risk of it being false.",
+        "@value": "The subject asserting something the recipient does not check, accepted where verifying it would cost more than the assessed risk of it being false.",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "part:eid-issuance-issuer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:eid-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:issuer"
+      },
+      "ifm:party": {
+        "@value": "Federal e-ID issuer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "indirect"
+      },
+      "skos:scopeNote": {
+        "@value": "Carries the cost of the credential most other use cases here depend on, while the value of verifying it falls to other parties.",
+        "@language": "en"
+      },
+      "ifm:issuesCredential": {
+        "@id": "cred:eid-credential"
+      }
+    },
+    {
+      "@id": "part:eid-issuance-holder",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:eid-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Resident",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "ifm:holdsCredential": {
+        "@id": "cred:eid-credential"
+      }
+    },
+    {
+      "@id": "part:eid-issuance-trust-anchor",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:eid-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:trust-anchor"
+      },
+      "ifm:party": {
+        "@value": "Federal trust registry",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "true",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "indirect"
+      },
+      "skos:scopeNote": {
+        "@value": "Publishes the trust information verifiers use. No credential is presented or verified inside this use case; that happens in the use cases that consume the credential.",
         "@language": "en"
       }
     },
@@ -3417,11 +3615,68 @@
         "@value": "direct"
       },
       "skos:scopeNote": {
-        "@value": "Issues the reusable attestation and is also a verifier of it later.",
+        "@value": "Issues the reusable attestation. A later verification of it by another regulated institution is a separate interaction and is not modelled inside onboarding.",
         "@language": "en"
       },
       "ifm:issuesCredential": {
         "@id": "cred:kyc-attestation"
+      }
+    },
+    {
+      "@id": "part:banking-kyc-onboarding-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-kyc-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "skos:scopeNote": {
+        "@value": "Checks the presented electronic identity.",
+        "@language": "en"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
+      }
+    },
+    {
+      "@id": "part:banking-kyc-onboarding-relying-party",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-kyc-onboarding"
+      },
+      "ifm:trustRole": {
+        "@id": "role:relying-party"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Decides on the verified identity whether to open the relationship.",
+        "@language": "en"
       }
     },
     {
@@ -3446,33 +3701,10 @@
       "ifm:gainsValue": {
         "@value": "direct"
       },
-      "ifm:presentsCredential": {
+      "ifm:holdsCredential": {
         "@id": "cred:kyc-attestation"
-      }
-    },
-    {
-      "@id": "part:banking-kyc-onboarding-verifier",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:banking-kyc-onboarding"
       },
-      "ifm:trustRole": {
-        "@id": "role:verifier"
-      },
-      "ifm:party": {
-        "@value": "Another regulated institution",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      },
-      "ifm:verifiesCredential": {
+      "ifm:presentsCredential": {
         "@id": "cred:eid-credential"
       }
     },
@@ -3503,6 +3735,63 @@
       }
     },
     {
+      "@id": "part:banking-re-kyc-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-re-kyc"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "skos:scopeNote": {
+        "@value": "Checks the attestation it issued itself earlier.",
+        "@language": "en"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:kyc-attestation"
+      }
+    },
+    {
+      "@id": "part:banking-re-kyc-relying-party",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:banking-re-kyc"
+      },
+      "ifm:trustRole": {
+        "@id": "role:relying-party"
+      },
+      "ifm:party": {
+        "@value": "Bank",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Issuer, verifier and relying party are the same institution, which is why this use case needs nobody else's cooperation.",
+        "@language": "en"
+      }
+    },
+    {
       "@id": "part:banking-re-kyc-holder",
       "@type": [
         "ifm:Participation"
@@ -3523,15 +3812,21 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:holdsCredential": {
+        "@id": "cred:kyc-currency-attestation"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:kyc-attestation"
       }
     },
     {
-      "@id": "part:banking-re-kyc-verifier",
+      "@id": "part:banking-reidentification-password-reset-verifier",
       "@type": [
         "ifm:Participation"
       ],
       "ifm:inUseCase": {
-        "@id": "uc:banking-re-kyc"
+        "@id": "uc:banking-reidentification-password-reset"
       },
       "ifm:trustRole": {
         "@id": "role:verifier"
@@ -3545,18 +3840,14 @@
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:gainsValue": {
-        "@value": "direct"
-      },
-      "skos:scopeNote": {
-        "@value": "Issuer and verifier are the same party, which is why this one needs nobody's cooperation.",
-        "@language": "en"
+        "@value": "none"
       },
       "ifm:verifiesCredential": {
-        "@id": "cred:kyc-attestation"
+        "@id": "cred:eid-credential"
       }
     },
     {
-      "@id": "part:banking-reidentification-password-reset-issuer",
+      "@id": "part:banking-reidentification-password-reset-relying-party",
       "@type": [
         "ifm:Participation"
       ],
@@ -3564,18 +3855,18 @@
         "@id": "uc:banking-reidentification-password-reset"
       },
       "ifm:trustRole": {
-        "@id": "role:issuer"
+        "@id": "role:relying-party"
       },
       "ifm:party": {
-        "@value": "Federal e-ID issuer",
+        "@value": "Bank",
         "@language": "en"
       },
       "ifm:bearsCost": {
-        "@value": "true",
+        "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:gainsValue": {
-        "@value": "none"
+        "@value": "direct"
       }
     },
     {
@@ -3599,15 +3890,18 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
-      "@id": "part:banking-reidentification-password-reset-verifier",
+      "@id": "part:banking-age-of-majority-reidentification-verifier",
       "@type": [
         "ifm:Participation"
       ],
       "ifm:inUseCase": {
-        "@id": "uc:banking-reidentification-password-reset"
+        "@id": "uc:banking-age-of-majority-reidentification"
       },
       "ifm:trustRole": {
         "@id": "role:verifier"
@@ -3621,14 +3915,14 @@
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:gainsValue": {
-        "@value": "direct"
+        "@value": "none"
       },
       "ifm:verifiesCredential": {
         "@id": "cred:eid-credential"
       }
     },
     {
-      "@id": "part:banking-age-of-majority-reidentification-issuer",
+      "@id": "part:banking-age-of-majority-reidentification-relying-party",
       "@type": [
         "ifm:Participation"
       ],
@@ -3636,21 +3930,22 @@
         "@id": "uc:banking-age-of-majority-reidentification"
       },
       "ifm:trustRole": {
-        "@id": "role:issuer"
+        "@id": "role:relying-party"
       },
       "ifm:party": {
-        "@value": "Federal e-ID issuer",
+        "@value": "Bank",
         "@language": "en"
       },
       "ifm:bearsCost": {
-        "@value": "true",
+        "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:gainsValue": {
-        "@value": "none"
+        "@value": "direct"
       },
-      "ifm:issuesCredential": {
-        "@id": "cred:legal-capacity-attestation"
+      "skos:scopeNote": {
+        "@value": "Establishes legal capacity from the verified date of birth. No credential is issued for that conclusion.",
+        "@language": "en"
       }
     },
     {
@@ -3674,31 +3969,8 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      }
-    },
-    {
-      "@id": "part:banking-age-of-majority-reidentification-verifier",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:banking-age-of-majority-reidentification"
       },
-      "ifm:trustRole": {
-        "@id": "role:verifier"
-      },
-      "ifm:party": {
-        "@value": "Bank",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      },
-      "ifm:verifiesCredential": {
+      "ifm:presentsCredential": {
         "@id": "cred:eid-credential"
       }
     },
@@ -3725,11 +3997,38 @@
         "@value": "indirect"
       },
       "skos:scopeNote": {
-        "@value": "Bears the issuing cost; gets back only fewer duplicate-copy requests.",
+        "@value": "Bears the issuing cost; what it gets back is fewer requests for duplicate copies.",
         "@language": "en"
       },
       "ifm:issuesCredential": {
         "@id": "cred:secondary-education-certificate"
+      }
+    },
+    {
+      "@id": "part:education-maturitaetszeugnis-issuance-verifier",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:education-maturitaetszeugnis-issuance"
+      },
+      "ifm:trustRole": {
+        "@id": "role:verifier"
+      },
+      "ifm:party": {
+        "@value": "Upper-secondary school",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "skos:scopeNote": {
+        "@value": "Checks the graduate's electronic identity before issuing to it.",
+        "@language": "en"
       },
       "ifm:verifiesCredential": {
         "@id": "cred:eid-credential"
@@ -3757,23 +4056,57 @@
       "ifm:gainsValue": {
         "@value": "direct"
       },
-      "ifm:presentsCredential": {
+      "ifm:holdsCredential": {
         "@id": "cred:secondary-education-certificate"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
-      "@id": "part:education-maturitaetszeugnis-issuance-verifier",
+      "@id": "part:education-university-immatriculation-verifier",
       "@type": [
         "ifm:Participation"
       ],
       "ifm:inUseCase": {
-        "@id": "uc:education-maturitaetszeugnis-issuance"
+        "@id": "uc:education-university-immatriculation"
       },
       "ifm:trustRole": {
         "@id": "role:verifier"
       },
       "ifm:party": {
-        "@value": "University or employer",
+        "@value": "University",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "ifm:verifiesCredential": [
+        {
+          "@id": "cred:eid-credential"
+        },
+        {
+          "@id": "cred:secondary-education-certificate"
+        }
+      ]
+    },
+    {
+      "@id": "part:education-university-immatriculation-relying-party",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:education-university-immatriculation"
+      },
+      "ifm:trustRole": {
+        "@id": "role:relying-party"
+      },
+      "ifm:party": {
+        "@value": "University",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -3782,6 +4115,10 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Decides admission on the verified credentials.",
+        "@language": "en"
       }
     },
     {
@@ -3796,7 +4133,7 @@
         "@id": "role:issuer"
       },
       "ifm:party": {
-        "@value": "Upper-secondary school",
+        "@value": "University",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -3804,10 +4141,10 @@
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:gainsValue": {
-        "@value": "none"
+        "@value": "direct"
       },
       "skos:scopeNote": {
-        "@value": "Already carried the cost in the issuance use case and gains nothing here.",
+        "@value": "Issues the enrolment attestation as part of admitting the student.",
         "@language": "en"
       },
       "ifm:issuesCredential": {
@@ -3835,21 +4172,58 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      }
+      },
+      "ifm:holdsCredential": {
+        "@id": "cred:tertiary-enrolment-attestation"
+      },
+      "ifm:presentsCredential": [
+        {
+          "@id": "cred:eid-credential"
+        },
+        {
+          "@id": "cred:secondary-education-certificate"
+        }
+      ]
     },
     {
-      "@id": "part:education-university-immatriculation-verifier",
+      "@id": "part:retail-hospitality-age-verification-verifier",
       "@type": [
         "ifm:Participation"
       ],
       "ifm:inUseCase": {
-        "@id": "uc:education-university-immatriculation"
+        "@id": "uc:retail-hospitality-age-verification"
       },
       "ifm:trustRole": {
         "@id": "role:verifier"
       },
       "ifm:party": {
-        "@value": "University",
+        "@value": "Merchant or restaurant",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
+      }
+    },
+    {
+      "@id": "part:retail-hospitality-age-verification-relying-party",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:retail-hospitality-age-verification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:relying-party"
+      },
+      "ifm:party": {
+        "@value": "Merchant or restaurant",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -3858,37 +4232,6 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      },
-      "ifm:verifiesCredential": [
-        {
-          "@id": "cred:secondary-education-certificate"
-        },
-        {
-          "@id": "cred:eid-credential"
-        }
-      ]
-    },
-    {
-      "@id": "part:retail-hospitality-age-verification-issuer",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:retail-hospitality-age-verification"
-      },
-      "ifm:trustRole": {
-        "@id": "role:issuer"
-      },
-      "ifm:party": {
-        "@value": "Federal e-ID issuer",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "none"
       }
     },
     {
@@ -3914,22 +4257,53 @@
         "@value": "direct"
       },
       "ifm:presentsCredential": {
-        "@id": "cred:age-attestation"
+        "@id": "cred:eid-credential"
       }
     },
     {
-      "@id": "part:retail-hospitality-age-verification-verifier",
+      "@id": "part:employment-identity-proofing-verifier",
       "@type": [
         "ifm:Participation"
       ],
       "ifm:inUseCase": {
-        "@id": "uc:retail-hospitality-age-verification"
+        "@id": "uc:employment-identity-proofing"
       },
       "ifm:trustRole": {
         "@id": "role:verifier"
       },
       "ifm:party": {
-        "@value": "Merchant or restaurant",
+        "@value": "Employer",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "ifm:verifiesCredential": [
+        {
+          "@id": "cred:eid-credential"
+        },
+        {
+          "@id": "cred:secondary-education-certificate"
+        }
+      ]
+    },
+    {
+      "@id": "part:employment-identity-proofing-relying-party",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:employment-identity-proofing"
+      },
+      "ifm:trustRole": {
+        "@id": "role:relying-party"
+      },
+      "ifm:party": {
+        "@value": "Employer",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -3938,15 +4312,7 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      },
-      "ifm:verifiesCredential": [
-        {
-          "@id": "cred:age-attestation"
-        },
-        {
-          "@id": "cred:eid-credential"
-        }
-      ]
+      }
     },
     {
       "@id": "part:employment-identity-proofing-issuer",
@@ -3960,7 +4326,7 @@
         "@id": "role:issuer"
       },
       "ifm:party": {
-        "@value": "E-ID issuer and awarding institutions",
+        "@value": "Employer",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -3968,7 +4334,11 @@
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:gainsValue": {
-        "@value": "none"
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Issues the employment attestation once the hire is confirmed.",
+        "@language": "en"
       },
       "ifm:issuesCredential": {
         "@id": "cred:employment-attestation"
@@ -3995,21 +4365,58 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      }
+      },
+      "ifm:holdsCredential": {
+        "@id": "cred:employment-attestation"
+      },
+      "ifm:presentsCredential": [
+        {
+          "@id": "cred:eid-credential"
+        },
+        {
+          "@id": "cred:secondary-education-certificate"
+        }
+      ]
     },
     {
-      "@id": "part:employment-identity-proofing-verifier",
+      "@id": "part:healthcare-patient-identification-verifier",
       "@type": [
         "ifm:Participation"
       ],
       "ifm:inUseCase": {
-        "@id": "uc:employment-identity-proofing"
+        "@id": "uc:healthcare-patient-identification"
       },
       "ifm:trustRole": {
         "@id": "role:verifier"
       },
       "ifm:party": {
-        "@value": "Employer",
+        "@value": "Hospital",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
+      }
+    },
+    {
+      "@id": "part:healthcare-patient-identification-relying-party",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:healthcare-patient-identification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:relying-party"
+      },
+      "ifm:party": {
+        "@value": "Hospital",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -4018,37 +4425,6 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      },
-      "ifm:verifiesCredential": [
-        {
-          "@id": "cred:secondary-education-certificate"
-        },
-        {
-          "@id": "cred:eid-credential"
-        }
-      ]
-    },
-    {
-      "@id": "part:healthcare-patient-identification-issuer",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:healthcare-patient-identification"
-      },
-      "ifm:trustRole": {
-        "@id": "role:issuer"
-      },
-      "ifm:party": {
-        "@value": "Federal e-ID issuer",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "none"
       }
     },
     {
@@ -4072,21 +4448,50 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
-      "@id": "part:healthcare-patient-identification-verifier",
+      "@id": "part:egov-service-access-verifier",
       "@type": [
         "ifm:Participation"
       ],
       "ifm:inUseCase": {
-        "@id": "uc:healthcare-patient-identification"
+        "@id": "uc:egov-service-access"
       },
       "ifm:trustRole": {
         "@id": "role:verifier"
       },
       "ifm:party": {
-        "@value": "Hospital",
+        "@value": "Public administration",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:eid-credential"
+      }
+    },
+    {
+      "@id": "part:egov-service-access-relying-party",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:egov-service-access"
+      },
+      "ifm:trustRole": {
+        "@id": "role:relying-party"
+      },
+      "ifm:party": {
+        "@value": "Public administration",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -4095,9 +4500,6 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
-      },
-      "ifm:verifiesCredential": {
-        "@id": "cred:eid-credential"
       }
     },
     {
@@ -4112,7 +4514,7 @@
         "@id": "role:issuer"
       },
       "ifm:party": {
-        "@value": "Federal e-ID issuer",
+        "@value": "Public administration",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -4123,7 +4525,7 @@
         "@value": "direct"
       },
       "skos:scopeNote": {
-        "@value": "Issuer and verifier are both the state, so the investment returns to the party making it.",
+        "@value": "The party that issues the entitlement attestation and the party that relies on the electronic identity are both the state, so the investment returns to the body making it.",
         "@language": "en"
       },
       "ifm:issuesCredential": {
@@ -4151,21 +4553,57 @@
       },
       "ifm:gainsValue": {
         "@value": "direct"
+      },
+      "ifm:holdsCredential": {
+        "@id": "cred:service-entitlement-attestation"
+      },
+      "ifm:presentsCredential": {
+        "@id": "cred:eid-credential"
       }
     },
     {
-      "@id": "part:egov-service-access-verifier",
+      "@id": "part:supplier-qualification-verifier",
       "@type": [
         "ifm:Participation"
       ],
       "ifm:inUseCase": {
-        "@id": "uc:egov-service-access"
+        "@id": "uc:supplier-qualification"
       },
       "ifm:trustRole": {
         "@id": "role:verifier"
       },
       "ifm:party": {
-        "@value": "Public administration",
+        "@value": "Buying organisation",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "none"
+      },
+      "skos:scopeNote": {
+        "@value": "Checks the accreditations the supplier presents: GMP certificates for pharmaceuticals, quality accreditations for aerospace.",
+        "@language": "en"
+      },
+      "ifm:verifiesCredential": {
+        "@id": "cred:quality-accreditation-certificate"
+      }
+    },
+    {
+      "@id": "part:supplier-qualification-relying-party",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:relying-party"
+      },
+      "ifm:party": {
+        "@value": "Buying organisation",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -4175,12 +4613,13 @@
       "ifm:gainsValue": {
         "@value": "direct"
       },
-      "ifm:verifiesCredential": {
-        "@id": "cred:eid-credential"
+      "skos:scopeNote": {
+        "@value": "Decides on the verified accreditations whether the supplier is eligible to be contracted.",
+        "@language": "en"
       }
     },
     {
-      "@id": "part:supplier-qualification-issuer",
+      "@id": "part:supplier-qualification-issuer-buyer",
       "@type": [
         "ifm:Participation"
       ],
@@ -4191,7 +4630,7 @@
         "@id": "role:issuer"
       },
       "ifm:party": {
-        "@value": "Certification body, accreditor or regulator",
+        "@value": "Buying organisation",
         "@language": "en"
       },
       "ifm:bearsCost": {
@@ -4202,15 +4641,45 @@
         "@value": "direct"
       },
       "skos:scopeNote": {
-        "@value": "Certification is its business, so the issuing cost is already paid for. GMP for pharmaceuticals, quality accreditations for aerospace.",
+        "@value": "Records its own qualification decision in verifiable form so that an auditor can check it later.",
         "@language": "en"
       },
       "ifm:issuesCredential": {
-        "@id": "cred:quality-accreditation-certificate"
+        "@id": "cred:supplier-qualification-record"
       }
     },
     {
-      "@id": "part:supplier-qualification-holder",
+      "@id": "part:supplier-qualification-holder-buyer",
+      "@type": [
+        "ifm:Participation"
+      ],
+      "ifm:inUseCase": {
+        "@id": "uc:supplier-qualification"
+      },
+      "ifm:trustRole": {
+        "@id": "role:holder"
+      },
+      "ifm:party": {
+        "@value": "Buying organisation",
+        "@language": "en"
+      },
+      "ifm:bearsCost": {
+        "@value": "false",
+        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      "ifm:gainsValue": {
+        "@value": "direct"
+      },
+      "skos:scopeNote": {
+        "@value": "Holds the qualification record it issued to itself. Presenting it to an auditor is a separate interaction.",
+        "@language": "en"
+      },
+      "ifm:holdsCredential": {
+        "@id": "cred:supplier-qualification-record"
+      }
+    },
+    {
+      "@id": "part:supplier-qualification-holder-supplier",
       "@type": [
         "ifm:Participation"
       ],
@@ -4236,35 +4705,6 @@
       }
     },
     {
-      "@id": "part:supplier-qualification-verifier",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:supplier-qualification"
-      },
-      "ifm:trustRole": {
-        "@id": "role:verifier"
-      },
-      "ifm:party": {
-        "@value": "Buying organisation",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      },
-      "ifm:issuesCredential": {
-        "@id": "cred:supplier-qualification-record"
-      },
-      "ifm:verifiesCredential": {
-        "@id": "cred:quality-accreditation-certificate"
-      }
-    },
-    {
       "@id": "part:supplier-qualification-trust-anchor",
       "@type": [
         "ifm:Participation"
@@ -4285,111 +4725,10 @@
       },
       "ifm:gainsValue": {
         "@value": "indirect"
-      }
-    },
-    {
-      "@id": "part:eid-issuance-issuer",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:eid-issuance"
-      },
-      "ifm:trustRole": {
-        "@id": "role:issuer"
-      },
-      "ifm:party": {
-        "@value": "Federal e-ID issuer",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "indirect"
       },
       "skos:scopeNote": {
-        "@value": "Carries the cost of the credential every other use case depends on, while the value lands on the parties verifying it. The asymmetry at the root of the ecosystem.",
+        "@value": "Accredits the certification bodies whose certificates the buying organisation relies on.",
         "@language": "en"
-      },
-      "ifm:issuesCredential": {
-        "@id": "cred:eid-credential"
-      }
-    },
-    {
-      "@id": "part:eid-issuance-holder",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:eid-issuance"
-      },
-      "ifm:trustRole": {
-        "@id": "role:holder"
-      },
-      "ifm:party": {
-        "@value": "Resident",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      },
-      "ifm:presentsCredential": {
-        "@id": "cred:eid-credential"
-      }
-    },
-    {
-      "@id": "part:eid-issuance-verifier",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:eid-issuance"
-      },
-      "ifm:trustRole": {
-        "@id": "role:verifier"
-      },
-      "ifm:party": {
-        "@value": "Any relying party",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "false",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "direct"
-      },
-      "ifm:verifiesCredential": {
-        "@id": "cred:eid-credential"
-      }
-    },
-    {
-      "@id": "part:eid-issuance-trust-anchor",
-      "@type": [
-        "ifm:Participation"
-      ],
-      "ifm:inUseCase": {
-        "@id": "uc:eid-issuance"
-      },
-      "ifm:trustRole": {
-        "@id": "role:trust-anchor"
-      },
-      "ifm:party": {
-        "@value": "Federal trust registry",
-        "@language": "en"
-      },
-      "ifm:bearsCost": {
-        "@value": "true",
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean"
-      },
-      "ifm:gainsValue": {
-        "@value": "indirect"
       }
     },
     {
@@ -4414,7 +4753,7 @@
       }
     },
     {
-      "@id": "driver:fraud-prevention",
+      "@id": "driver:fraud-risk-reduction",
       "@type": [
         "ifm:ValueDriver",
         "skos:Concept"
@@ -4426,11 +4765,11 @@
         "@id": "scheme:ifm-value-drivers"
       },
       "skos:prefLabel": {
-        "@value": "Fraud prevention",
+        "@value": "Fraud risk reduction",
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Making forgery, impersonation or misrepresentation of a claim impractical, instead of detecting it after the fact.",
+        "@value": "Reducing selected forms of forgery, tampering, impersonation or misrepresentation through cryptographically verifiable evidence and governed trust relationships.",
         "@language": "en"
       }
     },
@@ -4472,7 +4811,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Removing transcription, reconciliation and staleness errors by carrying the data in a form a machine can check.",
+        "@value": "Reducing transcription, reconciliation and staleness errors, and enabling machine-verifiable provenance and freshness where the credential format and the issuer's practice support it.",
         "@language": "en"
       }
     },
@@ -4493,7 +4832,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Proving what a counterparty is entitled to know without disclosing the rest, which can make an exchange permissible where full disclosure would not be.",
+        "@value": "Limiting disclosure to the attributes required for a defined interaction, where the credential format and the governance model support it. Which attributes are required is a governance question, not one the format settles.",
         "@language": "en"
       }
     },
@@ -4604,7 +4943,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "An existing process is reorganised around verifiable data. Roles, sequence or who holds what change, and the previous process cannot be recovered from the new one.",
+        "@value": "An existing process is materially reorganised around verifiable data, including changes to roles, sequence or information custody.",
         "@language": "en"
       },
       "ifm:changeMode": {
@@ -4628,7 +4967,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The activity was not viable before, because the trust it depends on could not be established at acceptable cost.",
+        "@value": "Enables an activity or operating model that was previously impractical or uneconomic at the required level of trust.",
         "@language": "en"
       },
       "ifm:changeMode": {
@@ -5032,7 +5371,7 @@
         "@language": "en"
       },
       "ifm:stageFunction": {
-        "@id": "func:customer-onboarding"
+        "@id": "func:relationship-onboarding"
       }
     },
     {
@@ -5152,7 +5491,7 @@
         "@language": "en"
       },
       "ifm:stageFunction": {
-        "@id": "func:customer-service"
+        "@id": "func:request-and-complaint-handling"
       }
     },
     {
@@ -5346,14 +5685,13 @@
     {
       "@id": "uc:banking-kyc-onboarding",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Online onboarding and KYC credential issuance",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "A prospective customer opens a bank account remotely. The bank identifies them against the e-ID and issues a reusable KYC attestation.",
         "@language": "en"
       },
@@ -5366,7 +5704,7 @@
         }
       ],
       "ifm:primaryFunction": {
-        "@id": "func:customer-onboarding"
+        "@id": "func:relationship-onboarding"
       },
       "ifm:executesFunction": [
         {
@@ -5376,26 +5714,35 @@
           "@id": "func:regulatory-compliance"
         }
       ],
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:CrossDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:CrossClass"
       },
       "ifm:participation": [
         {
           "@id": "part:banking-kyc-onboarding-issuer"
         },
         {
-          "@id": "part:banking-kyc-onboarding-holder"
+          "@id": "part:banking-kyc-onboarding-verifier"
         },
         {
-          "@id": "part:banking-kyc-onboarding-verifier"
+          "@id": "part:banking-kyc-onboarding-relying-party"
+        },
+        {
+          "@id": "part:banking-kyc-onboarding-holder"
         }
       ],
-      "ifm:replaces": [
+      "ifm:reducesRelianceOn": [
         {
-          "@id": "evidence:in-person-check"
+          "@id": "prior:in-person-check"
         },
         {
-          "@id": "evidence:notarised-copy"
+          "@id": "prior:notarised-copy"
         }
       ],
       "ifm:precondition": {
@@ -5429,7 +5776,7 @@
           "@id": "driver:friction-reduction"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         },
         {
           "@id": "driver:compliance-assurance"
@@ -5457,14 +5804,13 @@
     {
       "@id": "uc:banking-re-kyc",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Periodic KYC re-evaluation",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "The bank re-runs customer due diligence on an existing relationship at the interval its supervisor requires, reusing the identity already established.",
         "@language": "en"
       },
@@ -5477,26 +5823,35 @@
       "ifm:executesFunction": {
         "@id": "func:identity-lifecycle-management"
       },
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:SingleDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:SingleClass"
       },
       "ifm:participation": [
         {
           "@id": "part:banking-re-kyc-issuer"
         },
         {
-          "@id": "part:banking-re-kyc-holder"
+          "@id": "part:banking-re-kyc-verifier"
         },
         {
-          "@id": "part:banking-re-kyc-verifier"
+          "@id": "part:banking-re-kyc-relying-party"
+        },
+        {
+          "@id": "part:banking-re-kyc-holder"
         }
       ],
-      "ifm:replaces": [
+      "ifm:reducesRelianceOn": [
         {
-          "@id": "evidence:phone-or-email-check"
+          "@id": "prior:phone-or-email-check"
         },
         {
-          "@id": "evidence:pdf-attachment"
+          "@id": "prior:pdf-attachment"
         }
       ],
       "ifm:precondition": {
@@ -5536,14 +5891,13 @@
     {
       "@id": "uc:banking-reidentification-password-reset",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Re-identification after a forgotten password",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "An existing e-banking customer who has lost their credentials is re-identified before access is restored, without a branch visit.",
         "@language": "en"
       },
@@ -5555,28 +5909,34 @@
       },
       "ifm:executesFunction": [
         {
-          "@id": "func:customer-service"
+          "@id": "func:request-and-complaint-handling"
         },
         {
           "@id": "func:access-management"
         }
       ],
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:SingleDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:SingleClass"
       },
       "ifm:participation": [
         {
-          "@id": "part:banking-reidentification-password-reset-issuer"
+          "@id": "part:banking-reidentification-password-reset-verifier"
+        },
+        {
+          "@id": "part:banking-reidentification-password-reset-relying-party"
         },
         {
           "@id": "part:banking-reidentification-password-reset-holder"
-        },
-        {
-          "@id": "part:banking-reidentification-password-reset-verifier"
         }
       ],
-      "ifm:replaces": {
-        "@id": "evidence:in-person-check"
+      "ifm:reducesRelianceOn": {
+        "@id": "prior:in-person-check"
       },
       "ifm:precondition": [
         {
@@ -5590,7 +5950,7 @@
         "@id": "state:access-granted"
       },
       "ifm:costValueAsymmetry": {
-        "@value": "true",
+        "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
@@ -5598,7 +5958,7 @@
           "@id": "driver:friction-reduction"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         },
         {
           "@id": "driver:reach-and-inclusion"
@@ -5620,14 +5980,13 @@
     {
       "@id": "uc:banking-age-of-majority-reidentification",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Re-identification at the age of majority",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "A customer onboarded as a minor turns 18. The relationship is re-established at full legal capacity, with a qualified electronic signature.",
         "@language": "en"
       },
@@ -5640,22 +5999,28 @@
       "ifm:executesFunction": {
         "@id": "func:regulatory-compliance"
       },
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:SingleDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:SingleClass"
       },
       "ifm:participation": [
         {
-          "@id": "part:banking-age-of-majority-reidentification-issuer"
+          "@id": "part:banking-age-of-majority-reidentification-verifier"
+        },
+        {
+          "@id": "part:banking-age-of-majority-reidentification-relying-party"
         },
         {
           "@id": "part:banking-age-of-majority-reidentification-holder"
-        },
-        {
-          "@id": "part:banking-age-of-majority-reidentification-verifier"
         }
       ],
-      "ifm:replaces": {
-        "@id": "evidence:in-person-check"
+      "ifm:reducesRelianceOn": {
+        "@id": "prior:in-person-check"
       },
       "ifm:precondition": [
         {
@@ -5672,7 +6037,7 @@
         "@id": "uc:banking-kyc-onboarding"
       },
       "ifm:costValueAsymmetry": {
-        "@value": "true",
+        "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
@@ -5699,14 +6064,13 @@
     {
       "@id": "uc:education-maturitaetszeugnis-issuance",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Issuance of a Maturitätszeugnis",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "An upper-secondary school issues the school-leaving certificate to the graduate as a digital attestation.",
         "@language": "en"
       },
@@ -5719,22 +6083,28 @@
       "ifm:executesFunction": {
         "@id": "func:records-management"
       },
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:SingleDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:SingleClass"
       },
       "ifm:participation": [
         {
           "@id": "part:education-maturitaetszeugnis-issuance-issuer"
         },
         {
-          "@id": "part:education-maturitaetszeugnis-issuance-holder"
+          "@id": "part:education-maturitaetszeugnis-issuance-verifier"
         },
         {
-          "@id": "part:education-maturitaetszeugnis-issuance-verifier"
+          "@id": "part:education-maturitaetszeugnis-issuance-holder"
         }
       ],
-      "ifm:replaces": {
-        "@id": "evidence:paper-document"
+      "ifm:reducesRelianceOn": {
+        "@id": "prior:paper-document"
       },
       "ifm:precondition": {
         "@id": "state:eid-held"
@@ -5756,7 +6126,7 @@
       },
       "ifm:valueDriver": [
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         },
         {
           "@id": "driver:data-quality"
@@ -5778,14 +6148,13 @@
     {
       "@id": "uc:education-university-immatriculation",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "University immatriculation",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "A university admits a student on the strength of the e-ID and the Maturitätszeugnis, without re-collecting or re-checking paper documents.",
         "@language": "en"
       },
@@ -5793,7 +6162,7 @@
         "@id": "sector:ISIC-8540"
       },
       "ifm:primaryFunction": {
-        "@id": "func:customer-onboarding"
+        "@id": "func:relationship-onboarding"
       },
       "ifm:executesFunction": [
         {
@@ -5803,26 +6172,35 @@
           "@id": "func:identity-proofing"
         }
       ],
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:SingleDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:SingleClass"
       },
       "ifm:participation": [
+        {
+          "@id": "part:education-university-immatriculation-verifier"
+        },
+        {
+          "@id": "part:education-university-immatriculation-relying-party"
+        },
         {
           "@id": "part:education-university-immatriculation-issuer"
         },
         {
           "@id": "part:education-university-immatriculation-holder"
-        },
-        {
-          "@id": "part:education-university-immatriculation-verifier"
         }
       ],
-      "ifm:replaces": [
+      "ifm:reducesRelianceOn": [
         {
-          "@id": "evidence:notarised-copy"
+          "@id": "prior:notarised-copy"
         },
         {
-          "@id": "evidence:paper-document"
+          "@id": "prior:paper-document"
         }
       ],
       "ifm:precondition": [
@@ -5840,7 +6218,7 @@
         "@id": "uc:education-maturitaetszeugnis-issuance"
       },
       "ifm:costValueAsymmetry": {
-        "@value": "true",
+        "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
@@ -5851,7 +6229,7 @@
           "@id": "driver:data-quality"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         }
       ],
       "ifm:transformationMode": {
@@ -5870,14 +6248,13 @@
     {
       "@id": "uc:retail-hospitality-age-verification",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Age verification at the point of sale",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "A merchant or a restaurant checks that a customer is over the legal age for a restricted product, learning nothing else about them.",
         "@language": "en"
       },
@@ -5895,22 +6272,28 @@
       "ifm:executesFunction": {
         "@id": "func:regulatory-compliance"
       },
-      "ifm:sectorScope": {
-        "@id": "ifm:CrossSector"
+      "ifm:sectionScope": {
+        "@id": "ifm:CrossSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:CrossDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:CrossClass"
       },
       "ifm:participation": [
         {
-          "@id": "part:retail-hospitality-age-verification-issuer"
+          "@id": "part:retail-hospitality-age-verification-verifier"
+        },
+        {
+          "@id": "part:retail-hospitality-age-verification-relying-party"
         },
         {
           "@id": "part:retail-hospitality-age-verification-holder"
-        },
-        {
-          "@id": "part:retail-hospitality-age-verification-verifier"
         }
       ],
-      "ifm:replaces": {
-        "@id": "evidence:in-person-check"
+      "ifm:reducesRelianceOn": {
+        "@id": "prior:in-person-check"
       },
       "ifm:precondition": {
         "@id": "state:eid-held"
@@ -5919,7 +6302,7 @@
         "@id": "state:age-attribute-proven"
       },
       "ifm:costValueAsymmetry": {
-        "@value": "true",
+        "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
@@ -5927,7 +6310,7 @@
           "@id": "driver:data-minimisation"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         },
         {
           "@id": "driver:friction-reduction"
@@ -5946,14 +6329,13 @@
     {
       "@id": "uc:employment-identity-proofing",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Employee identity proofing and onboarding",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "An employer identifies a new hire and checks the qualifications the role requires, before provisioning any account.",
         "@language": "en"
       },
@@ -5985,26 +6367,35 @@
           "@id": "func:eligibility-verification"
         }
       ],
-      "ifm:sectorScope": {
-        "@id": "ifm:CrossSector"
+      "ifm:sectionScope": {
+        "@id": "ifm:CrossSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:CrossDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:CrossClass"
       },
       "ifm:participation": [
+        {
+          "@id": "part:employment-identity-proofing-verifier"
+        },
+        {
+          "@id": "part:employment-identity-proofing-relying-party"
+        },
         {
           "@id": "part:employment-identity-proofing-issuer"
         },
         {
           "@id": "part:employment-identity-proofing-holder"
-        },
-        {
-          "@id": "part:employment-identity-proofing-verifier"
         }
       ],
-      "ifm:replaces": [
+      "ifm:reducesRelianceOn": [
         {
-          "@id": "evidence:pdf-attachment"
+          "@id": "prior:pdf-attachment"
         },
         {
-          "@id": "evidence:phone-or-email-check"
+          "@id": "prior:phone-or-email-check"
         }
       ],
       "ifm:precondition": [
@@ -6022,7 +6413,7 @@
         "@id": "uc:education-maturitaetszeugnis-issuance"
       },
       "ifm:costValueAsymmetry": {
-        "@value": "true",
+        "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
@@ -6030,7 +6421,7 @@
           "@id": "driver:friction-reduction"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         },
         {
           "@id": "driver:data-quality"
@@ -6052,14 +6443,13 @@
     {
       "@id": "uc:healthcare-patient-identification",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Patient identification at admission",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "A hospital identifies a patient at admission and links them to the right record.",
         "@language": "en"
       },
@@ -6077,22 +6467,28 @@
           "@id": "func:records-management"
         }
       ],
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:SingleDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:SingleClass"
       },
       "ifm:participation": [
         {
-          "@id": "part:healthcare-patient-identification-issuer"
+          "@id": "part:healthcare-patient-identification-verifier"
+        },
+        {
+          "@id": "part:healthcare-patient-identification-relying-party"
         },
         {
           "@id": "part:healthcare-patient-identification-holder"
-        },
-        {
-          "@id": "part:healthcare-patient-identification-verifier"
         }
       ],
-      "ifm:replaces": {
-        "@id": "evidence:in-person-check"
+      "ifm:reducesRelianceOn": {
+        "@id": "prior:in-person-check"
       },
       "ifm:precondition": {
         "@id": "state:eid-held"
@@ -6101,7 +6497,7 @@
         "@id": "state:patient-record-linked"
       },
       "ifm:costValueAsymmetry": {
-        "@value": "true",
+        "@value": "false",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
       "ifm:valueDriver": [
@@ -6112,7 +6508,7 @@
           "@id": "driver:friction-reduction"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         }
       ],
       "ifm:transformationMode": {
@@ -6128,15 +6524,14 @@
     {
       "@id": "uc:egov-service-access",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Access to an online government service",
         "@language": "en"
       },
-      "schema:description": {
-        "@value": "A resident authenticates to a public-administration service portal and proves the attributes the service is entitled to see.",
+      "dct:description": {
+        "@value": "A resident authenticates to a public-administration service portal and discloses the attributes that service requires for the interaction.",
         "@language": "en"
       },
       "ifm:appliesToSector": {
@@ -6153,22 +6548,31 @@
           "@id": "func:service-delivery"
         }
       ],
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:SingleDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:SingleClass"
       },
       "ifm:participation": [
+        {
+          "@id": "part:egov-service-access-verifier"
+        },
+        {
+          "@id": "part:egov-service-access-relying-party"
+        },
         {
           "@id": "part:egov-service-access-issuer"
         },
         {
           "@id": "part:egov-service-access-holder"
-        },
-        {
-          "@id": "part:egov-service-access-verifier"
         }
       ],
-      "ifm:replaces": {
-        "@id": "evidence:registry-lookup"
+      "ifm:reducesRelianceOn": {
+        "@id": "prior:registry-lookup"
       },
       "ifm:precondition": {
         "@id": "state:eid-held"
@@ -6204,14 +6608,13 @@
     {
       "@id": "uc:supplier-qualification",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Supplier qualification",
         "@language": "en"
       },
-      "schema:description": {
+      "dct:description": {
         "@value": "A buying organisation qualifies a supplier: that it legally exists, that its quality and conformity accreditations are current, and that what it will supply conforms. Instantiated by any sector that qualifies suppliers against accreditations.",
         "@language": "en"
       },
@@ -6246,32 +6649,44 @@
           "@id": "func:regulatory-compliance"
         }
       ],
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:CrossDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:CrossClass"
       },
       "ifm:participation": [
         {
-          "@id": "part:supplier-qualification-issuer"
-        },
-        {
-          "@id": "part:supplier-qualification-holder"
-        },
-        {
           "@id": "part:supplier-qualification-verifier"
+        },
+        {
+          "@id": "part:supplier-qualification-relying-party"
+        },
+        {
+          "@id": "part:supplier-qualification-issuer-buyer"
+        },
+        {
+          "@id": "part:supplier-qualification-holder-buyer"
+        },
+        {
+          "@id": "part:supplier-qualification-holder-supplier"
         },
         {
           "@id": "part:supplier-qualification-trust-anchor"
         }
       ],
-      "ifm:replaces": [
+      "ifm:reducesRelianceOn": [
         {
-          "@id": "evidence:pdf-attachment"
+          "@id": "prior:pdf-attachment"
         },
         {
-          "@id": "evidence:self-declaration"
+          "@id": "prior:self-declaration"
         },
         {
-          "@id": "evidence:phone-or-email-check"
+          "@id": "prior:phone-or-email-check"
         }
       ],
       "ifm:precondition": {
@@ -6295,7 +6710,7 @@
           "@id": "driver:data-quality"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         }
       ],
       "ifm:valueStream": {
@@ -6314,15 +6729,14 @@
     {
       "@id": "uc:eid-issuance",
       "@type": [
-        "ifm:UseCase",
-        "schema:Action"
+        "ifm:UseCase"
       ],
-      "schema:name": {
+      "rdfs:label": {
         "@value": "Issuance of the electronic identity",
         "@language": "en"
       },
-      "schema:description": {
-        "@value": "The issuing authority identifies a resident and issues the state electronic identity into their wallet. It is the root of the ecosystem: most other use cases here cannot start until this one has.",
+      "dct:description": {
+        "@value": "The issuing authority identifies a resident and issues the state electronic identity into their wallet. Most other use cases in this graph declare the state it leaves behind as a precondition.",
         "@language": "en"
       },
       "ifm:appliesToSector": {
@@ -6342,8 +6756,14 @@
           "@id": "func:regulatory-compliance"
         }
       ],
-      "ifm:sectorScope": {
-        "@id": "ifm:SectorSpecific"
+      "ifm:sectionScope": {
+        "@id": "ifm:SingleSection"
+      },
+      "ifm:divisionScope": {
+        "@id": "ifm:SingleDivision"
+      },
+      "ifm:classScope": {
+        "@id": "ifm:SingleClass"
       },
       "ifm:participation": [
         {
@@ -6353,18 +6773,15 @@
           "@id": "part:eid-issuance-holder"
         },
         {
-          "@id": "part:eid-issuance-verifier"
-        },
-        {
           "@id": "part:eid-issuance-trust-anchor"
         }
       ],
-      "ifm:replaces": [
+      "ifm:reducesRelianceOn": [
         {
-          "@id": "evidence:in-person-check"
+          "@id": "prior:in-person-check"
         },
         {
-          "@id": "evidence:paper-document"
+          "@id": "prior:paper-document"
         }
       ],
       "ifm:postcondition": {
@@ -6408,7 +6825,7 @@
           "@id": "driver:reach-and-inclusion"
         },
         {
-          "@id": "driver:fraud-prevention"
+          "@id": "driver:fraud-risk-reduction"
         },
         {
           "@id": "driver:data-minimisation"
