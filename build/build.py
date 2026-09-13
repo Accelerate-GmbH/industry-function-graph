@@ -19,6 +19,96 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from model import BASE, GENERATED_DIR, ID_BASE, ONT, SCHEMES, Model  # noqa: E402
 
+MASTHEAD_SCRIPT = '''<script>
+/* Shared DIDAS masthead controls — colour theme, layout width and text size.
+   The same three the glossary carries, reading and writing the same
+   localStorage keys. All four DIDAS sites are served from
+   didas-swiss.github.io, so a preference set on any one of them is the
+   preference on all of them. Keep this block identical across the sites. */
+(function () {
+  var root = document.documentElement;
+  var KEY = {
+    theme: 'theme',                        /* 'light' | 'dark' | 'auto'        */
+    width: 'container_width_preference',   /* 'container' | 'container-fluid'  */
+    font: 'font_size_preference'           /* a root font size, in px          */
+  };
+  var WIDE = 'container-fluid';
+  var FONT = { base: 16, min: 13, max: 22, step: 1 };
+
+  function read(key) {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function write(key, value) {
+    /* Private browsing and blocked site data both throw here; the controls
+       still work for the session, they just do not persist. */
+    try { window.localStorage.setItem(key, value); } catch (e) { /* ignore */ }
+  }
+
+  function theme() {
+    var v = read(KEY.theme);
+    return v === 'light' || v === 'dark' ? v : 'auto';
+  }
+  function width() { return read(KEY.width) === WIDE ? WIDE : 'container'; }
+  function font() {
+    var v = parseFloat(read(KEY.font));
+    return v >= FONT.min && v <= FONT.max ? v : FONT.base;
+  }
+
+  function apply() {
+    var t = theme();
+    /* No attribute means follow the operating system, which is what the
+       prefers-color-scheme block in the stylesheet keys off. */
+    if (t === 'auto') root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', t);
+    root.setAttribute('data-width', width() === WIDE ? 'wide' : 'narrow');
+    root.style.fontSize = font() + 'px';
+  }
+
+  function sync() {
+    var t = theme();
+    var wide = width() === WIDE;
+    document.querySelectorAll('[data-theme-value]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-value') === t));
+    });
+    document.querySelectorAll('[data-width-value]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(wide));
+    });
+  }
+
+  function wire() {
+    document.querySelectorAll('[data-theme-value]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        write(KEY.theme, b.getAttribute('data-theme-value'));
+        apply();
+        sync();
+      });
+    });
+    document.querySelectorAll('[data-width-value]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        write(KEY.width, width() === WIDE ? 'container' : WIDE);
+        apply();
+        sync();
+      });
+    });
+    document.querySelectorAll('[data-font-step]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var next = font() + FONT.step * Number(b.getAttribute('data-font-step'));
+        write(KEY.font, String(Math.min(FONT.max, Math.max(FONT.min, next))));
+        apply();
+      });
+    });
+    sync();
+  }
+
+  apply();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire, { once: true });
+  } else {
+    wire();
+  }
+})();
+</script>'''
+
 XSD_IRI = "http://www.w3.org/2001/XMLSchema#"
 
 PREFIXES = [
@@ -691,102 +781,269 @@ def build_html(model):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Industry &amp; function mapping</title>
 <meta name="description" content="Which use cases sit at which intersection of economic sector (ISIC Rev. 5) and business function.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   /* Self-contained on purpose: this page is published straight out of
-     generated/ with no other assets to deploy alongside it. */
+     generated/ with no other assets to deploy alongside it.
+
+     The complete light palette lives on bare :root. The dark blocks below
+     redefine only the tokens, so every rule in this file is written once. */
   :root {{
     --accent: #c61623; --ink: #212934; --body: #4a5261;
-    --line: #e4e8ec; --bg-soft: #f8f9fb;
+    --line: #e4e8ec; --bg-soft: #f8f9fb; --paper: #ffffff; --wash: #f1f3f6;
+    --dot-support: #9aa3b0;
+
+    /* The masthead's width control switches this. */
+    --wrap-max: 1040px;
   }}
+  :root[data-width="wide"] {{ --wrap-max: 1440px; }}
+
+  /* Three theme states, the same pattern on every DIDAS site: no data-theme
+     follows the operating system, data-theme="light" and "dark" override it. */
+  @media (prefers-color-scheme: dark) {{
+    :root:not([data-theme="light"]) {{
+      --accent: #ff6b73; --ink: #e6eaef; --body: #a6b0bd;
+      --line: #2a313b; --bg-soft: #171c22; --paper: #11151a; --wash: #1b2128;
+      --dot-support: #6d7886;
+    }}
+  }}
+  :root[data-theme="dark"] {{
+    --accent: #ff6b73; --ink: #e6eaef; --body: #a6b0bd;
+    --line: #2a313b; --bg-soft: #171c22; --paper: #11151a; --wash: #1b2128;
+    --dot-support: #6d7886;
+  }}
+
   * {{ box-sizing: border-box; }}
-  body {{ margin: 0; background: #fff; color: var(--ink); line-height: 1.6;
+  /* The masthead's text-size control sets this in px; everything typographic
+     on this page is in rem so that it follows. */
+  html {{ font-size: 16px; }}
+  body {{ margin: 0; background: var(--paper); color: var(--ink); line-height: 1.6;
     font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
   a {{ color: var(--accent); text-decoration: none; }}
   a:hover {{ text-decoration: underline; }}
-  a:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
+  a:focus-visible, button:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
   code {{ font-size: 0.92em; background: var(--bg-soft); padding: 1px 4px;
     border-radius: 3px; }}
-  .wrap {{ max-width: 1040px; margin: 0 auto; padding: 0 24px; }}
-  header.site {{ border-bottom: 1px solid var(--line); }}
-  header.site .wrap {{ display: flex; align-items: center; justify-content: space-between;
-    padding-top: 22px; padding-bottom: 22px; flex-wrap: wrap; gap: 12px; }}
-  .brand {{ font-weight: 600; }}
-  .divider {{ display: inline-block; width: 1px; height: 14px; margin: 0 10px -2px;
-    background: var(--line); }}
+  .wrap {{ max-width: var(--wrap-max); margin: 0 auto; padding: 0 24px; }}
+
+  /* =====================================================================
+     Shared DIDAS masthead
+     The same header across the DIDAS sites: the identity line from the
+     digital-health_swiyu showcase, in the bar geometry and hairline rule of
+     the Trust Flow landing page. Only the four --mh-* values below differ
+     between sites; everything after them is identical everywhere, so a
+     change to the design can be copied across without rereading each site's
+     stylesheet.
+     ===================================================================== */
+  .site-masthead {{
+    --mh-rule:  var(--line);
+    --mh-ink:   var(--body);
+    --mh-hover: var(--accent);
+    --mh-wash:  var(--wash);
+    --mh-width: var(--wrap-max);   /* this page's own content width, so the
+                                      bar lines up with the matrix below it */
+
+    border-bottom: 1px solid var(--mh-rule);
+  }}
+  .site-masthead .bar {{
+    max-width: var(--mh-width);
+    margin-inline: auto;
+    padding-inline: 24px;
+    padding-block: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 24px;
+  }}
+  .site-masthead .id {{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }}
+  .site-masthead .didas {{ display: inline-flex; align-items: center; line-height: 0; }}
+  .site-masthead .didas img {{ height: 20px; width: auto; display: block; }}
+  .site-masthead .eyebrow {{
+    margin: 0;
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mh-ink);
+  }}
+  .site-masthead .repolink {{
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--mh-ink);
+    text-decoration: none;
+    white-space: nowrap;
+  }}
+  .site-masthead .repolink svg {{ flex: none; }}
+  .site-masthead .repolink span {{
+    border-bottom: 1px solid var(--mh-rule);
+    padding-bottom: 2px;
+  }}
+  .site-masthead .repolink:hover {{ color: var(--mh-hover); }}
+  .site-masthead .repolink:hover span {{ border-bottom-color: currentColor; }}
+  /* The same controls the glossary carries — colour theme, layout width and text
+     size — reading and writing the same localStorage keys. All four DIDAS sites
+     are served from one origin, so a preference set on any of them is the
+     preference on all of them. */
+  .site-masthead .tools {{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }}
+  .site-masthead .seg {{
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--mh-rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }}
+  .site-masthead button {{
+    appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: 0;
+    margin: 0;
+    padding: 5px 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mh-ink);
+    cursor: pointer;
+    font: inherit;
+    line-height: 0;
+  }}
+  .site-masthead .seg button + button {{ border-left: 1px solid var(--mh-rule); }}
+  .site-masthead button:hover {{ color: var(--mh-hover); }}
+  .site-masthead button[aria-pressed="true"] {{
+    color: var(--mh-hover);
+    background: var(--mh-wash);
+  }}
+  .site-masthead button svg {{ width: 14px; height: 14px; display: block; }}
+  .site-masthead .seg.text button {{
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    line-height: 1;
+    padding-block: 4px;
+  }}
+  .site-masthead .seg.text button:first-child {{ font-size: 0.62rem; }}
+  .site-masthead .seg.text button:last-child  {{ font-size: 0.88rem; }}
+  /* The width control shows the action it would take, so it swaps icon rather
+     than carrying the pressed background the theme buttons use. */
+  .site-masthead button[data-width-value] .w-contract {{ display: none; }}
+  .site-masthead button[data-width-value][aria-pressed="true"] {{ background: none; }}
+  .site-masthead button[data-width-value][aria-pressed="true"] .w-expand {{ display: none; }}
+  .site-masthead button[data-width-value][aria-pressed="true"] .w-contract {{ display: block; }}
+  /* === end shared DIDAS masthead ==================================== */
   section {{ padding: 36px 0; border-top: 1px solid var(--line); }}
   section.hero {{ border-top: none; padding-bottom: 8px; }}
-  h1 {{ font-size: 34px; line-height: 1.2; margin: 8px 0 16px; }}
-  h2 {{ font-size: 13px; text-transform: uppercase; letter-spacing: .08em;
+  h1 {{ font-size: 2.125rem; line-height: 1.2; margin: 8px 0 16px; }}
+  h2 {{ font-size: 0.8125rem; text-transform: uppercase; letter-spacing: .08em;
     color: var(--body); margin: 0 0 18px; }}
-  h3 {{ font-size: 16px; margin: 0 0 8px; }}
-  .eyebrow {{ font-size: 12px; text-transform: uppercase; letter-spacing: .08em;
+  h3 {{ font-size: 1rem; margin: 0 0 8px; }}
+  .eyebrow {{ font-size: 0.75rem; text-transform: uppercase; letter-spacing: .08em;
     color: var(--accent); font-weight: 600; }}
-  .lede {{ font-size: 16px; color: var(--body); max-width: 680px; }}
-  .prose {{ color: var(--body); font-size: 14.5px; max-width: 680px; }}
+  .lede {{ font-size: 1rem; color: var(--body); max-width: 680px; }}
+  .prose {{ color: var(--body); font-size: 0.9062rem; max-width: 680px; }}
   .matrix-scroll {{ overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }}
-  table.matrix {{ border-collapse: collapse; font-size: 13px; min-width: 100%; }}
+  table.matrix {{ border-collapse: collapse; font-size: 0.8125rem; min-width: 100%; }}
   table.matrix th, table.matrix td {{ border-bottom: 1px solid var(--line); padding: 8px 10px; }}
   table.matrix th.fn {{ vertical-align: bottom; text-align: left; font-weight: 600;
-    white-space: nowrap; font-size: 12px; color: var(--body); }}
+    white-space: nowrap; font-size: 0.75rem; color: var(--body); }}
   table.matrix th.fn span {{ display: block; writing-mode: vertical-rl;
-    transform: rotate(180deg); height: 185px; }}
+    transform: rotate(180deg); height: 11.5625rem; }}
   table.matrix th.sector {{ text-align: left; font-weight: 500; max-width: 260px;
-    position: sticky; left: 0; background: #fff; border-right: 1px solid var(--line);
+    position: sticky; left: 0; background: var(--paper); border-right: 1px solid var(--line);
     line-height: 1.35; }}
   table.matrix td {{ text-align: center; vertical-align: middle; }}
   table.matrix td.empty {{ background: var(--bg-soft); }}
   .code {{ display: inline-block; min-width: 20px; padding: 0 5px; margin-right: 4px;
-    border: 1px solid var(--line); border-radius: 3px; font-size: 11px;
+    border: 1px solid var(--line); border-radius: 3px; font-size: 0.6875rem;
     color: var(--body); background: var(--bg-soft); }}
-  .dot {{ text-decoration: none; font-size: 13px; padding: 0 1px; }}
+  .dot {{ text-decoration: none; font-size: 0.8125rem; padding: 0 1px; }}
   .dot.primary {{ color: var(--accent); }}
-  .dot.support {{ color: #9aa3b0; }}
-  .legend {{ font-size: 13px; color: var(--body); margin-top: 12px; }}
-  .meta {{ font-size: 13px; color: var(--body); margin: 4px 0; }}
+  .dot.support {{ color: var(--dot-support); }}
+  .legend {{ font-size: 0.8125rem; color: var(--body); margin-top: 12px; }}
+  .meta {{ font-size: 0.8125rem; color: var(--body); margin: 4px 0; }}
   .axes {{ display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }}
-  .axes h3 {{ font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
+  .axes h3 {{ font-size: 0.8125rem; text-transform: uppercase; letter-spacing: .06em;
     color: var(--body); }}
-  ul.tally {{ list-style: none; padding: 0; margin: 0; font-size: 14px; }}
+  ul.tally {{ list-style: none; padding: 0; margin: 0; font-size: 0.875rem; }}
   ul.tally li {{ padding: 5px 0; border-bottom: 1px solid var(--line); }}
   ul.tally .n {{ display: inline-block; min-width: 26px; font-weight: 600; }}
-  .muted {{ color: var(--body); font-size: 12px; }}
+  .muted {{ color: var(--body); font-size: 0.75rem; }}
   .mode {{ font-weight: 600; }}
   .mode-change {{ color: var(--accent); }}
   .meta.asym {{ color: var(--accent); }}
-  ul.chain {{ font-size: 14px; }}
+  ul.chain {{ font-size: 0.875rem; }}
   ul.chain ul {{ margin: 4px 0; }}
   ul.chain li {{ padding: 2px 0; }}
-  ol.stages {{ font-size: 13px; color: var(--body); padding-left: 20px; margin: 0; }}
+  ol.stages {{ font-size: 0.8125rem; color: var(--body); padding-left: 20px; margin: 0; }}
   ol.stages li {{ padding: 2px 0; }}
   .flows {{ display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }}
   .flow {{ border: 1px solid var(--line); border-radius: 6px; display: flex;
     flex-direction: column; scroll-margin-top: 20px; }}
-  .flow-tag {{ font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+  .flow-tag {{ font-size: 0.6875rem; text-transform: uppercase; letter-spacing: .06em;
     color: var(--body); padding: 10px 16px; border-bottom: 1px solid var(--line);
     background: var(--bg-soft); }}
   .flow-body {{ padding: 16px; flex: 1; }}
-  .flow-body p {{ font-size: 14px; color: var(--body); margin-top: 0; }}
-  .flow-link {{ padding: 12px 16px; border-top: 1px solid var(--line); font-size: 14px; }}
-  .status {{ font-size: 12px; color: var(--body); }}
+  .flow-body p {{ font-size: 0.875rem; color: var(--body); margin-top: 0; }}
+  .flow-link {{ padding: 12px 16px; border-top: 1px solid var(--line); font-size: 0.875rem; }}
+  .status {{ font-size: 0.75rem; color: var(--body); }}
   footer.site {{ border-top: 1px solid var(--line); margin-top: 40px; }}
   footer.site .wrap {{ display: flex; flex-wrap: wrap; gap: 10px 24px;
     justify-content: space-between; padding-top: 20px; padding-bottom: 40px;
-    font-size: 12.5px; color: var(--body); }}
+    font-size: 0.7812rem; color: var(--body); }}
   @media (max-width: 620px) {{
-    h1 {{ font-size: 27px; }}
+    h1 {{ font-size: 1.6875rem; }}
     table.matrix th.sector {{ max-width: 160px; }}
   }}
 </style>
 </head>
 <body>
 
-<header class="site">
-  <div class="wrap">
-    <div class="brand">Industry &amp; function mapping <span class="divider"></span>
-      <span style="font-weight:400;color:var(--body)">knowledge graph</span></div>
-    <nav><a href="https://github.com/DIDAS-swiss/industry-function-graph">GitHub &#8599;</a></nav>
+<!-- Shared DIDAS masthead. Keep the markup identical across the DIDAS sites;
+     only the eyebrow text and the repository URL differ. -->
+<header class="site-masthead">
+  <div class="bar">
+    <div class="id">
+      <a class="didas" href="https://www.didas.swiss" target="_blank" rel="noopener">
+        <img src="https://www.didas.swiss/wp-content/uploads/2021/02/logo.png" alt="DIDAS">
+      </a>
+      <p class="eyebrow">Industry &amp; function mapping · knowledge graph</p>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Colour theme">
+        <button type="button" data-theme-value="light" aria-pressed="false" title="Light" aria-label="Light theme"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg></button>
+        <button type="button" data-theme-value="dark" aria-pressed="false" title="Dark" aria-label="Dark theme"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/><path fill="currentColor" d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/></svg></button>
+        <button type="button" data-theme-value="auto" aria-pressed="true" title="Match the system" aria-label="Match the system theme"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/></svg></button>
+      </div>
+      <div class="seg" role="group" aria-label="Layout width">
+        <button type="button" data-width-value="container-fluid" aria-pressed="false" title="Toggle wide or narrow layout" aria-label="Toggle wide or narrow layout"><svg class="w-expand" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707m4.344-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707"/></svg><svg class="w-contract" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M.172 15.828a.5.5 0 0 0 .707 0l4.096-4.096V14.5a.5.5 0 1 0 1 0v-3.975a.5.5 0 0 0-.5-.5H1.5a.5.5 0 0 0 0 1h2.768L.172 15.121a.5.5 0 0 0 0 .707M15.828.172a.5.5 0 0 0-.707 0l-4.096 4.096V1.5a.5.5 0 1 0-1 0v3.975a.5.5 0 0 0 .5.5H14.5a.5.5 0 0 0 0-1h-2.768L15.828.879a.5.5 0 0 0 0-.707"/></svg></button>
+      </div>
+      <div class="seg text" role="group" aria-label="Text size">
+        <button type="button" data-font-step="-1" title="Decrease text size" aria-label="Decrease text size">A</button>
+        <button type="button" data-font-step="1" title="Increase text size" aria-label="Increase text size">A</button>
+      </div>
+      <a class="repolink" href="https://github.com/DIDAS-swiss/industry-function-graph" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span>Source on GitHub</span>
+      </a>
+    </div>
   </div>
 </header>
+
+{MASTHEAD_SCRIPT}
 
 <div class="wrap">
 
