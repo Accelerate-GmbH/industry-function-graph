@@ -1,5 +1,9 @@
 # industry-function-graph
 
+**👉 https://didas-swiss.github.io/industry-function-graph/** — the graph as a
+page: the sector/function matrix, every use case pattern with its interface,
+the flows that realise them, and where the value streams have gaps.
+
 **This graph classifies reusable business use cases and describes their
 machine-readable interfaces, so that ecosystem flows can be discovered,
 contextualised and composed.**
@@ -14,8 +18,6 @@ The point of building it this way is that the ecosystem keeps growing. A new
 trust flow or a new credential type should find a stable place among the
 concepts that already exist and connect to them, rather than forcing the
 classification itself to grow another node.
-
-**👉 Live matrix: https://didas-swiss.github.io/industry-function-graph/**
 
 [Turtle](https://didas-swiss.github.io/industry-function-graph/ifm-graph.ttl) ·
 [JSON-LD](https://didas-swiss.github.io/industry-function-graph/ifm-graph.jsonld) ·
