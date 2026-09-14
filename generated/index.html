@@ -218,6 +218,61 @@
   ul.artefacts { font-size: 0.875rem; color: var(--body); max-width: 680px;
     padding-left: 1.125rem; }
   ul.artefacts li { padding: 3px 0; }
+  /* --- placement helper ---------------------------------------------- */
+  .placer { max-width: 680px; margin: 20px 0 0; }
+  .placer-label { display: block; font-size: 0.6875rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); margin-bottom: 6px; }
+  #placer-input { width: 100%; box-sizing: border-box; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 4px; background: var(--paper);
+    color: var(--ink); font: inherit; font-size: 0.9062rem; line-height: 1.5;
+    resize: vertical; }
+  #placer-input:focus { outline: none; border-color: var(--accent); }
+  .placer-actions { display: flex; flex-wrap: wrap; align-items: center;
+    gap: 8px 12px; margin-top: 10px; }
+  .btn { font: inherit; font-size: 0.8125rem; padding: 6px 14px; cursor: pointer;
+    border: 1px solid var(--accent); border-radius: 4px; background: var(--accent);
+    color: #fff; }
+  .btn.quiet { background: none; color: var(--body); border-color: var(--line); }
+  .btn.quiet:hover { color: var(--accent); border-color: var(--accent); }
+  .placer-egs { font-size: 0.75rem; color: var(--body); }
+  button.eg { font: inherit; font-size: 0.75rem; padding: 0; margin-left: 4px;
+    border: 0; background: none; cursor: pointer; color: var(--body);
+    border-bottom: 1px dotted var(--line); }
+  button.eg:hover { color: var(--accent); border-bottom-color: currentColor; }
+  .placer-out { margin-top: 24px; }
+  .pr-empty { font-size: 0.875rem; color: var(--body); }
+  .pr-verdict { max-width: 680px; margin: 0 0 20px; padding: 12px 14px;
+    border: 1px solid var(--line); border-left: 2px solid var(--accent);
+    border-radius: 4px; background: var(--bg-soft); }
+  .pr-verdict-line { margin: 0 0 6px; font-size: 1rem; font-weight: 600;
+    color: var(--ink); }
+  .pr-block { margin: 0 0 20px; }
+  .pr-block h3 { font-size: 0.8125rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); margin: 0 0 6px; }
+  .pr-block h4 { font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); margin: 0 0 6px; font-weight: 600; }
+  .pr-note { font-size: 0.8125rem; color: var(--body); max-width: 680px;
+    margin: 0 0 10px; }
+  ul.pr-list { list-style: none; padding: 0; margin: 0; font-size: 0.875rem;
+    color: var(--ink); max-width: 680px; }
+  ul.pr-list > li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  ul.pr-list > li:last-child { border-bottom: none; }
+  ul.pr-list a { color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }
+  ul.pr-list a:hover { color: var(--accent); border-bottom-color: currentColor; }
+  .pr-sub { font-size: 0.8125rem; color: var(--body); margin-top: 3px; }
+  .pr-sub span:first-child { display: inline-block; min-width: 8.75rem;
+    font-size: 0.6875rem; text-transform: uppercase; letter-spacing: .06em; }
+  .pr-why { font-size: 0.6875rem; color: var(--body); }
+  .pr-agree { font-size: 0.6875rem; color: var(--accent); }
+  .pr-kind { font-size: 0.6875rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); border: 1px solid var(--line);
+    border-radius: 10px; padding: 0 6px; background: var(--bg-soft); }
+  .pr-cols { display: grid; gap: 20px; align-items: start;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); max-width: 680px; }
+  @media (max-width: 620px) {
+    .pr-sub span:first-child { min-width: 0; display: block; }
+  }
   .matrix-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
   table.matrix { border-collapse: collapse; font-size: 0.8125rem; min-width: 100%; }
   table.matrix th, table.matrix td { border-bottom: 1px solid var(--line); padding: 8px 10px; }
@@ -482,8 +537,8 @@
       The graph therefore separates reusable business patterns from the credentials
       and implementations that happen to realise them today. It currently holds
       15 patterns, 16 flows, 25 conditions and
-      10 credential types across 15 ISIC classes and
-      3 value streams.
+      10 credential types, classified across 10 ISIC
+      classes and 5 whole sections, and 3 value streams.
     </p>
   </section>
 
@@ -571,9 +626,10 @@
       Condition compatibility is the core composition rule. Where specified,
       additional interface constraints &mdash; subject role, a named evidence type,
       and <code>key=value</code> context such as jurisdiction or assurance level
-      &mdash; narrow compatibility further. The model supports all three; the
-      current dataset uses subject role and evidence type, and does not yet
-      populate any context constraints.
+      &mdash; narrow compatibility further. The model supports all three. The
+      current dataset records subject role and evidence type and populates no
+      context constraints, and as the values stand none of the three currently
+      excludes a pairing that the condition rule allows.
     </p>
 
     <h3>Adding a credential</h3>
@@ -629,6 +685,47 @@
       Answers are derived from the use cases and conditions currently represented
       in the dataset, not from the ecosystem at large.
     </p>
+  </section>
+
+  <section id="place">
+    <h2>Where would this fit?</h2>
+    <p class="prose">
+      Describe an activity, a high-level use case or a process. The page matches
+      your wording against the vocabularies in the graph, then answers from the
+      model: which existing pattern it most resembles, which primary function and
+      value-stream stage it looks like, which conditions it appears to touch, and
+      what would supply or consume those conditions.
+    </p>
+    <p class="prose">
+      <strong>What this is.</strong> The text step is lexical: it compares your
+      words with concept labels and definitions. It does not understand your
+      description, and it matches words rather than meaning &mdash; an age check
+      described without the word <em>age</em> will not be found. Everything after
+      that step is exact: the condition subsumption, and the suppliers and
+      consumers of each condition, are resolved in the build by the same model
+      the validator uses, and the page only looks them up. Those answers are for
+      a bare condition; a real interface point may narrow further by subject
+      role, evidence type or context. Read the result as a shortlist to check,
+      not a classification.
+    </p>
+    <form class="placer" id="placer-form" autocomplete="off">
+      <label class="placer-label" for="placer-input">Activity, use case or process</label>
+      <textarea id="placer-input" rows="3" spellcheck="false"
+        placeholder="A pharmacy checks that a customer is old enough to buy a restricted medicine, without identifying them."></textarea>
+      <div class="placer-actions">
+        <button type="submit" class="btn">Place it</button>
+        <button type="button" class="btn quiet" id="placer-clear">Clear</button>
+        <span class="placer-egs">Try:
+          <button type="button" class="eg" data-eg="A university admits a student who presents a school-leaving qualification and an electronic identity.">university admission</button>
+          <button type="button" class="eg" data-eg="A bank re-checks the due diligence on an existing customer relationship at the interval its supervisor requires.">periodic due diligence</button>
+          <button type="button" class="eg" data-eg="An insurer onboards a new customer, verifies who they are, checks they may contract, opens the policy and issues a membership card.">a deliberately broad one</button>
+        </span>
+      </div>
+    </form>
+    <div id="placer-out" class="placer-out" hidden></div>
+    <noscript><p class="legend">This helper needs JavaScript. Everything it
+      reports is also in the composition report linked at the foot of the
+      page.</p></noscript>
   </section>
 
   <section>
@@ -1457,6 +1554,408 @@
     <span><a href="https://github.com/DIDAS-swiss/industry-function-graph">Source on GitHub</a></span>
   </div>
 </footer>
+
+<script type="application/json" id="ifm-index">{"conditions":{"identity-evidence-available":{"label":"Identity evidence available","kind":"evidence","broader":null,"text":"Evidence of who the subject is can be presented to a relying party and checked by it. Says nothing about which credential carries the evidence, or that anyone has checked it yet."},"eid-held":{"label":"Electronic identity held","kind":"evidence","broader":"identity-evidence-available","text":"The subject holds a government-issued electronic identity credential."},"education-qualification-evidence-available":{"label":"Education qualification evidence available","kind":"evidence","broader":null,"text":"Evidence of a completed education or training qualification can be presented and checked. Deliberately broader than any one certificate, so that a flow requiring it can be served by several kinds of qualification."},"secondary-education-credential-held":{"label":"Upper-secondary qualification held","kind":"evidence","broader":"education-qualification-evidence-available","text":"The subject holds a verifiable upper-secondary qualification. In Switzerland that is the gymnasiale Maturität or a federal vocational certificate (EFZ); both sit at this level."},"due-diligence-evidence-available":{"label":"Due diligence evidence available","kind":"evidence","broader":null,"text":"Evidence that customer due diligence was carried out can be presented and checked."},"kyc-attestation-held":{"label":"KYC attestation held","kind":"evidence","broader":"due-diligence-evidence-available","text":"The subject holds a reusable attestation that customer due diligence was completed."},"kyc-attestation-current":{"label":"KYC attestation current","kind":"evidence","broader":"kyc-attestation-held","text":"The due diligence behind the attestation has been re-evaluated within its validity period."},"accreditation-evidence-available":{"label":"Accreditation evidence available","kind":"evidence","broader":null,"text":"Evidence that an organisation meets a published standard can be presented and checked - a quality, conformity or sector accreditation."},"supplier-accreditation-held":{"label":"Supplier accreditation held","kind":"evidence","broader":"accreditation-evidence-available","text":"The supplier holds current quality, conformity or sector accreditations in verifiable form."},"employment-evidence-held":{"label":"Employment evidence held","kind":"evidence","broader":null,"text":"The subject holds verifiable evidence that an employment relationship is in force."},"tertiary-enrolment-evidence-held":{"label":"Tertiary enrolment evidence held","kind":"evidence","broader":null,"text":"The subject holds verifiable evidence of enrolment at a higher education institution."},"service-entitlement-evidence-held":{"label":"Service entitlement evidence held","kind":"evidence","broader":null,"text":"The subject holds verifiable evidence of entitlement to a named public service."},"supplier-qualification-evidence-held":{"label":"Supplier qualification evidence held","kind":"evidence","broader":null,"text":"The buying organisation holds a verifiable record of its own qualification decision."},"identity-verified":{"label":"Identity verified","kind":"fact","broader":null,"text":"The relying party has evaluated presented identity evidence and established the subject's identity to the level of assurance the interaction requires. The assurance level qualifies the conclusion and is part of it."},"qualification-verified":{"label":"Qualification verified","kind":"fact","broader":null,"text":"The relying party has evaluated presented qualification evidence and established that the subject holds the qualification the interaction requires. Which qualifications count is a policy question the interaction settles, not a property of the evidence."},"accreditation-verified":{"label":"Accreditation verified","kind":"fact","broader":null,"text":"The relying party has evaluated presented accreditation evidence and established, under the verification and acceptance policy that applies to the interaction, that the required accreditation is present and current. Checking a signature is one input to that conclusion and does not reach it alone."},"age-threshold-established":{"label":"Age threshold established","kind":"fact","broader":null,"text":"The relying party has established that the subject satisfies a stated age threshold, without requiring disclosure of the underlying date of birth or of the subject's identity. A fact established in an interaction, not something a separate credential attests."},"legal-capacity-established":{"label":"Legal capacity established","kind":"fact","broader":null,"text":"The relying party has established that the subject may contract in their own right. Reached from verified attributes rather than from a credential issued for the purpose."},"customer-relationship-open":{"label":"Customer relationship open","kind":"relationship","broader":null,"text":"A contractual relationship exists between the subject and the organisation."},"employment-relationship-open":{"label":"Employment relationship open","kind":"relationship","broader":null,"text":"An employment contract is in force between the subject and an employer."},"tertiary-enrolment-established":{"label":"Tertiary enrolment established","kind":"relationship","broader":null,"text":"The subject is enrolled at a higher education institution."},"access-granted":{"label":"Access granted","kind":"relationship","broader":null,"text":"The subject can reach the service or premises the relationship entitles them to."},"service-entitlement-established":{"label":"Service entitlement established","kind":"relationship","broader":null,"text":"The body providing a public service has accepted that the subject is entitled to it."},"supplier-qualified":{"label":"Supplier qualified","kind":"outcome","broader":null,"text":"The buying organisation has decided that the supplier is eligible to be contracted."},"patient-record-linked":{"label":"Patient record linked","kind":"outcome","broader":null,"text":"The clinician has bound the person in front of them to the correct medical record."}},"satisfiedBy":{"identity-evidence-available":["eid-held","identity-evidence-available"],"eid-held":["eid-held"],"education-qualification-evidence-available":["education-qualification-evidence-available","secondary-education-credential-held"],"secondary-education-credential-held":["secondary-education-credential-held"],"due-diligence-evidence-available":["due-diligence-evidence-available","kyc-attestation-current","kyc-attestation-held"],"kyc-attestation-held":["kyc-attestation-current","kyc-attestation-held"],"kyc-attestation-current":["kyc-attestation-current"],"accreditation-evidence-available":["accreditation-evidence-available","supplier-accreditation-held"],"supplier-accreditation-held":["supplier-accreditation-held"],"employment-evidence-held":["employment-evidence-held"],"tertiary-enrolment-evidence-held":["tertiary-enrolment-evidence-held"],"service-entitlement-evidence-held":["service-entitlement-evidence-held"],"supplier-qualification-evidence-held":["supplier-qualification-evidence-held"],"identity-verified":["identity-verified"],"qualification-verified":["qualification-verified"],"accreditation-verified":["accreditation-verified"],"age-threshold-established":["age-threshold-established"],"legal-capacity-established":["legal-capacity-established"],"customer-relationship-open":["customer-relationship-open"],"employment-relationship-open":["employment-relationship-open"],"tertiary-enrolment-established":["tertiary-enrolment-established"],"access-granted":["access-granted"],"service-entitlement-established":["service-entitlement-established"],"supplier-qualified":["supplier-qualified"],"patient-record-linked":["patient-record-linked"]},"providedBy":{"eid-held":["eid-issuance"],"identity-verified":["identity-verification"],"qualification-verified":["qualification-verification"],"accreditation-verified":["accreditation-verification"],"age-threshold-established":["age-threshold-verification"],"customer-relationship-open":["due-diligence-onboarding"],"kyc-attestation-held":["due-diligence-onboarding"],"kyc-attestation-current":["due-diligence-refresh"],"access-granted":["credential-recovery-reidentification","public-service-access"],"legal-capacity-established":["legal-capacity-reidentification"],"secondary-education-credential-held":["education-qualification-issuance"],"tertiary-enrolment-established":["tertiary-admission"],"tertiary-enrolment-evidence-held":["tertiary-admission"],"employment-relationship-open":["employment-engagement"],"employment-evidence-held":["employment-engagement"],"patient-record-linked":["patient-record-matching"],"service-entitlement-established":["public-service-access"],"service-entitlement-evidence-held":["public-service-access"],"supplier-qualified":["supplier-qualification"],"supplier-qualification-evidence-held":["supplier-qualification"]},"requiredBy":{"identity-evidence-available":["identity-verification","age-threshold-verification"],"education-qualification-evidence-available":["qualification-verification"],"accreditation-evidence-available":["accreditation-verification"],"identity-verified":["due-diligence-onboarding","credential-recovery-reidentification","legal-capacity-reidentification","education-qualification-issuance","tertiary-admission","employment-engagement","patient-record-matching","public-service-access"],"customer-relationship-open":["due-diligence-refresh","credential-recovery-reidentification","legal-capacity-reidentification"],"due-diligence-evidence-available":["due-diligence-refresh"],"qualification-verified":["tertiary-admission","employment-engagement"],"accreditation-verified":["supplier-qualification"]},"suppliersOf":{"identity-evidence-available":["eid-issuance"],"eid-held":["eid-issuance"],"education-qualification-evidence-available":["education-qualification-issuance"],"secondary-education-credential-held":["education-qualification-issuance"],"due-diligence-evidence-available":["due-diligence-onboarding","due-diligence-refresh"],"kyc-attestation-held":["due-diligence-onboarding","due-diligence-refresh"],"kyc-attestation-current":["due-diligence-refresh"],"accreditation-evidence-available":[],"supplier-accreditation-held":[],"employment-evidence-held":["employment-engagement"],"tertiary-enrolment-evidence-held":["tertiary-admission"],"service-entitlement-evidence-held":["public-service-access"],"supplier-qualification-evidence-held":["supplier-qualification"],"identity-verified":["identity-verification"],"qualification-verified":["qualification-verification"],"accreditation-verified":["accreditation-verification"],"age-threshold-established":["age-threshold-verification"],"legal-capacity-established":["legal-capacity-reidentification"],"customer-relationship-open":["due-diligence-onboarding"],"employment-relationship-open":["employment-engagement"],"tertiary-enrolment-established":["tertiary-admission"],"access-granted":["credential-recovery-reidentification","public-service-access"],"service-entitlement-established":["public-service-access"],"supplier-qualified":["supplier-qualification"],"patient-record-linked":["patient-record-matching"]},"consumersOf":{"identity-evidence-available":["identity-verification","age-threshold-verification"],"eid-held":["identity-verification","age-threshold-verification"],"education-qualification-evidence-available":["qualification-verification"],"secondary-education-credential-held":["qualification-verification"],"due-diligence-evidence-available":["due-diligence-refresh"],"kyc-attestation-held":["due-diligence-refresh"],"kyc-attestation-current":["due-diligence-refresh"],"accreditation-evidence-available":["accreditation-verification"],"supplier-accreditation-held":["accreditation-verification"],"employment-evidence-held":[],"tertiary-enrolment-evidence-held":[],"service-entitlement-evidence-held":[],"supplier-qualification-evidence-held":[],"identity-verified":["due-diligence-onboarding","credential-recovery-reidentification","legal-capacity-reidentification","education-qualification-issuance","tertiary-admission","employment-engagement","patient-record-matching","public-service-access"],"qualification-verified":["tertiary-admission","employment-engagement"],"accreditation-verified":["supplier-qualification"],"age-threshold-established":[],"legal-capacity-established":[],"customer-relationship-open":["due-diligence-refresh","credential-recovery-reidentification","legal-capacity-reidentification"],"employment-relationship-open":[],"tertiary-enrolment-established":[],"access-granted":[],"service-entitlement-established":[],"supplier-qualified":[],"patient-record-linked":[]},"patterns":{"eid-issuance":{"name":"Electronic identity issuance","text":"An issuing authority identifies a person and issues a state electronic identity into their wallet.","primary":"certification-and-attestation","primaryLabel":"Certification and attestation","supporting":["Identity proofing","Records management","Regulatory compliance"],"requires":[],"provides":["eid-held"],"principal":"eid-held","sectors":["8411"],"flows":["Swiss e-ID issuance"]},"identity-verification":{"name":"Identity verification","text":"A relying party evaluates presented identity evidence and establishes the subject's identity to the level of assurance the interaction requires.","primary":"identity-proofing","primaryLabel":"Identity proofing","supporting":[],"requires":["identity-evidence-available"],"provides":["identity-verified"],"principal":"identity-verified","sectors":["6419","8411","8531","8540","8610","4711","5610"],"flows":["Re-identification at the age of majority","Swiss bank onboarding with a reusable KYC attestation","Re-identification after a forgotten password","Federal vocational certificate issuance","Swiss university immatriculation","Maturitätszeugnis issuance","Government service portal access","Swiss e-ID presentation and verification","Employee onboarding","Patient identification at admission"]},"qualification-verification":{"name":"Qualification verification","text":"A relying party checks presented evidence of an education or training qualification and establishes that the subject holds it.","primary":"eligibility-verification","primaryLabel":"Eligibility verification","supporting":[],"requires":["education-qualification-evidence-available"],"provides":["qualification-verified"],"principal":"qualification-verified","sectors":["8540","C"],"flows":["Swiss university immatriculation","Employee onboarding"]},"accreditation-verification":{"name":"Accreditation verification","text":"A relying party evaluates an organisation's presented accreditation evidence and establishes, under the policy that applies to the interaction, that the required accreditation is present and current.","primary":"audit-and-assurance","primaryLabel":"Audit and assurance","supporting":[],"requires":["accreditation-evidence-available"],"provides":["accreditation-verified"],"principal":"accreditation-verified","sectors":["2100","3030"],"flows":["Aerospace supplier qualification","Pharmaceutical supplier qualification"]},"age-threshold-verification":{"name":"Age threshold verification","text":"A relying party establishes that the subject satisfies a stated age threshold, without requiring disclosure of the date of birth or of the subject's identity.","primary":"eligibility-verification","primaryLabel":"Eligibility verification","supporting":["Regulatory compliance"],"requires":["identity-evidence-available"],"provides":["age-threshold-established"],"principal":"age-threshold-established","sectors":["4711","5610"],"flows":["Age check in hospitality","Age check at a retail point of sale"]},"due-diligence-onboarding":{"name":"Onboarding with regulatory due diligence","text":"A regulated organisation opens a relationship with a customer whose identity is already established, performs the due diligence its supervisor requires, and issues a reusable attestation that it did so.","primary":"relationship-onboarding","primaryLabel":"Relationship onboarding","supporting":["Regulatory compliance"],"requires":["identity-verified"],"provides":["customer-relationship-open","kyc-attestation-held"],"principal":"customer-relationship-open","sectors":["6419","6512"],"flows":["Swiss bank onboarding with a reusable KYC attestation"]},"due-diligence-refresh":{"name":"Periodic due diligence re-evaluation","text":"An organisation re-runs customer due diligence on an existing relationship at the interval its supervisor requires.","primary":"regulatory-compliance","primaryLabel":"Regulatory compliance","supporting":["Identity lifecycle management"],"requires":["customer-relationship-open","due-diligence-evidence-available"],"provides":["kyc-attestation-current"],"principal":"kyc-attestation-current","sectors":["6419","6512"],"flows":["Swiss bank periodic KYC re-evaluation"]},"credential-recovery-reidentification":{"name":"Re-identification for credential recovery","text":"A customer who has lost their access credentials is re-identified before access is restored.","primary":"identity-lifecycle-management","primaryLabel":"Identity lifecycle management","supporting":["Request and complaint handling","Access management"],"requires":["customer-relationship-open","identity-verified"],"provides":["access-granted"],"principal":"access-granted","sectors":["6419"],"flows":["Re-identification after a forgotten password"]},"legal-capacity-reidentification":{"name":"Re-identification at a change of legal capacity","text":"A relationship entered at limited legal capacity is re-established at full capacity, typically on reaching majority.","primary":"identity-lifecycle-management","primaryLabel":"Identity lifecycle management","supporting":["Regulatory compliance"],"requires":["customer-relationship-open","identity-verified"],"provides":["legal-capacity-established"],"principal":"legal-capacity-established","sectors":["6419"],"flows":["Re-identification at the age of majority"]},"education-qualification-issuance":{"name":"Education qualification issuance","text":"An awarding institution issues a completed education or training qualification to the graduate as a verifiable credential.","primary":"certification-and-attestation","primaryLabel":"Certification and attestation","supporting":["Records management"],"requires":["identity-verified"],"provides":["secondary-education-credential-held"],"principal":"secondary-education-credential-held","sectors":["8531"],"flows":["Federal vocational certificate issuance","Maturitätszeugnis issuance"]},"tertiary-admission":{"name":"Tertiary admission","text":"A higher education institution admits a student on established identity and qualification.","primary":"relationship-onboarding","primaryLabel":"Relationship onboarding","supporting":["Records management"],"requires":["identity-verified","qualification-verified"],"provides":["tertiary-enrolment-established","tertiary-enrolment-evidence-held"],"principal":"tertiary-enrolment-established","sectors":["8540"],"flows":["Swiss university immatriculation"]},"employment-engagement":{"name":"Employment engagement","text":"An employer engages a candidate whose identity and qualifications are already established, and issues evidence of the employment relationship.","primary":"human-capital-management","primaryLabel":"Human capital management","supporting":["Contracting and signing"],"requires":["identity-verified","qualification-verified"],"provides":["employment-relationship-open","employment-evidence-held"],"principal":"employment-relationship-open","sectors":["C","K","L","Q","R"],"flows":["Employee onboarding"]},"patient-record-matching":{"name":"Patient record matching","text":"A care provider binds an identified person to the correct medical record.","primary":"service-delivery","primaryLabel":"Service delivery","supporting":["Records management"],"requires":["identity-verified"],"provides":["patient-record-linked"],"principal":"patient-record-linked","sectors":["8610"],"flows":["Patient identification at admission"]},"public-service-access":{"name":"Public service access","text":"A public administration grants a resident access to an online service and establishes the entitlement that service rests on.","primary":"access-management","primaryLabel":"Access management","supporting":["Service delivery","Entitlement administration"],"requires":["identity-verified"],"provides":["access-granted","service-entitlement-established","service-entitlement-evidence-held"],"principal":"access-granted","sectors":["8411"],"flows":["Government service portal access"]},"supplier-qualification":{"name":"Supplier qualification","text":"A buying organisation decides that a supplier with verified accreditations is eligible to be contracted, and records the decision.","primary":"sourcing-and-procurement","primaryLabel":"Sourcing and procurement","supporting":["Product compliance","Quality assurance","Supply chain traceability","Regulatory compliance"],"requires":["accreditation-verified"],"provides":["supplier-qualified","supplier-qualification-evidence-held"],"principal":"supplier-qualified","sectors":["2100","3030"],"flows":["Aerospace supplier qualification","Pharmaceutical supplier qualification"]}},"functions":{"identity-proofing":{"label":"Identity proofing","aka":"","text":"Establishing to a stated level of assurance that a claimed identity corresponds to a real subject."},"relationship-onboarding":{"label":"Relationship onboarding","aka":"customer onboarding; client onboarding; admission","text":"Establishing a new relationship between an organisation and a counterparty - customer, member, student, patient or supplier - including the due diligence attached to it."},"identity-lifecycle-management":{"label":"Identity lifecycle management","aka":"","text":"Maintaining an established identity relationship over time: re-verification, recovery, attribute updates, revocation."},"eligibility-verification":{"label":"Eligibility verification","aka":"","text":"Checking whether a subject meets a stated condition — age, residency, licence, membership — without necessarily identifying them."},"access-management":{"label":"Access management","aka":"","text":"Granting, restricting and revoking access to systems, premises or services."},"certification-and-attestation":{"label":"Certification and attestation","aka":"","text":"Issuing an attested statement about a subject, a product or a process under an applicable authority or governance framework — a diploma, a certificate, an accreditation. Whether the statement carries authority is a property of that framework, not of the signature on it."},"regulatory-compliance":{"label":"Regulatory compliance","aka":"","text":"Performing the record-keeping, control and supervisory-reporting work that statutory and regulatory obligations require."},"sourcing-and-procurement":{"label":"Sourcing and procurement","aka":"","text":"Selecting, qualifying and contracting suppliers, and running the purchase-to-pay process."},"supply-chain-traceability":{"label":"Supply chain traceability","aka":"","text":"Establishing provenance and chain of custody for goods and their inputs."},"human-capital-management":{"label":"Human capital management","aka":"","text":"Hiring, employing and offboarding people, and administering their qualifications and entitlements."},"request-and-complaint-handling":{"label":"Request and complaint handling","aka":"customer service; service desk","text":"Handling requests, incidents and complaints arising from an existing relationship."},"service-delivery":{"label":"Service delivery","aka":"","text":"Performing and delivering the service the organisation exists to provide."},"records-management":{"label":"Records management","aka":"","text":"Maintaining an authoritative register or record and answering queries against it."},"contracting-and-signing":{"label":"Contracting and signing","aka":"","text":"Concluding an agreement and applying a signature that binds the parties to it."},"invoicing-and-settlement":{"label":"Invoicing and settlement","aka":"","text":"Billing for goods or services delivered, and settling the payment that follows."},"credit-and-risk-assessment":{"label":"Credit and risk assessment","aka":"","text":"Judging the creditworthiness or risk of a counterparty before committing to a transaction or a relationship."},"claims-handling":{"label":"Claims handling","aka":"","text":"Assessing and settling a claim made under a policy, a warranty or a guarantee."},"quality-assurance":{"label":"Quality assurance","aka":"","text":"Inspecting and testing that output conforms to a specification before it leaves the organisation."},"audit-and-assurance":{"label":"Audit and assurance","aka":"","text":"Examining records, processes or claims against a standard, independently of whoever produced them."},"product-compliance":{"label":"Product compliance","aka":"","text":"Demonstrating that a product meets the regulatory and standards requirements of the markets it is placed on."},"customs-and-trade-facilitation":{"label":"Customs and trade facilitation","aka":"","text":"Declaring goods to an authority and clearing them across a border."},"asset-lifecycle-management":{"label":"Asset lifecycle management","aka":"","text":"Registering, maintaining, servicing and transferring a physical asset over its life."},"sustainability-reporting":{"label":"Sustainability reporting","aka":"","text":"Measuring and disclosing environmental and social performance, to a regulator or to the market."},"tax-administration":{"label":"Tax administration","aka":"","text":"Determining, declaring and substantiating a tax obligation."},"consent-management":{"label":"Consent management","aka":"","text":"Obtaining, recording and honouring a subject's permission for data about them to be used."},"data-sharing-and-provenance":{"label":"Data sharing and provenance","aka":"","text":"Releasing data to another party with its origin, integrity and permitted use demonstrable."},"entitlement-administration":{"label":"Entitlement administration","aka":"","text":"Granting and maintaining a benefit, subsidy or allowance once eligibility has been established."},"research-and-development":{"label":"Research and development","aka":"","text":"Systematic work to create new knowledge, products or processes."}},"sectors":{"ISIC-A":{"notation":"A","label":"Agriculture, forestry and fishing","level":"section"},"ISIC-B":{"notation":"B","label":"Mining and quarrying","level":"section"},"ISIC-C":{"notation":"C","label":"Manufacturing","level":"section"},"ISIC-D":{"notation":"D","label":"Electricity, gas, steam and air conditioning supply","level":"section"},"ISIC-E":{"notation":"E","label":"Water supply; sewerage, waste management and remediation activities","level":"section"},"ISIC-F":{"notation":"F","label":"Construction","level":"section"},"ISIC-G":{"notation":"G","label":"Wholesale and retail trade","level":"section"},"ISIC-H":{"notation":"H","label":"Transportation and storage","level":"section"},"ISIC-I":{"notation":"I","label":"Accommodation and food service activities","level":"section"},"ISIC-J":{"notation":"J","label":"Publishing, broadcasting, and content production and distribution activities","level":"section"},"ISIC-K":{"notation":"K","label":"Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities","level":"section"},"ISIC-L":{"notation":"L","label":"Financial and insurance activities","level":"section"},"ISIC-M":{"notation":"M","label":"Real estate activities","level":"section"},"ISIC-N":{"notation":"N","label":"Professional, scientific and technical activities","level":"section"},"ISIC-O":{"notation":"O","label":"Administrative and support service activities","level":"section"},"ISIC-P":{"notation":"P","label":"Public administration and defence; compulsory social security","level":"section"},"ISIC-Q":{"notation":"Q","label":"Education","level":"section"},"ISIC-R":{"notation":"R","label":"Human health and social work activities","level":"section"},"ISIC-S":{"notation":"S","label":"Arts, sports and recreation","level":"section"},"ISIC-T":{"notation":"T","label":"Other service activities","level":"section"},"ISIC-U":{"notation":"U","label":"Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use","level":"section"},"ISIC-V":{"notation":"V","label":"Activities of extraterritorial organizations and bodies","level":"section"},"ISIC-21":{"notation":"21","label":"Manufacture of basic pharmaceutical products and pharmaceutical preparations","level":"division"},"ISIC-2100":{"notation":"2100","label":"Manufacture of pharmaceuticals, medicinal chemical and botanical products","level":"class"},"ISIC-30":{"notation":"30","label":"Manufacture of other transport equipment","level":"division"},"ISIC-3030":{"notation":"3030","label":"Manufacture of air and spacecraft and related machinery","level":"class"},"ISIC-47":{"notation":"47","label":"Retail trade","level":"division"},"ISIC-4711":{"notation":"4711","label":"Non-specialized retail sale with food, beverages or tobacco predominating","level":"class"},"ISIC-56":{"notation":"56","label":"Food and beverage service activities","level":"division"},"ISIC-5610":{"notation":"5610","label":"Restaurants and mobile food service activities","level":"class"},"ISIC-62":{"notation":"62","label":"Computer programming, consultancy and related activities","level":"division"},"ISIC-64":{"notation":"64","label":"Financial service activities, except insurance and pension funding","level":"division"},"ISIC-6419":{"notation":"6419","label":"Other monetary intermediation","level":"class"},"ISIC-65":{"notation":"65","label":"Insurance, reinsurance and pension funding, except compulsory social security","level":"division"},"ISIC-6512":{"notation":"6512","label":"Non-life insurance","level":"class"},"ISIC-84":{"notation":"84","label":"Public administration and defence; compulsory social security","level":"division"},"ISIC-8411":{"notation":"8411","label":"General public administration activities","level":"class"},"ISIC-85":{"notation":"85","label":"Education","level":"division"},"ISIC-8531":{"notation":"8531","label":"General secondary education","level":"class"},"ISIC-8540":{"notation":"8540","label":"Tertiary education","level":"class"},"ISIC-86":{"notation":"86","label":"Human health activities","level":"division"},"ISIC-8610":{"notation":"8610","label":"Hospital activities","level":"class"}},"stages":[{"stream":"Hire to retire","label":"Recruit and employ","functionId":"human-capital-management","functionLabel":"Human capital management","requires":[],"provides":["employment-relationship-open"],"realisedBy":["employment-engagement"]},{"stream":"Hire to retire","label":"Establish who the candidate is","functionId":"identity-proofing","functionLabel":"Identity proofing","requires":[],"provides":["identity-verified"],"realisedBy":["identity-verification"]},{"stream":"Hire to retire","label":"Check right to work and qualifications","functionId":"eligibility-verification","functionLabel":"Eligibility verification","requires":["education-qualification-evidence-available"],"provides":["qualification-verified"],"realisedBy":["qualification-verification"]},{"stream":"Hire to retire","label":"Agree and sign the employment contract","functionId":"contracting-and-signing","functionLabel":"Contracting and signing","requires":["identity-verified","qualification-verified"],"provides":[],"realisedBy":[]},{"stream":"Hire to retire","label":"Provision and later revoke access","functionId":"access-management","functionLabel":"Access management","requires":["employment-relationship-open"],"provides":["access-granted"],"realisedBy":[]},{"stream":"Hire to retire","label":"Retain the employment record","functionId":"records-management","functionLabel":"Records management","requires":[],"provides":[],"realisedBy":[]},{"stream":"Order to cash","label":"Establish the customer relationship","functionId":"relationship-onboarding","functionLabel":"Relationship onboarding","requires":["identity-verified"],"provides":["customer-relationship-open"],"realisedBy":["due-diligence-onboarding"]},{"stream":"Order to cash","label":"Establish who the customer is","functionId":"identity-proofing","functionLabel":"Identity proofing","requires":[],"provides":["identity-verified"],"realisedBy":["identity-verification"]},{"stream":"Order to cash","label":"Decide the terms to offer","functionId":"credit-and-risk-assessment","functionLabel":"Credit and risk assessment","requires":[],"provides":[],"realisedBy":[]},{"stream":"Order to cash","label":"Agree and sign","functionId":"contracting-and-signing","functionLabel":"Contracting and signing","requires":[],"provides":[],"realisedBy":[]},{"stream":"Order to cash","label":"Deliver","functionId":"service-delivery","functionLabel":"Service delivery","requires":[],"provides":[],"realisedBy":[]},{"stream":"Order to cash","label":"Invoice and collect","functionId":"invoicing-and-settlement","functionLabel":"Invoicing and settlement","requires":[],"provides":[],"realisedBy":[]},{"stream":"Order to cash","label":"Handle what goes wrong","functionId":"request-and-complaint-handling","functionLabel":"Request and complaint handling","requires":[],"provides":[],"realisedBy":[]},{"stream":"Order to cash","label":"Retain the audit trail","functionId":"records-management","functionLabel":"Records management","requires":[],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Source and qualify","functionId":"sourcing-and-procurement","functionLabel":"Sourcing and procurement","requires":["accreditation-verified"],"provides":["supplier-qualified"],"realisedBy":["supplier-qualification"]},{"stream":"Procure to pay","label":"Establish the supplier is a real legal entity","functionId":"identity-proofing","functionLabel":"Identity proofing","requires":[],"provides":["accreditation-verified"],"realisedBy":[]},{"stream":"Procure to pay","label":"Assess counterparty and financial risk","functionId":"credit-and-risk-assessment","functionLabel":"Credit and risk assessment","requires":[],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Check accreditations and audit reports","functionId":"audit-and-assurance","functionLabel":"Audit and assurance","requires":["accreditation-evidence-available"],"provides":["accreditation-verified"],"realisedBy":["accreditation-verification"]},{"stream":"Procure to pay","label":"Check conformity of what will be supplied","functionId":"product-compliance","functionLabel":"Product compliance","requires":[],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Agree and sign","functionId":"contracting-and-signing","functionLabel":"Contracting and signing","requires":["supplier-qualified"],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Establish provenance through delivery","functionId":"supply-chain-traceability","functionLabel":"Supply chain traceability","requires":[],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Clear the border","functionId":"customs-and-trade-facilitation","functionLabel":"Customs and trade facilitation","requires":[],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Goods receipt against specification","functionId":"quality-assurance","functionLabel":"Quality assurance","requires":[],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Invoice and payment","functionId":"invoicing-and-settlement","functionLabel":"Invoicing and settlement","requires":[],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Substantiate the tax position","functionId":"tax-administration","functionLabel":"Tax administration","requires":[],"provides":[],"realisedBy":[]},{"stream":"Procure to pay","label":"Retain the audit trail","functionId":"records-management","functionLabel":"Records management","requires":[],"provides":[],"realisedBy":[]}],"credentials":{"eid-credential":{"label":"Electronic identity credential","conditions":["identity-evidence-available","eid-held"]},"kyc-attestation":{"label":"KYC attestation","conditions":["due-diligence-evidence-available","kyc-attestation-held"]},"kyc-currency-attestation":{"label":"KYC currency attestation","conditions":["due-diligence-evidence-available","kyc-attestation-held","kyc-attestation-current"]},"secondary-education-certificate":{"label":"Upper-secondary school-leaving certificate","conditions":["education-qualification-evidence-available","secondary-education-credential-held"]},"vocational-qualification-certificate":{"label":"Vocational qualification certificate","conditions":["education-qualification-evidence-available","secondary-education-credential-held"]},"tertiary-enrolment-attestation":{"label":"Tertiary enrolment attestation","conditions":["tertiary-enrolment-evidence-held"]},"employment-attestation":{"label":"Employment attestation","conditions":["employment-evidence-held"]},"quality-accreditation-certificate":{"label":"Quality accreditation certificate","conditions":["accreditation-evidence-available","supplier-accreditation-held"]},"supplier-qualification-record":{"label":"Supplier qualification record","conditions":["supplier-qualification-evidence-held"]},"service-entitlement-attestation":{"label":"Service entitlement attestation","conditions":["service-entitlement-evidence-held"]}}}</script>
+<script>
+/* Placement helper.
+
+   Two steps, and the boundary between them is the point. Step one is lexical:
+   it scores the typed text against concept labels and definitions with an IDF
+   weighting and nothing cleverer. Step two is lookup: every graph answer -
+   which condition satisfies which, which pattern supplies or consumes one -
+   was computed by build/model.py and embedded above, so the rule is not
+   reimplemented here and cannot drift from the validator. */
+(function () {
+  var el = document.getElementById("ifm-index");
+  if (!el) return;
+  var IX;
+  try { IX = JSON.parse(el.textContent); } catch (e) { return; }
+
+  var form = document.getElementById("placer-form");
+  var input = document.getElementById("placer-input");
+  var out = document.getElementById("placer-out");
+  if (!form || !input || !out) return;
+
+  var STOP = new Set(("a an the and or of for to in on at by with from that this it its is are "
+    + "be been was were has have had do does did not no than then when where which who whom "
+    + "whose what will would can could may might must shall should as if so such into over "
+    + "under about after before during their his her they them we you i one two new").split(" "));
+
+  /* Crude, deliberately legible stemming: enough to join "verifies" to
+     "verification", not a linguistic model. */
+  /* Noun and verb forms of the same act have to land on one token, or
+     "verifies" never matches "verification". Both routes end at "verif":
+     strip -ication, and strip a trailing -y after the -ies/-ied rewrite. */
+  function stem(w) {
+    if (w.length < 4) return w;
+    var rules = [["ications", ""], ["ication", ""],
+                 ["izations", "is"], ["ization", "is"],
+                 ["isations", "is"], ["isation", "is"],
+                 ["ations", ""], ["ation", ""],
+                 ["ances", ""], ["ance", ""],
+                 ["ements", "ement"], ["ingly", ""], ["edly", ""],
+                 ["ies", "y"], ["ied", "y"], ["ing", ""], ["ers", "er"],
+                 ["ed", ""], ["es", ""], ["s", ""]];
+    for (var i = 0; i < rules.length; i++) {
+      var suf = rules[i][0];
+      if (w.length > suf.length + 2 && w.slice(-suf.length) === suf) {
+        w = w.slice(0, -suf.length) + rules[i][1];
+        break;
+      }
+    }
+    if (w.length > 4 && w.slice(-1) === "y") w = w.slice(0, -1);
+    if (w.length > 3 && w.slice(-1) === "e") w = w.slice(0, -1);
+    return w;
+  }
+
+  /* Stems are for matching, not for reading. "matched on verif, availabl"
+     tells a reader nothing, so the word they actually typed is kept against
+     each stem and shown instead. */
+  var spelling = Object.create(null);
+  function tokens(text, remember) {
+    return (text || "").toLowerCase().split(/[^a-z\u00c0-\u024f]+/)
+      .filter(function (w) { return w.length > 2 && !STOP.has(w); })
+      .map(function (w) {
+        var s = stem(w);
+        if (remember && !spelling[s]) spelling[s] = w;
+        return s;
+      });
+  }
+  function said(stems) {
+    return stems.map(function (s) { return spelling[s] || s; });
+  }
+
+  /* One document per concept, label terms weighted above definition terms. */
+  var docs = [];
+  function addDoc(kind, id, label, body, extra) {
+    var lab = tokens(label), bod = tokens(body), ext = tokens(extra || "");
+    var tf = Object.create(null);
+    lab.forEach(function (t) { tf[t] = (tf[t] || 0) + 3; });
+    ext.forEach(function (t) { tf[t] = (tf[t] || 0) + 2; });
+    bod.forEach(function (t) { tf[t] = (tf[t] || 0) + 1; });
+    docs.push({ kind: kind, id: id, label: label, tf: tf,
+                len: Math.sqrt(lab.length * 3 + ext.length * 2 + bod.length + 1) });
+  }
+
+  Object.keys(IX.patterns).forEach(function (id) {
+    var p = IX.patterns[id];
+    addDoc("pattern", id, p.name, p.text,
+           p.primaryLabel + " " + p.supporting.join(" "));
+  });
+  Object.keys(IX.functions).forEach(function (id) {
+    var f = IX.functions[id];
+    addDoc("function", id, f.label, f.text, f.aka);
+  });
+  Object.keys(IX.conditions).forEach(function (id) {
+    var c = IX.conditions[id];
+    addDoc("condition", id, c.label, c.text, c.kind);
+  });
+  Object.keys(IX.sectors).forEach(function (id) {
+    addDoc("sector", id, IX.sectors[id].label, "", "");
+  });
+  IX.stages.forEach(function (s, i) {
+    addDoc("stage", String(i), s.label, "", s.stream + " " + s.functionLabel);
+  });
+  Object.keys(IX.credentials).forEach(function (id) {
+    addDoc("credential", id, IX.credentials[id].label, "", "");
+  });
+
+  var df = Object.create(null);
+  docs.forEach(function (d) {
+    Object.keys(d.tf).forEach(function (t) { df[t] = (df[t] || 0) + 1; });
+  });
+  var N = docs.length;
+  function idf(t) { return Math.log(1 + N / (1 + (df[t] || 0))); }
+
+  function score(queryTerms, kind) {
+    var uniq = Array.from(new Set(queryTerms));
+    return docs.filter(function (d) { return d.kind === kind; })
+      .map(function (d) {
+        var s = 0, hits = [];
+        uniq.forEach(function (t) {
+          if (d.tf[t]) { s += d.tf[t] * idf(t); hits.push(t); }
+        });
+        return { id: d.id, label: d.label, score: s / d.len, hits: hits };
+      })
+      .filter(function (r) { return r.score > 0; })
+      .sort(function (a, b) { return b.score - a.score; });
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function condName(id) {
+    return esc(IX.conditions[id] ? IX.conditions[id].label : id);
+  }
+  function patLink(id) {
+    var p = IX.patterns[id];
+    return '<a href="#' + esc(id) + '">' + esc(p ? p.name : id) + "</a>";
+  }
+
+  function block(title, note, html) {
+    return '<div class="pr-block"><h3>' + title + "</h3>"
+      + (note ? '<p class="pr-note">' + note + "</p>" : "") + html + "</div>";
+  }
+  function why(hits) {
+    return hits.length
+      ? ' <span class="pr-why">matched on '
+        + esc(said(hits).slice(0, 6).join(", ")) + "</span>"
+      : "";
+  }
+
+  function render(text) {
+    spelling = Object.create(null);
+    var q = tokens(text, true);
+    if (q.length === 0) {
+      var hadLatin = /[a-z\u00c0-\u024f]{3,}/i.test(text || "");
+      out.hidden = false;
+      out.innerHTML = '<p class="pr-empty">Nothing to match on. '
+        + (hadLatin
+            ? "Every word was a stop word or shorter than three letters."
+            : "The matcher only reads Latin-script words, and the graph's "
+              + "vocabulary is in English &mdash; describe the activity in "
+              + "English to use it.")
+        + "</p>";
+      return;
+    }
+
+    var funcs = score(q, "function").slice(0, 3);
+    var conds = score(q, "condition").slice(0, 6);
+    var stages = score(q, "stage").slice(0, 3);
+    var sectors = score(q, "sector").slice(0, 3);
+    var creds = score(q, "credential").slice(0, 3);
+
+    /* Patterns are not ranked on their prose alone. A pattern whose interface
+       uses the conditions the text hit, or whose primary function the text
+       hit, is corroborated by the graph and outranks one that merely shares
+       incidental words. This is also what decides how firmly to speak below:
+       lexical agreement on its own is not enough to name a pattern. */
+    var condScore = Object.create(null);
+    conds.forEach(function (r) { condScore[r.id] = r.score; });
+    var funcScore = Object.create(null);
+    funcs.forEach(function (r) { funcScore[r.id] = r.score; });
+
+    var pats = score(q, "pattern").map(function (r) {
+      var p = IX.patterns[r.id], shared = [], bonus = 0;
+      p.requires.concat(p.provides).forEach(function (c) {
+        if (condScore[c] && shared.indexOf(c) === -1) {
+          shared.push(c);
+          bonus += condScore[c];
+        }
+      });
+      var fnAgrees = !!funcScore[p.primary];
+      if (fnAgrees) bonus += funcScore[p.primary] * 0.8;
+      return { id: r.id, label: r.label, hits: r.hits, text: r.score,
+               shared: shared, fnAgrees: fnAgrees,
+               score: r.score * 0.5 + bonus };
+    }).sort(function (a, b) { return b.score - a.score; });
+
+    var top = pats[0], html = "";
+    var margin = (top && pats[1]) ? (top.score - pats[1].score) / top.score : 1;
+    var corroborated = !!top && (top.shared.length > 0 || top.fnAgrees);
+    var distinct = top ? top.hits.length : 0;
+
+    /* Three tiers, and only the first one names a pattern. Wording alone,
+       however high it scores, gets the hedged answer. */
+    var verdict, vnote;
+    if (top && top.score >= 1.2 && margin >= 0.25 && corroborated && distinct >= 2) {
+      verdict = "This closely resembles an existing pattern.";
+      vnote = "If the business transformation and the interface are the same, "
+        + "you are adding a <strong>flow</strong> that realises "
+        + patLink(top.id) + ", not a new pattern &mdash; a different sector or "
+        + "jurisdiction is a flow. The match is corroborated by "
+        + (top.shared.length
+            ? "the condition" + (top.shared.length > 1 ? "s " : " ")
+              + top.shared.map(condName).join(", ")
+            : "its primary function")
+        + ", not by wording alone.";
+    } else if (top && top.score >= 0.3) {
+      verdict = "Nearest by wording &mdash; check these, do not assume them.";
+      vnote = "No candidate is far enough ahead of the rest, or corroborated by "
+        + "a shared condition or function, to name. Compare your required and "
+        + "provided conditions against the interfaces below: the same "
+        + "transformation and interface means a flow, a different principal "
+        + "outcome means a new pattern.";
+    } else {
+      verdict = "Nothing here is close.";
+      vnote = "On this wording no existing pattern stands out. That may mean a "
+        + "new pattern, or wording that does not use the vocabulary the graph "
+        + "uses. The text step matches words, not meaning &mdash; describing an "
+        + "age check without the word <em>age</em> will not find one. Try "
+        + "naming the outcome rather than the mechanism.";
+    }
+    html += '<div class="pr-verdict"><p class="pr-verdict-line">' + verdict
+      + '</p><p class="pr-note">' + vnote + "</p></div>";
+    pats = pats.slice(0, 4);
+
+    /* 2. Nearest patterns, with their interfaces. */
+    if (pats.length) {
+      html += block("Nearest existing patterns",
+        "Ranked by wording, then reordered by whether the graph agrees: a "
+        + "pattern whose interface uses a condition your text hit, or whose "
+        + "primary function it hit, ranks above one that only shares words.",
+        '<ul class="pr-list">' + pats.map(function (r) {
+          var p = IX.patterns[r.id];
+          var agree = [];
+          if (r.shared.length) agree.push("condition " + r.shared.map(condName).join(", "));
+          if (r.fnAgrees) agree.push("primary function");
+          return "<li>" + patLink(r.id) + why(r.hits)
+            + (agree.length
+                ? ' <span class="pr-agree">graph agrees on ' + agree.join("; ") + "</span>"
+                : ' <span class="pr-why">wording only</span>')
+            + '<div class="pr-sub"><span>requires</span> '
+            + (p.requires.map(condName).join(", ") || "nothing")
+            + '</div><div class="pr-sub"><span>provides</span> '
+            + (p.provides.map(condName).join(", ") || "nothing")
+            + '</div><div class="pr-sub"><span>function</span> '
+            + esc(p.primaryLabel)
+            + (p.flows.length
+                ? '</div><div class="pr-sub"><span>flows</span> '
+                  + esc(p.flows.join(", "))
+                : "")
+            + "</div></li>";
+        }).join("") + "</ul>");
+    }
+
+    /* 3. Primary function: exactly one, and it decides nothing on its own. */
+    if (funcs.length) {
+      html += block("Candidate primary function",
+        "A pattern declares exactly one. Supporting functions aid discovery "
+        + "and never determine identity or composition, and two patterns under "
+        + "one function can still be distinct.",
+        '<ul class="pr-list">' + funcs.map(function (r) {
+          return "<li>" + esc(r.label) + why(r.hits) + "</li>";
+        }).join("") + "</ul>");
+    }
+
+    /* 4. Conditions, and what the model says connects to them. */
+    if (conds.length) {
+      html += block("Conditions your wording touches",
+        "Assign each one to <em>requires</em> or <em>provides</em> yourself "
+        + "&mdash; the text does not say which direction it is. What follows "
+        + "each is computed from the graph.",
+        '<ul class="pr-list">' + conds.map(function (r) {
+          var c = IX.conditions[r.id];
+          /* Straight lookup. Both lists were resolved in the build through
+             Model.satisfies; nothing is joined or inferred here. */
+          var suppliers = IX.suppliersOf[r.id] || [];
+          var consumers = IX.consumersOf[r.id] || [];
+          var creds = Object.keys(IX.credentials).filter(function (cid) {
+            return IX.credentials[cid].conditions.indexOf(r.id) !== -1;
+          });
+          return "<li><strong>" + esc(c.label) + "</strong> "
+            + '<span class="pr-kind">' + esc(c.kind) + "</span>" + why(r.hits)
+            + '<div class="pr-sub"><span>if you require it</span> '
+            + (suppliers.length
+                ? suppliers.map(patLink).join(", ") + " can supply it"
+                : "nothing here supplies it &mdash; that would be a gap")
+            + '</div><div class="pr-sub"><span>if you provide it</span> '
+            + (consumers.length
+                ? consumers.map(patLink).join(", ") + " can consume it"
+                : "nothing here consumes it &mdash; an end of a chain")
+            + "</div>"
+            + (c.kind === "evidence"
+                ? '<div class="pr-sub"><span>evidence</span> '
+                  + (creds.length
+                      ? creds.map(function (cid) {
+                          return esc(IX.credentials[cid].label); }).join(", ")
+                      : "no credential type here substantiates it")
+                  + "</div>"
+                : "")
+            + "</li>";
+        }).join("") + "</ul>");
+    }
+
+    /* 5. Classification context: stage and sector. Discovery only. */
+    var ctx = "";
+    if (stages.length) {
+      ctx += '<div class="pr-col"><h4>Value stream stage</h4><ul class="pr-list">'
+        + stages.map(function (r) {
+            var s = IX.stages[Number(r.id)];
+            return "<li>" + esc(s.label) + ' <span class="pr-why">'
+              + esc(s.stream) + "</span>"
+              + '<div class="pr-sub"><span>realised by</span> '
+              + (s.realisedBy.length ? s.realisedBy.map(patLink).join(", ")
+                                     : "no pattern yet &mdash; an open stage")
+              + "</div></li>";
+          }).join("") + "</ul></div>";
+    }
+    if (sectors.length) {
+      ctx += '<div class="pr-col"><h4>Sector</h4><ul class="pr-list">'
+        + sectors.map(function (r) {
+            var s = IX.sectors[r.id];
+            return '<li><span class="code">' + esc(s.notation) + "</span> "
+              + esc(s.label) + "</li>";
+          }).join("") + "</ul></div>";
+    }
+    if (creds.length) {
+      ctx += '<div class="pr-col"><h4>Credential types named</h4><ul class="pr-list">'
+        + creds.map(function (r) {
+            return "<li>" + esc(r.label) + why(r.hits) + "</li>";
+          }).join("") + "</ul></div>";
+    }
+    if (ctx) {
+      html += block("Classification context",
+        "Discovery only. Sector and stage locate the work; they do not "
+        + "determine whether two use cases are the same use case.",
+        '<div class="pr-cols">' + ctx + "</div>");
+    }
+
+    /* 6. Atomicity. One primary function, one principal outcome.
+
+       Several conditions matching the SAME word is one ambiguous term, not
+       several outcomes - typing "verify" alone hits four *-verified
+       conditions and means nothing. So conditions are grouped by the query
+       words that found them, and only distinct groups count. */
+    var outcomeHits = conds.filter(function (r) {
+      return r.score > 0.45 && IX.conditions[r.id].kind !== "evidence";
+    });
+    var groups = Object.create(null);
+    outcomeHits.forEach(function (r) {
+      var key = r.hits.slice().sort().join("|");
+      if (!groups[key] || r.score > groups[key].score) groups[key] = r;
+    });
+    var reps = Object.keys(groups).map(function (k) { return groups[k]; });
+    var sequenced = /\b(then|afterwards|and then|finally|subsequently)\b/i.test(text);
+    if (reps.length > 1 || sequenced) {
+      html += block("Check atomicity",
+        "",
+        '<p class="pr-note">A canonical use case represents one primary business '
+        + "function and one principal business outcome from a defined set of "
+        + "preconditions. Your description "
+        + (reps.length > 1
+            ? "touches " + reps.length + " unrelated non-evidence conditions ("
+              + reps.map(function (r) { return condName(r.id); }).join(", ") + ")"
+            : "reads as a sequence of steps")
+        + ". If those are independently reusable transformations with different "
+        + "principal outcomes, split it into smaller patterns and let a real "
+        + "flow compose them.</p>");
+    }
+
+    out.hidden = false;
+    out.innerHTML = html;
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    render(input.value);
+  });
+  document.getElementById("placer-clear").addEventListener("click", function () {
+    input.value = "";
+    out.hidden = true;
+    out.innerHTML = "";
+    input.focus();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".eg"), function (b) {
+    b.addEventListener("click", function () {
+      input.value = b.getAttribute("data-eg");
+      render(input.value);
+    });
+  });
+})();
+</script>
 
 </body>
 </html>

@@ -1184,7 +1184,18 @@ def build_html(model):
     n_patterns = len(model.use_cases)
     n_flows = len(model.flows)
     n_conditions = len(model.conditions)
-    n_sectors = len({s for uc in model.use_cases for s in model.sectors_of[uc]})
+    # Split by level: five of these are whole ISIC sections, and calling a
+    # section a class overstates how finely the dataset is classified.
+    used_sectors = {s for uc in model.use_cases for s in model.sectors_of[uc]}
+    n_classes = sum(1 for s in used_sectors if model.sectors[s]["level"] == "class")
+    n_sections = len(used_sectors) - n_classes
+
+    # Embedded as JSON rather than built in the browser: the subsumption rule
+    # is resolved here, by the same Model the validator uses.  "<" is escaped
+    # so no string in the data can close the script element early.
+    placement_json = (json.dumps(build_placement_index(model),
+                                 ensure_ascii=False, separators=(",", ":"))
+                      .replace("<", "\\u003c"))
     n_streams = len(model.value_streams)
     n_credentials = len(model.credential_types)
 
@@ -1408,6 +1419,61 @@ def build_html(model):
   ul.artefacts {{ font-size: 0.875rem; color: var(--body); max-width: 680px;
     padding-left: 1.125rem; }}
   ul.artefacts li {{ padding: 3px 0; }}
+  /* --- placement helper ---------------------------------------------- */
+  .placer {{ max-width: 680px; margin: 20px 0 0; }}
+  .placer-label {{ display: block; font-size: 0.6875rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); margin-bottom: 6px; }}
+  #placer-input {{ width: 100%; box-sizing: border-box; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 4px; background: var(--paper);
+    color: var(--ink); font: inherit; font-size: 0.9062rem; line-height: 1.5;
+    resize: vertical; }}
+  #placer-input:focus {{ outline: none; border-color: var(--accent); }}
+  .placer-actions {{ display: flex; flex-wrap: wrap; align-items: center;
+    gap: 8px 12px; margin-top: 10px; }}
+  .btn {{ font: inherit; font-size: 0.8125rem; padding: 6px 14px; cursor: pointer;
+    border: 1px solid var(--accent); border-radius: 4px; background: var(--accent);
+    color: #fff; }}
+  .btn.quiet {{ background: none; color: var(--body); border-color: var(--line); }}
+  .btn.quiet:hover {{ color: var(--accent); border-color: var(--accent); }}
+  .placer-egs {{ font-size: 0.75rem; color: var(--body); }}
+  button.eg {{ font: inherit; font-size: 0.75rem; padding: 0; margin-left: 4px;
+    border: 0; background: none; cursor: pointer; color: var(--body);
+    border-bottom: 1px dotted var(--line); }}
+  button.eg:hover {{ color: var(--accent); border-bottom-color: currentColor; }}
+  .placer-out {{ margin-top: 24px; }}
+  .pr-empty {{ font-size: 0.875rem; color: var(--body); }}
+  .pr-verdict {{ max-width: 680px; margin: 0 0 20px; padding: 12px 14px;
+    border: 1px solid var(--line); border-left: 2px solid var(--accent);
+    border-radius: 4px; background: var(--bg-soft); }}
+  .pr-verdict-line {{ margin: 0 0 6px; font-size: 1rem; font-weight: 600;
+    color: var(--ink); }}
+  .pr-block {{ margin: 0 0 20px; }}
+  .pr-block h3 {{ font-size: 0.8125rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); margin: 0 0 6px; }}
+  .pr-block h4 {{ font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); margin: 0 0 6px; font-weight: 600; }}
+  .pr-note {{ font-size: 0.8125rem; color: var(--body); max-width: 680px;
+    margin: 0 0 10px; }}
+  ul.pr-list {{ list-style: none; padding: 0; margin: 0; font-size: 0.875rem;
+    color: var(--ink); max-width: 680px; }}
+  ul.pr-list > li {{ padding: 8px 0; border-bottom: 1px solid var(--line); }}
+  ul.pr-list > li:last-child {{ border-bottom: none; }}
+  ul.pr-list a {{ color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }}
+  ul.pr-list a:hover {{ color: var(--accent); border-bottom-color: currentColor; }}
+  .pr-sub {{ font-size: 0.8125rem; color: var(--body); margin-top: 3px; }}
+  .pr-sub span:first-child {{ display: inline-block; min-width: 8.75rem;
+    font-size: 0.6875rem; text-transform: uppercase; letter-spacing: .06em; }}
+  .pr-why {{ font-size: 0.6875rem; color: var(--body); }}
+  .pr-agree {{ font-size: 0.6875rem; color: var(--accent); }}
+  .pr-kind {{ font-size: 0.6875rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); border: 1px solid var(--line);
+    border-radius: 10px; padding: 0 6px; background: var(--bg-soft); }}
+  .pr-cols {{ display: grid; gap: 20px; align-items: start;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); max-width: 680px; }}
+  @media (max-width: 620px) {{
+    .pr-sub span:first-child {{ min-width: 0; display: block; }}
+  }}
   .matrix-scroll {{ overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }}
   table.matrix {{ border-collapse: collapse; font-size: 0.8125rem; min-width: 100%; }}
   table.matrix th, table.matrix td {{ border-bottom: 1px solid var(--line); padding: 8px 10px; }}
@@ -1584,8 +1650,8 @@ def build_html(model):
       The graph therefore separates reusable business patterns from the credentials
       and implementations that happen to realise them today. It currently holds
       {n_patterns} patterns, {n_flows} flows, {n_conditions} conditions and
-      {n_credentials} credential types across {n_sectors} ISIC classes and
-      {n_streams} value streams.
+      {n_credentials} credential types, classified across {n_classes} ISIC
+      classes and {n_sections} whole sections, and {n_streams} value streams.
     </p>
   </section>
 
@@ -1673,9 +1739,10 @@ def build_html(model):
       Condition compatibility is the core composition rule. Where specified,
       additional interface constraints &mdash; subject role, a named evidence type,
       and <code>key=value</code> context such as jurisdiction or assurance level
-      &mdash; narrow compatibility further. The model supports all three; the
-      current dataset uses subject role and evidence type, and does not yet
-      populate any context constraints.
+      &mdash; narrow compatibility further. The model supports all three. The
+      current dataset records subject role and evidence type and populates no
+      context constraints, and as the values stand none of the three currently
+      excludes a pairing that the condition rule allows.
     </p>
 
     <h3>Adding a credential</h3>
@@ -1730,6 +1797,47 @@ def build_html(model):
       Answers are derived from the use cases and conditions currently represented
       in the dataset, not from the ecosystem at large.
     </p>
+  </section>
+
+  <section id="place">
+    <h2>Where would this fit?</h2>
+    <p class="prose">
+      Describe an activity, a high-level use case or a process. The page matches
+      your wording against the vocabularies in the graph, then answers from the
+      model: which existing pattern it most resembles, which primary function and
+      value-stream stage it looks like, which conditions it appears to touch, and
+      what would supply or consume those conditions.
+    </p>
+    <p class="prose">
+      <strong>What this is.</strong> The text step is lexical: it compares your
+      words with concept labels and definitions. It does not understand your
+      description, and it matches words rather than meaning &mdash; an age check
+      described without the word <em>age</em> will not be found. Everything after
+      that step is exact: the condition subsumption, and the suppliers and
+      consumers of each condition, are resolved in the build by the same model
+      the validator uses, and the page only looks them up. Those answers are for
+      a bare condition; a real interface point may narrow further by subject
+      role, evidence type or context. Read the result as a shortlist to check,
+      not a classification.
+    </p>
+    <form class="placer" id="placer-form" autocomplete="off">
+      <label class="placer-label" for="placer-input">Activity, use case or process</label>
+      <textarea id="placer-input" rows="3" spellcheck="false"
+        placeholder="A pharmacy checks that a customer is old enough to buy a restricted medicine, without identifying them."></textarea>
+      <div class="placer-actions">
+        <button type="submit" class="btn">Place it</button>
+        <button type="button" class="btn quiet" id="placer-clear">Clear</button>
+        <span class="placer-egs">Try:
+          <button type="button" class="eg" data-eg="A university admits a student who presents a school-leaving qualification and an electronic identity.">university admission</button>
+          <button type="button" class="eg" data-eg="A bank re-checks the due diligence on an existing customer relationship at the interval its supervisor requires.">periodic due diligence</button>
+          <button type="button" class="eg" data-eg="An insurer onboards a new customer, verifies who they are, checks they may contract, opens the policy and issues a membership card.">a deliberately broad one</button>
+        </span>
+      </div>
+    </form>
+    <div id="placer-out" class="placer-out" hidden></div>
+    <noscript><p class="legend">This helper needs JavaScript. Everything it
+      reports is also in the composition report linked at the foot of the
+      page.</p></noscript>
   </section>
 
   <section>
@@ -1939,6 +2047,408 @@ def build_html(model):
   </div>
 </footer>
 
+<script type="application/json" id="ifm-index">{placement_json}</script>
+<script>
+/* Placement helper.
+
+   Two steps, and the boundary between them is the point. Step one is lexical:
+   it scores the typed text against concept labels and definitions with an IDF
+   weighting and nothing cleverer. Step two is lookup: every graph answer -
+   which condition satisfies which, which pattern supplies or consumes one -
+   was computed by build/model.py and embedded above, so the rule is not
+   reimplemented here and cannot drift from the validator. */
+(function () {{
+  var el = document.getElementById("ifm-index");
+  if (!el) return;
+  var IX;
+  try {{ IX = JSON.parse(el.textContent); }} catch (e) {{ return; }}
+
+  var form = document.getElementById("placer-form");
+  var input = document.getElementById("placer-input");
+  var out = document.getElementById("placer-out");
+  if (!form || !input || !out) return;
+
+  var STOP = new Set(("a an the and or of for to in on at by with from that this it its is are "
+    + "be been was were has have had do does did not no than then when where which who whom "
+    + "whose what will would can could may might must shall should as if so such into over "
+    + "under about after before during their his her they them we you i one two new").split(" "));
+
+  /* Crude, deliberately legible stemming: enough to join "verifies" to
+     "verification", not a linguistic model. */
+  /* Noun and verb forms of the same act have to land on one token, or
+     "verifies" never matches "verification". Both routes end at "verif":
+     strip -ication, and strip a trailing -y after the -ies/-ied rewrite. */
+  function stem(w) {{
+    if (w.length < 4) return w;
+    var rules = [["ications", ""], ["ication", ""],
+                 ["izations", "is"], ["ization", "is"],
+                 ["isations", "is"], ["isation", "is"],
+                 ["ations", ""], ["ation", ""],
+                 ["ances", ""], ["ance", ""],
+                 ["ements", "ement"], ["ingly", ""], ["edly", ""],
+                 ["ies", "y"], ["ied", "y"], ["ing", ""], ["ers", "er"],
+                 ["ed", ""], ["es", ""], ["s", ""]];
+    for (var i = 0; i < rules.length; i++) {{
+      var suf = rules[i][0];
+      if (w.length > suf.length + 2 && w.slice(-suf.length) === suf) {{
+        w = w.slice(0, -suf.length) + rules[i][1];
+        break;
+      }}
+    }}
+    if (w.length > 4 && w.slice(-1) === "y") w = w.slice(0, -1);
+    if (w.length > 3 && w.slice(-1) === "e") w = w.slice(0, -1);
+    return w;
+  }}
+
+  /* Stems are for matching, not for reading. "matched on verif, availabl"
+     tells a reader nothing, so the word they actually typed is kept against
+     each stem and shown instead. */
+  var spelling = Object.create(null);
+  function tokens(text, remember) {{
+    return (text || "").toLowerCase().split(/[^a-z\\u00c0-\\u024f]+/)
+      .filter(function (w) {{ return w.length > 2 && !STOP.has(w); }})
+      .map(function (w) {{
+        var s = stem(w);
+        if (remember && !spelling[s]) spelling[s] = w;
+        return s;
+      }});
+  }}
+  function said(stems) {{
+    return stems.map(function (s) {{ return spelling[s] || s; }});
+  }}
+
+  /* One document per concept, label terms weighted above definition terms. */
+  var docs = [];
+  function addDoc(kind, id, label, body, extra) {{
+    var lab = tokens(label), bod = tokens(body), ext = tokens(extra || "");
+    var tf = Object.create(null);
+    lab.forEach(function (t) {{ tf[t] = (tf[t] || 0) + 3; }});
+    ext.forEach(function (t) {{ tf[t] = (tf[t] || 0) + 2; }});
+    bod.forEach(function (t) {{ tf[t] = (tf[t] || 0) + 1; }});
+    docs.push({{ kind: kind, id: id, label: label, tf: tf,
+                len: Math.sqrt(lab.length * 3 + ext.length * 2 + bod.length + 1) }});
+  }}
+
+  Object.keys(IX.patterns).forEach(function (id) {{
+    var p = IX.patterns[id];
+    addDoc("pattern", id, p.name, p.text,
+           p.primaryLabel + " " + p.supporting.join(" "));
+  }});
+  Object.keys(IX.functions).forEach(function (id) {{
+    var f = IX.functions[id];
+    addDoc("function", id, f.label, f.text, f.aka);
+  }});
+  Object.keys(IX.conditions).forEach(function (id) {{
+    var c = IX.conditions[id];
+    addDoc("condition", id, c.label, c.text, c.kind);
+  }});
+  Object.keys(IX.sectors).forEach(function (id) {{
+    addDoc("sector", id, IX.sectors[id].label, "", "");
+  }});
+  IX.stages.forEach(function (s, i) {{
+    addDoc("stage", String(i), s.label, "", s.stream + " " + s.functionLabel);
+  }});
+  Object.keys(IX.credentials).forEach(function (id) {{
+    addDoc("credential", id, IX.credentials[id].label, "", "");
+  }});
+
+  var df = Object.create(null);
+  docs.forEach(function (d) {{
+    Object.keys(d.tf).forEach(function (t) {{ df[t] = (df[t] || 0) + 1; }});
+  }});
+  var N = docs.length;
+  function idf(t) {{ return Math.log(1 + N / (1 + (df[t] || 0))); }}
+
+  function score(queryTerms, kind) {{
+    var uniq = Array.from(new Set(queryTerms));
+    return docs.filter(function (d) {{ return d.kind === kind; }})
+      .map(function (d) {{
+        var s = 0, hits = [];
+        uniq.forEach(function (t) {{
+          if (d.tf[t]) {{ s += d.tf[t] * idf(t); hits.push(t); }}
+        }});
+        return {{ id: d.id, label: d.label, score: s / d.len, hits: hits }};
+      }})
+      .filter(function (r) {{ return r.score > 0; }})
+      .sort(function (a, b) {{ return b.score - a.score; }});
+  }}
+
+  function esc(s) {{
+    return String(s).replace(/[&<>"]/g, function (c) {{
+      return {{ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }}[c];
+    }});
+  }}
+  function condName(id) {{
+    return esc(IX.conditions[id] ? IX.conditions[id].label : id);
+  }}
+  function patLink(id) {{
+    var p = IX.patterns[id];
+    return '<a href="#' + esc(id) + '">' + esc(p ? p.name : id) + "</a>";
+  }}
+
+  function block(title, note, html) {{
+    return '<div class="pr-block"><h3>' + title + "</h3>"
+      + (note ? '<p class="pr-note">' + note + "</p>" : "") + html + "</div>";
+  }}
+  function why(hits) {{
+    return hits.length
+      ? ' <span class="pr-why">matched on '
+        + esc(said(hits).slice(0, 6).join(", ")) + "</span>"
+      : "";
+  }}
+
+  function render(text) {{
+    spelling = Object.create(null);
+    var q = tokens(text, true);
+    if (q.length === 0) {{
+      var hadLatin = /[a-z\\u00c0-\\u024f]{{3,}}/i.test(text || "");
+      out.hidden = false;
+      out.innerHTML = '<p class="pr-empty">Nothing to match on. '
+        + (hadLatin
+            ? "Every word was a stop word or shorter than three letters."
+            : "The matcher only reads Latin-script words, and the graph's "
+              + "vocabulary is in English &mdash; describe the activity in "
+              + "English to use it.")
+        + "</p>";
+      return;
+    }}
+
+    var funcs = score(q, "function").slice(0, 3);
+    var conds = score(q, "condition").slice(0, 6);
+    var stages = score(q, "stage").slice(0, 3);
+    var sectors = score(q, "sector").slice(0, 3);
+    var creds = score(q, "credential").slice(0, 3);
+
+    /* Patterns are not ranked on their prose alone. A pattern whose interface
+       uses the conditions the text hit, or whose primary function the text
+       hit, is corroborated by the graph and outranks one that merely shares
+       incidental words. This is also what decides how firmly to speak below:
+       lexical agreement on its own is not enough to name a pattern. */
+    var condScore = Object.create(null);
+    conds.forEach(function (r) {{ condScore[r.id] = r.score; }});
+    var funcScore = Object.create(null);
+    funcs.forEach(function (r) {{ funcScore[r.id] = r.score; }});
+
+    var pats = score(q, "pattern").map(function (r) {{
+      var p = IX.patterns[r.id], shared = [], bonus = 0;
+      p.requires.concat(p.provides).forEach(function (c) {{
+        if (condScore[c] && shared.indexOf(c) === -1) {{
+          shared.push(c);
+          bonus += condScore[c];
+        }}
+      }});
+      var fnAgrees = !!funcScore[p.primary];
+      if (fnAgrees) bonus += funcScore[p.primary] * 0.8;
+      return {{ id: r.id, label: r.label, hits: r.hits, text: r.score,
+               shared: shared, fnAgrees: fnAgrees,
+               score: r.score * 0.5 + bonus }};
+    }}).sort(function (a, b) {{ return b.score - a.score; }});
+
+    var top = pats[0], html = "";
+    var margin = (top && pats[1]) ? (top.score - pats[1].score) / top.score : 1;
+    var corroborated = !!top && (top.shared.length > 0 || top.fnAgrees);
+    var distinct = top ? top.hits.length : 0;
+
+    /* Three tiers, and only the first one names a pattern. Wording alone,
+       however high it scores, gets the hedged answer. */
+    var verdict, vnote;
+    if (top && top.score >= 1.2 && margin >= 0.25 && corroborated && distinct >= 2) {{
+      verdict = "This closely resembles an existing pattern.";
+      vnote = "If the business transformation and the interface are the same, "
+        + "you are adding a <strong>flow</strong> that realises "
+        + patLink(top.id) + ", not a new pattern &mdash; a different sector or "
+        + "jurisdiction is a flow. The match is corroborated by "
+        + (top.shared.length
+            ? "the condition" + (top.shared.length > 1 ? "s " : " ")
+              + top.shared.map(condName).join(", ")
+            : "its primary function")
+        + ", not by wording alone.";
+    }} else if (top && top.score >= 0.3) {{
+      verdict = "Nearest by wording &mdash; check these, do not assume them.";
+      vnote = "No candidate is far enough ahead of the rest, or corroborated by "
+        + "a shared condition or function, to name. Compare your required and "
+        + "provided conditions against the interfaces below: the same "
+        + "transformation and interface means a flow, a different principal "
+        + "outcome means a new pattern.";
+    }} else {{
+      verdict = "Nothing here is close.";
+      vnote = "On this wording no existing pattern stands out. That may mean a "
+        + "new pattern, or wording that does not use the vocabulary the graph "
+        + "uses. The text step matches words, not meaning &mdash; describing an "
+        + "age check without the word <em>age</em> will not find one. Try "
+        + "naming the outcome rather than the mechanism.";
+    }}
+    html += '<div class="pr-verdict"><p class="pr-verdict-line">' + verdict
+      + '</p><p class="pr-note">' + vnote + "</p></div>";
+    pats = pats.slice(0, 4);
+
+    /* 2. Nearest patterns, with their interfaces. */
+    if (pats.length) {{
+      html += block("Nearest existing patterns",
+        "Ranked by wording, then reordered by whether the graph agrees: a "
+        + "pattern whose interface uses a condition your text hit, or whose "
+        + "primary function it hit, ranks above one that only shares words.",
+        '<ul class="pr-list">' + pats.map(function (r) {{
+          var p = IX.patterns[r.id];
+          var agree = [];
+          if (r.shared.length) agree.push("condition " + r.shared.map(condName).join(", "));
+          if (r.fnAgrees) agree.push("primary function");
+          return "<li>" + patLink(r.id) + why(r.hits)
+            + (agree.length
+                ? ' <span class="pr-agree">graph agrees on ' + agree.join("; ") + "</span>"
+                : ' <span class="pr-why">wording only</span>')
+            + '<div class="pr-sub"><span>requires</span> '
+            + (p.requires.map(condName).join(", ") || "nothing")
+            + '</div><div class="pr-sub"><span>provides</span> '
+            + (p.provides.map(condName).join(", ") || "nothing")
+            + '</div><div class="pr-sub"><span>function</span> '
+            + esc(p.primaryLabel)
+            + (p.flows.length
+                ? '</div><div class="pr-sub"><span>flows</span> '
+                  + esc(p.flows.join(", "))
+                : "")
+            + "</div></li>";
+        }}).join("") + "</ul>");
+    }}
+
+    /* 3. Primary function: exactly one, and it decides nothing on its own. */
+    if (funcs.length) {{
+      html += block("Candidate primary function",
+        "A pattern declares exactly one. Supporting functions aid discovery "
+        + "and never determine identity or composition, and two patterns under "
+        + "one function can still be distinct.",
+        '<ul class="pr-list">' + funcs.map(function (r) {{
+          return "<li>" + esc(r.label) + why(r.hits) + "</li>";
+        }}).join("") + "</ul>");
+    }}
+
+    /* 4. Conditions, and what the model says connects to them. */
+    if (conds.length) {{
+      html += block("Conditions your wording touches",
+        "Assign each one to <em>requires</em> or <em>provides</em> yourself "
+        + "&mdash; the text does not say which direction it is. What follows "
+        + "each is computed from the graph.",
+        '<ul class="pr-list">' + conds.map(function (r) {{
+          var c = IX.conditions[r.id];
+          /* Straight lookup. Both lists were resolved in the build through
+             Model.satisfies; nothing is joined or inferred here. */
+          var suppliers = IX.suppliersOf[r.id] || [];
+          var consumers = IX.consumersOf[r.id] || [];
+          var creds = Object.keys(IX.credentials).filter(function (cid) {{
+            return IX.credentials[cid].conditions.indexOf(r.id) !== -1;
+          }});
+          return "<li><strong>" + esc(c.label) + "</strong> "
+            + '<span class="pr-kind">' + esc(c.kind) + "</span>" + why(r.hits)
+            + '<div class="pr-sub"><span>if you require it</span> '
+            + (suppliers.length
+                ? suppliers.map(patLink).join(", ") + " can supply it"
+                : "nothing here supplies it &mdash; that would be a gap")
+            + '</div><div class="pr-sub"><span>if you provide it</span> '
+            + (consumers.length
+                ? consumers.map(patLink).join(", ") + " can consume it"
+                : "nothing here consumes it &mdash; an end of a chain")
+            + "</div>"
+            + (c.kind === "evidence"
+                ? '<div class="pr-sub"><span>evidence</span> '
+                  + (creds.length
+                      ? creds.map(function (cid) {{
+                          return esc(IX.credentials[cid].label); }}).join(", ")
+                      : "no credential type here substantiates it")
+                  + "</div>"
+                : "")
+            + "</li>";
+        }}).join("") + "</ul>");
+    }}
+
+    /* 5. Classification context: stage and sector. Discovery only. */
+    var ctx = "";
+    if (stages.length) {{
+      ctx += '<div class="pr-col"><h4>Value stream stage</h4><ul class="pr-list">'
+        + stages.map(function (r) {{
+            var s = IX.stages[Number(r.id)];
+            return "<li>" + esc(s.label) + ' <span class="pr-why">'
+              + esc(s.stream) + "</span>"
+              + '<div class="pr-sub"><span>realised by</span> '
+              + (s.realisedBy.length ? s.realisedBy.map(patLink).join(", ")
+                                     : "no pattern yet &mdash; an open stage")
+              + "</div></li>";
+          }}).join("") + "</ul></div>";
+    }}
+    if (sectors.length) {{
+      ctx += '<div class="pr-col"><h4>Sector</h4><ul class="pr-list">'
+        + sectors.map(function (r) {{
+            var s = IX.sectors[r.id];
+            return '<li><span class="code">' + esc(s.notation) + "</span> "
+              + esc(s.label) + "</li>";
+          }}).join("") + "</ul></div>";
+    }}
+    if (creds.length) {{
+      ctx += '<div class="pr-col"><h4>Credential types named</h4><ul class="pr-list">'
+        + creds.map(function (r) {{
+            return "<li>" + esc(r.label) + why(r.hits) + "</li>";
+          }}).join("") + "</ul></div>";
+    }}
+    if (ctx) {{
+      html += block("Classification context",
+        "Discovery only. Sector and stage locate the work; they do not "
+        + "determine whether two use cases are the same use case.",
+        '<div class="pr-cols">' + ctx + "</div>");
+    }}
+
+    /* 6. Atomicity. One primary function, one principal outcome.
+
+       Several conditions matching the SAME word is one ambiguous term, not
+       several outcomes - typing "verify" alone hits four *-verified
+       conditions and means nothing. So conditions are grouped by the query
+       words that found them, and only distinct groups count. */
+    var outcomeHits = conds.filter(function (r) {{
+      return r.score > 0.45 && IX.conditions[r.id].kind !== "evidence";
+    }});
+    var groups = Object.create(null);
+    outcomeHits.forEach(function (r) {{
+      var key = r.hits.slice().sort().join("|");
+      if (!groups[key] || r.score > groups[key].score) groups[key] = r;
+    }});
+    var reps = Object.keys(groups).map(function (k) {{ return groups[k]; }});
+    var sequenced = /\\b(then|afterwards|and then|finally|subsequently)\\b/i.test(text);
+    if (reps.length > 1 || sequenced) {{
+      html += block("Check atomicity",
+        "",
+        '<p class="pr-note">A canonical use case represents one primary business '
+        + "function and one principal business outcome from a defined set of "
+        + "preconditions. Your description "
+        + (reps.length > 1
+            ? "touches " + reps.length + " unrelated non-evidence conditions ("
+              + reps.map(function (r) {{ return condName(r.id); }}).join(", ") + ")"
+            : "reads as a sequence of steps")
+        + ". If those are independently reusable transformations with different "
+        + "principal outcomes, split it into smaller patterns and let a real "
+        + "flow compose them.</p>");
+    }}
+
+    out.hidden = false;
+    out.innerHTML = html;
+  }}
+
+  form.addEventListener("submit", function (e) {{
+    e.preventDefault();
+    render(input.value);
+  }});
+  document.getElementById("placer-clear").addEventListener("click", function () {{
+    input.value = "";
+    out.hidden = true;
+    out.innerHTML = "";
+    input.focus();
+  }});
+  Array.prototype.forEach.call(document.querySelectorAll(".eg"), function (b) {{
+    b.addEventListener("click", function () {{
+      input.value = b.getAttribute("data-eg");
+      render(input.value);
+    }});
+  }});
+}})();
+</script>
+
 </body>
 </html>
 """
@@ -1975,6 +2485,131 @@ WORKED_COMPOSITIONS = [
      "interface says so - it consumes identity evidence and provides an "
      "attribute, never an identity."),
 ]
+
+
+def build_placement_index(model):
+    """Everything the in-page placement helper needs, precomputed here.
+
+    The browser does text matching and nothing else. Every graph answer it
+    shows - which condition satisfies which, which pattern supplies which -
+    is resolved in this function by the same Model the validator and the
+    queries use, so the page cannot drift from the model by reimplementing
+    the subsumption rule in JavaScript.
+    """
+    conditions = {
+        cid: {"label": model.label("condition", cid),
+              "kind": row["kind"],
+              "broader": row["broader"] or None,
+              "text": row["definition"]}
+        for cid, row in model.conditions.items()}
+
+    # Condition-level satisfaction, both directions, resolved through the
+    # skos:broader lattice by Model.condition_satisfies.
+    satisfied_by = {
+        required: sorted(p for p in model.conditions
+                         if model.condition_satisfies(p, required))
+        for required in model.conditions}
+
+    provided_by, required_by = {}, {}
+    for uc_id in model.use_cases:
+        for p in model.provides_of[uc_id]:
+            provided_by.setdefault(p["condition_id"], []).append(uc_id)
+        for r in model.requires_of[uc_id]:
+            required_by.setdefault(r["condition_id"], []).append(uc_id)
+
+    # Suppliers and consumers are resolved here through Model.satisfies, not
+    # joined in the browser from satisfiedBy. The helper's user has a bare
+    # condition and no interface row, so that is what is asked on their
+    # behalf: a requirement naming only the condition, and a provision naming
+    # only the condition. Every other dimension - subject role, evidence type,
+    # context - is then applied by satisfies() from the side that states it,
+    # which a condition-level join in JavaScript would silently skip.
+    def bare(condition_id):
+        return {"condition_id": condition_id, "subject_role": "",
+                "evidence_type": "", "context": ""}
+
+    suppliers_of, consumers_of = {}, {}
+    for condition_id in model.conditions:
+        want = bare(condition_id)
+        give = bare(condition_id)
+        suppliers, consumers = [], []
+        for uc_id in model.use_cases:
+            if any(model.satisfies(p, want) for p in model.provides_of[uc_id]):
+                suppliers.append(uc_id)
+            if any(model.satisfies(give, r) for r in model.requires_of[uc_id]):
+                consumers.append(uc_id)
+        suppliers_of[condition_id] = suppliers
+        consumers_of[condition_id] = consumers
+
+    patterns = {}
+    for uc_id, row in model.use_cases.items():
+        primary = model.primary_function(uc_id)
+        principal = model.principal_outcome(uc_id)
+        patterns[uc_id] = {
+            "name": row["name"],
+            "text": row["description"],
+            "primary": primary,
+            "primaryLabel": model.label("function", primary),
+            "supporting": [model.label("function", r["function_id"])
+                           for r in model.functions_of[uc_id]
+                           if r["role"] != "primary"],
+            "requires": [r["condition_id"] for r in model.requires_of[uc_id]],
+            "provides": [p["condition_id"] for p in model.provides_of[uc_id]],
+            "principal": principal,
+            "sectors": [model.sectors[s]["notation"] for s in model.sectors_of[uc_id]],
+            "flows": [model.label("flow", f) for f in model.flows_of_use_case(uc_id)],
+        }
+
+    functions = {
+        fid: {"label": row["pref_label_en"],
+              "aka": row.get("also_known_as", ""),
+              "text": row["definition"]}
+        for fid, row in model.functions.items()}
+
+    sectors = {
+        sid: {"notation": row["notation"], "label": row["pref_label_en"],
+              "level": row["level"]}
+        for sid, row in model.sectors.items()}
+
+    stages = []
+    for (stream_id, stage_id), row in model.stage_index.items():
+        stages.append({
+            "stream": model.label("stream", stream_id),
+            "label": row["stage_label"],
+            "functionId": row["function_id"],
+            "functionLabel": model.label("function", row["function_id"]),
+            "requires": [r["condition_id"] for r in model.stage_requires
+                         if r["value_stream_id"] == stream_id
+                         and r["stage_id"] == stage_id],
+            "provides": [r["condition_id"] for r in model.stage_provides
+                         if r["value_stream_id"] == stream_id
+                         and r["stage_id"] == stage_id],
+            "realisedBy": sorted(uc for uc, pairs in model.stages_realised_by.items()
+                                 if (stream_id, stage_id) in pairs),
+        })
+
+    credentials = {cred_id: {"label": model.label("credential", cred_id),
+                             "conditions": []}
+                   for cred_id in model.credential_types}
+    for condition_id in model.conditions:
+        for cred in model.credentials_for_condition(condition_id):
+            entry = credentials[cred]
+            if condition_id not in entry["conditions"]:
+                entry["conditions"].append(condition_id)
+
+    return {
+        "conditions": conditions,
+        "satisfiedBy": satisfied_by,
+        "providedBy": provided_by,
+        "requiredBy": required_by,
+        "suppliersOf": suppliers_of,
+        "consumersOf": consumers_of,
+        "patterns": patterns,
+        "functions": functions,
+        "sectors": sectors,
+        "stages": stages,
+        "credentials": credentials,
+    }
 
 
 def build_composition_report(model):
