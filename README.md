@@ -1,7 +1,7 @@
 # Industry Function Graph
 
 > **Origin and attribution**  
-> Developed and contributed by **Accelerate GmbH** and published in the DIDAS ecosystem as an open-source contribution.  
+> Developed and contributed by **Accelerate GmbH** and published by DIDAS as an open-source ecosystem contribution.  
 > Canonical upstream: https://github.com/Accelerate-GmbH/industry-function-graph  
 > DIDAS publication: https://github.com/DIDAS-swiss/industry-function-graph
 
