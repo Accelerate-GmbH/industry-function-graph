@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Industry &amp; function mapping</title>
-<meta name="description" content="Which use cases sit at which intersection of economic sector (ISIC Rev. 5) and business function.">
+<title>Industry Function Graph</title>
+<meta name="description" content="Classify, connect and realise reusable ecosystem use cases: sector and function classification, machine-readable interfaces, and the flows that realise them.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -179,6 +179,45 @@
     color: var(--accent); font-weight: 600; }
   .lede { font-size: 1rem; color: var(--body); max-width: 680px; }
   .prose { color: var(--body); font-size: 0.9062rem; max-width: 680px; }
+  /* A single load-bearing sentence, set apart because the rest of the section
+     explains it. Used for the three-layer summary and the composition rule. */
+  .rule-line { font-size: 1rem; color: var(--ink); max-width: 680px;
+    margin: 20px 0; padding-left: 14px; border-left: 2px solid var(--accent); }
+  /* The one architectural rule a reader must not miss, so it is not left to
+     read as just another sentence in the section. */
+  .rule-line.principal { font-size: 1.375rem; font-weight: 600; line-height: 1.3;
+    margin: 4px 0 18px; padding-left: 16px; }
+  .hero .rule-line { font-size: 1.0625rem; font-weight: 500; }
+  .layers h3, .gaps h3 { font-size: 0.8125rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); margin: 0 0 8px; }
+  .layers .prose { margin-top: 0; }
+  /* Five gap blocks of very different lengths: each takes its own height. */
+  .axes.gaps { align-items: start; }
+  dl.kinds { display: grid; grid-template-columns: 7.5rem 1fr; gap: 6px 16px;
+    font-size: 0.875rem; color: var(--body); max-width: 680px; margin: 0 0 8px; }
+  dl.kinds dt { font-weight: 600; color: var(--ink); }
+  dl.kinds dd { margin: 0; }
+  ol.questions { font-size: 0.9062rem; color: var(--body); max-width: 680px;
+    padding-left: 1.5rem; }
+  ol.questions li { padding: 3px 0; }
+  ol.questions li::marker { color: var(--body); font-size: 0.75rem; }
+  .gap-note { font-size: 0.75rem; color: var(--body); margin: 0 0 8px; }
+  ul.gap-list { list-style: none; padding: 0; margin: 0; font-size: 0.8125rem; }
+  ul.gap-list li { padding: 5px 0; border-bottom: 1px solid var(--line);
+    color: var(--ink); }
+  ul.gap-list li:last-child { border-bottom: none; }
+  ul.gap-list a { color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }
+  ul.gap-list a:hover { color: var(--accent); border-bottom-color: currentColor; }
+  table.matrix.overlap td { text-align: left; font-size: 0.8125rem; }
+  table.matrix.overlap th { text-align: left; font-weight: 600; font-size: 0.75rem;
+    color: var(--body); }
+  table.matrix.overlap a { color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }
+  table.matrix.overlap a:hover { color: var(--accent); border-bottom-color: currentColor; }
+  ul.artefacts { font-size: 0.875rem; color: var(--body); max-width: 680px;
+    padding-left: 1.125rem; }
+  ul.artefacts li { padding: 3px 0; }
   .matrix-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
   table.matrix { border-collapse: collapse; font-size: 0.8125rem; min-width: 100%; }
   table.matrix th, table.matrix td { border-bottom: 1px solid var(--line); padding: 8px 10px; }
@@ -305,7 +344,7 @@
       <a class="didas" href="https://www.didas.swiss" target="_blank" rel="noopener">
         <img src="https://www.didas.swiss/wp-content/uploads/2021/02/logo.png" alt="DIDAS">
       </a>
-      <p class="eyebrow">Industry &amp; function mapping · knowledge graph</p>
+      <p class="eyebrow">Industry Function Graph</p>
     </div>
     <div class="tools">
       <div class="seg" role="group" aria-label="Colour theme">
@@ -421,82 +460,192 @@
 <div class="wrap">
 
   <section class="hero" style="border-top:none;">
-    <span class="eyebrow">Knowledge graph</span>
-    <h1>Which function, in which sector</h1>
+    <span class="eyebrow">Industry Function Graph</span>
+    <h1>Classify, connect and realise reusable ecosystem use cases</h1>
     <p class="lede">
-      Every use case in this graph sits at an intersection: an economic sector
-      (ISIC Rev. 5) and a business function that is defined independently of it.
-      Read the matrix down a column to find the same function recurring across
-      sectors &mdash; those are the places where one pattern can serve many industries.
+      The Industry Function Graph separates three questions that are often mixed
+      together: where a use case belongs, what it requires and provides, and how
+      it is realised in a real ecosystem.
     </p>
-  </section>
-
-  <section>
-    <h2>Sector &times; function</h2>
-    <div class="matrix-scroll">
-      <table class="matrix">
-        <thead><tr><th class="sector">ISIC Rev. 5 section</th><th class="fn"><span>Identity proofing</span></th><th class="fn"><span>Relationship onboarding</span></th><th class="fn"><span>Identity lifecycle management</span></th><th class="fn"><span>Eligibility verification</span></th><th class="fn"><span>Access management</span></th><th class="fn"><span>Certification and attestation</span></th><th class="fn"><span>Regulatory compliance</span></th><th class="fn"><span>Sourcing and procurement</span></th><th class="fn"><span>Supply chain traceability</span></th><th class="fn"><span>Human capital management</span></th><th class="fn"><span>Request and complaint handling</span></th><th class="fn"><span>Service delivery</span></th><th class="fn"><span>Records management</span></th><th class="fn"><span>Contracting and signing</span></th><th class="fn"><span>Quality assurance</span></th><th class="fn"><span>Audit and assurance</span></th><th class="fn"><span>Product compliance</span></th><th class="fn"><span>Entitlement administration</span></th></tr></thead>
-        <tbody>
-<tr><th class="sector" scope="row"><span class="code">C</span> Manufacturing</th><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#qualification-verification" title="Qualification verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#supplier-qualification" title="Supplier qualification (supporting)">&#9675;</a></td><td><a class="dot primary" href="#supplier-qualification" title="Supplier qualification (primary)">&#9679;</a></td><td><a class="dot support" href="#supplier-qualification" title="Supplier qualification (supporting)">&#9675;</a></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td><a class="dot support" href="#supplier-qualification" title="Supplier qualification (supporting)">&#9675;</a></td><td><a class="dot primary" href="#accreditation-verification" title="Accreditation verification (primary)">&#9679;</a></td><td><a class="dot support" href="#supplier-qualification" title="Supplier qualification (supporting)">&#9675;</a></td><td class="empty"></td></tr>
-<tr><th class="sector" scope="row"><span class="code">G</span> Wholesale and retail trade</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#age-threshold-verification" title="Age threshold verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#age-threshold-verification" title="Age threshold verification (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
-<tr><th class="sector" scope="row"><span class="code">I</span> Accommodation and food service activities</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#age-threshold-verification" title="Age threshold verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#age-threshold-verification" title="Age threshold verification (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
-<tr><th class="sector" scope="row"><span class="code">K</span> Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities</th><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
-<tr><th class="sector" scope="row"><span class="code">L</span> Financial and insurance activities</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td><a class="dot primary" href="#due-diligence-onboarding" title="Onboarding with regulatory due diligence (primary)">&#9679;</a></td><td><a class="dot primary" href="#credential-recovery-reidentification" title="Re-identification for credential recovery (primary)">&#9679;</a><a class="dot primary" href="#legal-capacity-reidentification" title="Re-identification at a change of legal capacity (primary)">&#9679;</a><a class="dot support" href="#due-diligence-refresh" title="Periodic due diligence re-evaluation (supporting)">&#9675;</a></td><td class="empty"></td><td><a class="dot support" href="#credential-recovery-reidentification" title="Re-identification for credential recovery (supporting)">&#9675;</a></td><td class="empty"></td><td><a class="dot primary" href="#due-diligence-refresh" title="Periodic due diligence re-evaluation (primary)">&#9679;</a><a class="dot support" href="#due-diligence-onboarding" title="Onboarding with regulatory due diligence (supporting)">&#9675;</a><a class="dot support" href="#legal-capacity-reidentification" title="Re-identification at a change of legal capacity (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td><a class="dot support" href="#credential-recovery-reidentification" title="Re-identification for credential recovery (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
-<tr><th class="sector" scope="row"><span class="code">P</span> Public administration and defence; compulsory social security</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a><a class="dot support" href="#eid-issuance" title="Electronic identity issuance (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#public-service-access" title="Public service access (primary)">&#9679;</a></td><td><a class="dot primary" href="#eid-issuance" title="Electronic identity issuance (primary)">&#9679;</a></td><td><a class="dot support" href="#eid-issuance" title="Electronic identity issuance (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#public-service-access" title="Public service access (supporting)">&#9675;</a></td><td><a class="dot support" href="#eid-issuance" title="Electronic identity issuance (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#public-service-access" title="Public service access (supporting)">&#9675;</a></td></tr>
-<tr><th class="sector" scope="row"><span class="code">Q</span> Education</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td><a class="dot primary" href="#tertiary-admission" title="Tertiary admission (primary)">&#9679;</a></td><td class="empty"></td><td><a class="dot primary" href="#qualification-verification" title="Qualification verification (primary)">&#9679;</a></td><td class="empty"></td><td><a class="dot primary" href="#education-qualification-issuance" title="Education qualification issuance (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#education-qualification-issuance" title="Education qualification issuance (supporting)">&#9675;</a><a class="dot support" href="#tertiary-admission" title="Tertiary admission (supporting)">&#9675;</a></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
-<tr><th class="sector" scope="row"><span class="code">R</span> Human health and social work activities</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td class="empty"></td><td><a class="dot primary" href="#patient-record-matching" title="Patient record matching (primary)">&#9679;</a></td><td><a class="dot support" href="#patient-record-matching" title="Patient record matching (supporting)">&#9675;</a></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="legend">
-      <span class="dot primary">&#9679;</span> primary function of a use case &nbsp;&middot;&nbsp;
-      <span class="dot support">&#9675;</span> supporting function. Follow a marker to the use case.
+    <p class="lede">
+      Sector, business function and value-stream stage classify the work.
+      Machine-readable interfaces define what can connect to what. Real
+      implementation flows record the participants, credentials, trust roles and
+      implementation context through which the work is performed.
     </p>
-  </section>
-
-  <section>
-    <h2>Functions that recur across sectors</h2>
-    <ul>
-<li><strong>Identity proofing</strong> &mdash; <span class="code">G</span> <span class="code">I</span> <span class="code">L</span> <span class="code">P</span> <span class="code">Q</span> <span class="code">R</span></li>
-<li><strong>Relationship onboarding</strong> &mdash; <span class="code">L</span> <span class="code">Q</span></li>
-<li><strong>Eligibility verification</strong> &mdash; <span class="code">C</span> <span class="code">G</span> <span class="code">I</span> <span class="code">Q</span></li>
-<li><strong>Access management</strong> &mdash; <span class="code">L</span> <span class="code">P</span></li>
-<li><strong>Certification and attestation</strong> &mdash; <span class="code">P</span> <span class="code">Q</span></li>
-<li><strong>Regulatory compliance</strong> &mdash; <span class="code">C</span> <span class="code">G</span> <span class="code">I</span> <span class="code">L</span> <span class="code">P</span></li>
-<li><strong>Human capital management</strong> &mdash; <span class="code">C</span> <span class="code">K</span> <span class="code">L</span> <span class="code">Q</span> <span class="code">R</span></li>
-<li><strong>Service delivery</strong> &mdash; <span class="code">P</span> <span class="code">R</span></li>
-<li><strong>Records management</strong> &mdash; <span class="code">P</span> <span class="code">Q</span> <span class="code">R</span></li>
-<li><strong>Contracting and signing</strong> &mdash; <span class="code">C</span> <span class="code">K</span> <span class="code">L</span> <span class="code">Q</span> <span class="code">R</span></li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>What plugs into what</h2>
+    <p class="rule-line">
+      Classification tells us where a use case belongs. Interfaces tell us what it
+      can connect to. Realisation tells us how that use case is implemented in
+      practice.
+    </p>
     <p class="prose">
-      Each use case declares the conditions it requires and the conditions it
-      provides. The arrows below are computed from those interfaces, through the
-      condition hierarchy: a use case providing something <em>narrower</em> than what
-      another asks for still counts as feeding it, which is what lets an alternative
-      upstream flow serve the same downstream need. Nothing here is a list of
-      hand-drawn dependencies.
+      The graph therefore separates reusable business patterns from the credentials
+      and implementations that happen to realise them today. It currently holds
+      15 patterns, 16 flows, 25 conditions and
+      10 credential types across 15 ISIC classes and
+      3 value streams.
+    </p>
+  </section>
+
+  <section>
+    <h2>The three layers</h2>
+    <div class="axes layers">
+      <div>
+        <h3>Classification</h3>
+        <p class="prose">
+          Classification locates a reusable use case by economic sector, primary
+          business function and, where applicable, value-stream stage.
+          Classification supports discovery. It does not determine which use cases
+          compose.
+        </p>
+      </div>
+      <div>
+        <h3>Interface</h3>
+        <p class="prose">
+          Interface defines the conditions a use case requires before it can run
+          and the conditions it provides afterwards. These conditions form the
+          machine-readable contract from which composition is derived.
+        </p>
+      </div>
+      <div>
+        <h3>Realisation</h3>
+        <p class="prose">
+          Realisation records how a canonical use case is implemented in a concrete
+          sector and jurisdiction: the flow, participants, credentials, trust roles,
+          maturity and implementation evidence.
+        </p>
+      </div>
+    </div>
+    <p class="prose">
+      A <code>UseCasePattern</code> is the reusable definition. A <code>Flow</code>
+      is a concrete implementation of one or more patterns. A flow is never the
+      use case itself.
+    </p>
+  </section>
+
+  <section>
+    <h2>How composition works</h2>
+
+    <p class="rule-line principal">A credential is not the interface.</p>
+    <p class="prose">
+      A use case provides a condition. A credential may substantiate that
+      condition. Another use case requires the condition, not the credential.
+      Conditions connect use cases; credentials can provide evidence for
+      particular conditions. This is what allows a new credential, issuer or
+      evidence mechanism to satisfy an existing business requirement without
+      redefining every downstream use case.
+    </p>
+
+    <h3>Conditions form a hierarchy</h3>
+    <p class="prose">
+      A more specific condition can satisfy a broader requirement, but not the
+      reverse. An upper-secondary qualification credential substantiates the
+      narrower condition <em>Upper-secondary qualification held</em>. Because that
+      condition is a specialisation of <em>Education qualification evidence
+      available</em>, it satisfies a downstream use case that asks only for
+      education-qualification evidence. Composition therefore does not depend on
+      exact condition-name equality.
+    </p>
+    <p class="prose">
+      The reasoning performed is exactly this: a provision satisfies a requirement
+      when the provided condition is the required condition, or is reachable from
+      it by following <code>skos:broader</code> upwards. No other inference is
+      applied.
+    </p>
+
+    <h3>Four kinds of condition</h3>
+    <p class="prose">
+      Conditions distinguish four kinds of state. Holding evidence is not the same
+      as having established the corresponding fact: <code>eid-held</code> is
+      evidence, <code>identity-verified</code> is a fact.
+    </p>
+    <dl class="kinds">
+      <dt>Evidence</dt><dd>Something presentable and checkable is available.</dd>
+      <dt>Fact</dt><dd>A relying party has established something in the interaction.</dd>
+      <dt>Relationship</dt><dd>An ongoing relationship has been established.</dd>
+      <dt>Outcome</dt><dd>A business result has been reached.</dd>
+    </dl>
+
+    <h3>Where compatibility narrows further</h3>
+    <p class="prose">
+      Condition compatibility is the core composition rule. Where specified,
+      additional interface constraints &mdash; subject role, a named evidence type,
+      and <code>key=value</code> context such as jurisdiction or assurance level
+      &mdash; narrow compatibility further. The model supports all three; the
+      current dataset uses subject role and evidence type, and does not yet
+      populate any context constraints.
+    </p>
+
+    <h3>Adding a credential</h3>
+    <p class="prose">
+      Credential-to-condition mappings are many-to-many. A new credential type is
+      introduced by declaring which evidence condition it substantiates; existing
+      use cases requiring that condition do not need to be rewritten. It becomes a
+      candidate evidence mechanism for those use cases, subject to their additional
+      context, trust and policy constraints.
+    </p>
+  </section>
+
+  <section>
+    <h2>Derived composition</h2>
+    <p class="prose">
+      Every edge below is derived, not drawn. Each arrow follows one path:
+      a <strong>provided condition</strong> &rarr; <strong>condition compatibility
+      or subsumption</strong> &rarr; a <strong>required condition</strong>, with
+      any stated role, evidence-type and context constraints applied on top. No
+      file in this repository records which use case enables which.
     </p>
     <ul class="chain">
-      <li><a href="#eid-issuance">Electronic identity issuance</a><span class="muted"> provides Electronic identity held</span><ul><li><a href="#age-threshold-verification">Age threshold verification</a><span class="muted"> provides Age attribute proven</span></li><li><a href="#identity-verification">Identity verification</a><span class="muted"> provides Identity verified</span><ul><li><a href="#credential-recovery-reidentification">Re-identification for credential recovery</a><span class="muted"> provides Access granted</span></li><li><a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a><span class="muted"> provides Customer relationship open</span><ul><li><a href="#credential-recovery-reidentification">Re-identification for credential recovery</a><span class="muted"> provides Access granted</span></li><li><a href="#due-diligence-refresh">Periodic due diligence re-evaluation</a><span class="muted"> provides KYC attestation current</span></li><li><a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a><span class="muted"> provides Legal capacity established</span></li></ul></li><li><a href="#education-qualification-issuance">Education qualification issuance</a><span class="muted"> provides Upper-secondary qualification held</span><ul><li><a href="#qualification-verification">Qualification verification</a><span class="muted"> provides Qualification verified</span><ul><li><a href="#employment-engagement">Employment engagement</a><span class="muted"> provides Employment relationship open</span></li><li><a href="#tertiary-admission">Tertiary admission</a><span class="muted"> provides Tertiary enrolment established</span></li></ul></li></ul></li><li><a href="#employment-engagement">Employment engagement</a><span class="muted"> provides Employment relationship open</span></li><li><a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a><span class="muted"> provides Legal capacity established</span></li><li><a href="#patient-record-matching">Patient record matching</a><span class="muted"> provides Patient record linked</span></li><li><a href="#public-service-access">Public service access</a><span class="muted"> provides Access granted</span></li><li><a href="#tertiary-admission">Tertiary admission</a><span class="muted"> provides Tertiary enrolment established</span></li></ul></li></ul></li>
+      <li><a href="#eid-issuance">Electronic identity issuance</a><span class="muted"> provides Electronic identity held</span><ul><li><a href="#age-threshold-verification">Age threshold verification</a><span class="muted"> provides Age threshold established</span></li><li><a href="#identity-verification">Identity verification</a><span class="muted"> provides Identity verified</span><ul><li><a href="#credential-recovery-reidentification">Re-identification for credential recovery</a><span class="muted"> provides Access granted</span></li><li><a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a><span class="muted"> provides Customer relationship open</span><ul><li><a href="#credential-recovery-reidentification">Re-identification for credential recovery</a><span class="muted"> provides Access granted</span></li><li><a href="#due-diligence-refresh">Periodic due diligence re-evaluation</a><span class="muted"> provides KYC attestation current</span></li><li><a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a><span class="muted"> provides Legal capacity established</span></li></ul></li><li><a href="#education-qualification-issuance">Education qualification issuance</a><span class="muted"> provides Upper-secondary qualification held</span><ul><li><a href="#qualification-verification">Qualification verification</a><span class="muted"> provides Qualification verified</span><ul><li><a href="#employment-engagement">Employment engagement</a><span class="muted"> provides Employment relationship open</span></li><li><a href="#tertiary-admission">Tertiary admission</a><span class="muted"> provides Tertiary enrolment established</span></li></ul></li></ul></li><li><a href="#employment-engagement">Employment engagement</a><span class="muted"> provides Employment relationship open</span></li><li><a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a><span class="muted"> provides Legal capacity established</span></li><li><a href="#patient-record-matching">Patient record matching</a><span class="muted"> provides Patient record linked</span></li><li><a href="#public-service-access">Public service access</a><span class="muted"> provides Access granted</span></li><li><a href="#tertiary-admission">Tertiary admission</a><span class="muted"> provides Tertiary enrolment established</span></li></ul></li></ul></li>
       <li><a href="#accreditation-verification">Accreditation verification</a><span class="muted"> provides Accreditation verified</span><ul><li><a href="#supplier-qualification">Supplier qualification</a><span class="muted"> provides Supplier qualified</span></li></ul></li>
     </ul>
     <p class="legend">
-      <strong>Unmet requirements:</strong> <code>accreditation-evidence-available</code> &mdash; required by a use case
-      here and provided by none. Each marks a flow that is outside this repository
-      or not yet written down.
+      <strong>Requirements with no provider here:</strong> <code>accreditation-evidence-available</code>. Each marks
+      an upstream step outside this repository or not yet modelled.
+    </p>
+  </section>
+
+  <section>
+    <h2>What the model can answer</h2>
+    <p class="prose">
+      Because interfaces are machine-readable, these relationships are computed
+      from the model rather than maintained as a second set of hand-drawn links.
+      <code>build/queries.py</code> runs them against the dataset and CI checks
+      that each still returns an answer.
+    </p>
+    <ol class="questions">
+      <li>What can satisfy this requirement?</li>
+      <li>What can consume this output?</li>
+      <li>Which use cases can connect to this one?</li>
+      <li>Which real implementation flows realise this reusable pattern?</li>
+      <li>Which credential or evidence types can satisfy this input condition?</li>
+      <li>Which path connects a starting condition to a desired outcome?</li>
+      <li>Which requirements currently have no upstream provider?</li>
+      <li>Which value-stream stages have no use case yet?</li>
+      <li>Which credentials are issued but have no consuming flow in the graph?</li>
+      <li>Which use-case patterns may overlap semantically?</li>
+    </ol>
+    <p class="legend">
+      Answers are derived from the use cases and conditions currently represented
+      in the dataset, not from the ecosystem at large.
     </p>
   </section>
 
   <section>
     <h2>Use case patterns</h2>
     <p class="prose">
-      The canonical unit: one primary business function, a set of required
-      conditions and one principal outcome, shown in bold. A pattern is a reusable
-      definition, not an implementation &mdash; the implementations are below.
+      The canonical unit: one primary business function, a defined set of required
+      conditions and one principal business outcome, shown in bold. A pattern may
+      expose additional outputs, but it represents one coherent transformation.
+      Where a proposed use case contains independently reusable transformations
+      with different principal outcomes, it is split into smaller patterns and a
+      real flow composes them.
+    </p>
+    <p class="prose">
+      Two use cases under the same primary function may still be distinct, because
+      their required conditions or principal outcomes differ. Conversely, two
+      implementations in different sectors realise the same canonical use case when
+      the underlying business transformation and interface are equivalent.
     </p>
     <div class="flows">
       <div class="flow" id="eid-issuance">
@@ -523,7 +672,7 @@
           &middot; <span class="mode mode-run">Optimise</span></div>
         <div class="flow-body">
           <h3>Identity verification</h3>
-          <p>A relying party checks presented identity evidence and establishes who the subject is, to the level of assurance the interaction needs.</p>
+          <p>A relying party evaluates presented identity evidence and establishes the subject&#x27;s identity to the level of assurance the interaction requires.</p>
           <div class="iface">
             <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity evidence available</span></p>
             <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Identity verified</strong></span></p>
@@ -563,7 +712,7 @@
           &middot; <span class="mode mode-run">Optimise</span></div>
         <div class="flow-body">
           <h3>Accreditation verification</h3>
-          <p>A relying party checks an organisation&#x27;s presented accreditations and establishes that they are genuine and current.</p>
+          <p>A relying party evaluates an organisation&#x27;s presented accreditation evidence and establishes, under the policy that applies to the interaction, that the required accreditation is present and current.</p>
           <div class="iface">
             <p class="io"><span class="io-label">Requires</span><span class="io-val">Accreditation evidence available <span class="muted">(organisation)</span></span></p>
             <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Accreditation verified <span class="muted">(organisation)</span></strong></span></p>
@@ -583,10 +732,10 @@
           &middot; <span class="mode mode-change">Redesign</span></div>
         <div class="flow-body">
           <h3>Age threshold verification</h3>
-          <p>A relying party establishes that the subject is over a stated age, learning nothing else about them.</p>
+          <p>A relying party establishes that the subject satisfies a stated age threshold, without requiring disclosure of the date of birth or of the subject&#x27;s identity.</p>
           <div class="iface">
             <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity evidence available</span></p>
-            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Age attribute proven</strong></span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Age threshold established</strong></span></p>
           </div>
           <div class="classify">
             <p class="meta"><strong>Primary function:</strong> Eligibility verification</p>
@@ -787,13 +936,28 @@
   <section>
     <h2>Flows &mdash; real implementations</h2>
     <p class="prose">
-      An actual trust flow, in an actual sector and jurisdiction, naming the
-      credentials it uses. Several flows may realise one pattern &mdash; the same age
-      check in retail and in hospitality, the same qualification issuance for a
-      Matur&auml;t and a vocational certificate &mdash; and one flow may realise several
-      patterns in sequence. Keeping flows out of the taxonomy is the point: the
-      ecosystem adds implementations continuously, and each should find a place among
-      the existing patterns rather than becoming another one.
+      A flow records how a pattern is realised in a concrete sector and
+      jurisdiction. A flow can record its sector, jurisdiction, participants and
+      their trust roles, the credentials issued, presented or verified, its
+      maturity, documentation and deployment evidence, and which participants bear
+      cost without direct value. Not every flow populates every field.
+    </p>
+    <p class="prose">
+      Realisation is many-to-many in both directions. Several flows may realise the
+      same canonical use case &mdash; the retail and hospitality age checks both
+      realise <em>Age threshold verification</em>. One flow may realise several
+      canonical use cases in sequence &mdash; employee onboarding composes identity
+      verification, qualification verification and employment engagement. The
+      reusable patterns stay stable while implementations, credentials and sectors
+      evolve independently.
+    </p>
+    <p class="legend">
+      Maturity is stated on each card. In this dataset every flow is
+      <strong>Modelled</strong> or <strong>Exploratory</strong>: none is recorded as
+      deployed, and no flow yet carries deployment evidence. All
+      10 credential types are marked
+      <code>ifm:codeStatus "provisional"</code> &mdash; none has been checked
+      against a published schema registry.
     </p>
     <div class="flows">
       <div class="flow" id="eid-issuance-ch">
@@ -1107,18 +1271,109 @@
   </section>
 
   <section>
+    <h2>Sector &times; function &mdash; a classification view</h2>
+    <p class="prose">
+      The matrix shows where canonical use cases recur across economic sectors and
+      business functions. It is a classification and discovery view of the graph,
+      not the definition of it: sector and function aid discovery, and do not
+      determine whether two use cases are the same use case. Repetition across
+      sectors identifies candidates for reusable cross-sector patterns; the
+      interfaces determine whether the use cases are actually equivalent or
+      composable.
+    </p>
+    <div class="matrix-scroll">
+      <table class="matrix">
+        <thead><tr><th class="sector">ISIC Rev. 5 section</th><th class="fn"><span>Identity proofing</span></th><th class="fn"><span>Relationship onboarding</span></th><th class="fn"><span>Identity lifecycle management</span></th><th class="fn"><span>Eligibility verification</span></th><th class="fn"><span>Access management</span></th><th class="fn"><span>Certification and attestation</span></th><th class="fn"><span>Regulatory compliance</span></th><th class="fn"><span>Sourcing and procurement</span></th><th class="fn"><span>Supply chain traceability</span></th><th class="fn"><span>Human capital management</span></th><th class="fn"><span>Request and complaint handling</span></th><th class="fn"><span>Service delivery</span></th><th class="fn"><span>Records management</span></th><th class="fn"><span>Contracting and signing</span></th><th class="fn"><span>Quality assurance</span></th><th class="fn"><span>Audit and assurance</span></th><th class="fn"><span>Product compliance</span></th><th class="fn"><span>Entitlement administration</span></th></tr></thead>
+        <tbody>
+<tr><th class="sector" scope="row"><span class="code">C</span> Manufacturing</th><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#qualification-verification" title="Qualification verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#supplier-qualification" title="Supplier qualification (supporting)">&#9675;</a></td><td><a class="dot primary" href="#supplier-qualification" title="Supplier qualification (primary)">&#9679;</a></td><td><a class="dot support" href="#supplier-qualification" title="Supplier qualification (supporting)">&#9675;</a></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td><a class="dot support" href="#supplier-qualification" title="Supplier qualification (supporting)">&#9675;</a></td><td><a class="dot primary" href="#accreditation-verification" title="Accreditation verification (primary)">&#9679;</a></td><td><a class="dot support" href="#supplier-qualification" title="Supplier qualification (supporting)">&#9675;</a></td><td class="empty"></td></tr>
+<tr><th class="sector" scope="row"><span class="code">G</span> Wholesale and retail trade</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#age-threshold-verification" title="Age threshold verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#age-threshold-verification" title="Age threshold verification (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+<tr><th class="sector" scope="row"><span class="code">I</span> Accommodation and food service activities</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#age-threshold-verification" title="Age threshold verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#age-threshold-verification" title="Age threshold verification (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+<tr><th class="sector" scope="row"><span class="code">K</span> Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities</th><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+<tr><th class="sector" scope="row"><span class="code">L</span> Financial and insurance activities</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td><a class="dot primary" href="#due-diligence-onboarding" title="Onboarding with regulatory due diligence (primary)">&#9679;</a></td><td><a class="dot primary" href="#credential-recovery-reidentification" title="Re-identification for credential recovery (primary)">&#9679;</a><a class="dot primary" href="#legal-capacity-reidentification" title="Re-identification at a change of legal capacity (primary)">&#9679;</a><a class="dot support" href="#due-diligence-refresh" title="Periodic due diligence re-evaluation (supporting)">&#9675;</a></td><td class="empty"></td><td><a class="dot support" href="#credential-recovery-reidentification" title="Re-identification for credential recovery (supporting)">&#9675;</a></td><td class="empty"></td><td><a class="dot primary" href="#due-diligence-refresh" title="Periodic due diligence re-evaluation (primary)">&#9679;</a><a class="dot support" href="#due-diligence-onboarding" title="Onboarding with regulatory due diligence (supporting)">&#9675;</a><a class="dot support" href="#legal-capacity-reidentification" title="Re-identification at a change of legal capacity (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td><a class="dot support" href="#credential-recovery-reidentification" title="Re-identification for credential recovery (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+<tr><th class="sector" scope="row"><span class="code">P</span> Public administration and defence; compulsory social security</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a><a class="dot support" href="#eid-issuance" title="Electronic identity issuance (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#public-service-access" title="Public service access (primary)">&#9679;</a></td><td><a class="dot primary" href="#eid-issuance" title="Electronic identity issuance (primary)">&#9679;</a></td><td><a class="dot support" href="#eid-issuance" title="Electronic identity issuance (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#public-service-access" title="Public service access (supporting)">&#9675;</a></td><td><a class="dot support" href="#eid-issuance" title="Electronic identity issuance (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#public-service-access" title="Public service access (supporting)">&#9675;</a></td></tr>
+<tr><th class="sector" scope="row"><span class="code">Q</span> Education</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td><a class="dot primary" href="#tertiary-admission" title="Tertiary admission (primary)">&#9679;</a></td><td class="empty"></td><td><a class="dot primary" href="#qualification-verification" title="Qualification verification (primary)">&#9679;</a></td><td class="empty"></td><td><a class="dot primary" href="#education-qualification-issuance" title="Education qualification issuance (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td><a class="dot support" href="#education-qualification-issuance" title="Education qualification issuance (supporting)">&#9675;</a><a class="dot support" href="#tertiary-admission" title="Tertiary admission (supporting)">&#9675;</a></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+<tr><th class="sector" scope="row"><span class="code">R</span> Human health and social work activities</th><td><a class="dot primary" href="#identity-verification" title="Identity verification (primary)">&#9679;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td><a class="dot primary" href="#employment-engagement" title="Employment engagement (primary)">&#9679;</a></td><td class="empty"></td><td><a class="dot primary" href="#patient-record-matching" title="Patient record matching (primary)">&#9679;</a></td><td><a class="dot support" href="#patient-record-matching" title="Patient record matching (supporting)">&#9675;</a></td><td><a class="dot support" href="#employment-engagement" title="Employment engagement (supporting)">&#9675;</a></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="legend">
+      <span class="dot primary">&#9679;</span> primary function of a use case &nbsp;&middot;&nbsp;
+      <span class="dot support">&#9675;</span> supporting function. Follow a marker to the use case.
+    </p>
+    <h3>Functions that recur across sectors</h3>
+    <ul>
+<li><strong>Identity proofing</strong> &mdash; <span class="code">G</span> <span class="code">I</span> <span class="code">L</span> <span class="code">P</span> <span class="code">Q</span> <span class="code">R</span></li>
+<li><strong>Relationship onboarding</strong> &mdash; <span class="code">L</span> <span class="code">Q</span></li>
+<li><strong>Eligibility verification</strong> &mdash; <span class="code">C</span> <span class="code">G</span> <span class="code">I</span> <span class="code">Q</span></li>
+<li><strong>Access management</strong> &mdash; <span class="code">L</span> <span class="code">P</span></li>
+<li><strong>Certification and attestation</strong> &mdash; <span class="code">P</span> <span class="code">Q</span></li>
+<li><strong>Regulatory compliance</strong> &mdash; <span class="code">C</span> <span class="code">G</span> <span class="code">I</span> <span class="code">L</span> <span class="code">P</span></li>
+<li><strong>Human capital management</strong> &mdash; <span class="code">C</span> <span class="code">K</span> <span class="code">L</span> <span class="code">Q</span> <span class="code">R</span></li>
+<li><strong>Service delivery</strong> &mdash; <span class="code">P</span> <span class="code">R</span></li>
+<li><strong>Records management</strong> &mdash; <span class="code">P</span> <span class="code">Q</span> <span class="code">R</span></li>
+<li><strong>Contracting and signing</strong> &mdash; <span class="code">C</span> <span class="code">K</span> <span class="code">L</span> <span class="code">Q</span> <span class="code">R</span></li>
+    </ul>
+  </section>
+
+  <section>
     <h2>Value streams</h2>
     <p class="prose">
-      Where the work sits end to end. The concept follows ArchiMate's
-      <em>Value Stream</em> element. The catalogue and the stage decomposition below
-      are this repository's editorial models rather than extracts from a standard,
-      since no openly licensed catalogue exists: each is one modelled sequence, not
-      the universal one. Stage numbers are a reading order, not an execution order.
+      Value-stream stages provide an additional end-to-end structure. A stage can
+      declare its own required and provided conditions, and a canonical use case
+      realises that stage when its business transformation and interface fit. The
+      graph can then identify which stages are currently realised by use cases and
+      which remain unmodelled.
+    </p>
+    <p class="prose">
+      The concept follows ArchiMate's <em>Value Stream</em> element. The catalogue
+      and stage decomposition below are an IFM modelling layer rather than extracts
+      from a standard, since no openly licensed catalogue exists: each is one
+      modelled sequence, not an authoritative industry taxonomy. Stage numbers are
+      a reading order, not an execution order.
     </p>
     <div class="axes">
       <div><h3>Procure to pay</h3><p class="meta"><strong>Stream interface:</strong> Accreditation evidence available &rarr; Supplier qualified</p><ol class="stages"><li><span class="stage-label">Source and qualify</span><span class="muted"> &middot; Sourcing and procurement</span><span class="muted"> &middot; needs Accreditation verified</span><span class="muted"> &middot; gives Supplier qualified</span> &middot; <a href="#supplier-qualification">Supplier qualification</a></li><li><span class="stage-label">Establish the supplier is a real legal entity</span><span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Accreditation verified</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Assess counterparty and financial risk</span><span class="muted"> &middot; Credit and risk assessment</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Check accreditations and audit reports</span><span class="muted"> &middot; Audit and assurance</span><span class="muted"> &middot; needs Accreditation evidence available</span><span class="muted"> &middot; gives Accreditation verified</span> &middot; <a href="#accreditation-verification">Accreditation verification</a></li><li><span class="stage-label">Check conformity of what will be supplied</span><span class="muted"> &middot; Product compliance</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Agree and sign</span><span class="muted"> &middot; Contracting and signing</span><span class="muted"> &middot; needs Supplier qualified</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Establish provenance through delivery</span><span class="muted"> &middot; Supply chain traceability</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Clear the border</span><span class="muted"> &middot; Customs and trade facilitation</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Goods receipt against specification</span><span class="muted"> &middot; Quality assurance</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Invoice and payment</span><span class="muted"> &middot; Invoicing and settlement</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Substantiate the tax position</span><span class="muted"> &middot; Tax administration</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Retain the audit trail</span><span class="muted"> &middot; Records management</span> &middot; <span class="gap">no use case yet</span></li></ol></div>
       <div><h3>Order to cash</h3><p class="meta"><strong>Stream interface:</strong> Identity evidence available &rarr; Customer relationship open</p><ol class="stages"><li><span class="stage-label">Establish the customer relationship</span><span class="muted"> &middot; Relationship onboarding</span><span class="muted"> &middot; needs Identity verified</span><span class="muted"> &middot; gives Customer relationship open</span> &middot; <a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a></li><li><span class="stage-label">Establish who the customer is</span><span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Identity verified</span> &middot; <a href="#identity-verification">Identity verification</a></li><li><span class="stage-label">Decide the terms to offer</span><span class="muted"> &middot; Credit and risk assessment</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Agree and sign</span><span class="muted"> &middot; Contracting and signing</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Deliver</span><span class="muted"> &middot; Service delivery</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Invoice and collect</span><span class="muted"> &middot; Invoicing and settlement</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Handle what goes wrong</span><span class="muted"> &middot; Request and complaint handling</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Retain the audit trail</span><span class="muted"> &middot; Records management</span> &middot; <span class="gap">no use case yet</span></li></ol></div>
       <div><h3>Hire to retire</h3><p class="meta"><strong>Stream interface:</strong> Identity evidence available, Education qualification evidence available &rarr; Employment relationship open, Access granted</p><ol class="stages"><li><span class="stage-label">Recruit and employ</span><span class="muted"> &middot; Human capital management</span><span class="muted"> &middot; gives Employment relationship open</span> &middot; <a href="#employment-engagement">Employment engagement</a></li><li><span class="stage-label">Establish who the candidate is</span><span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Identity verified</span> &middot; <a href="#identity-verification">Identity verification</a></li><li><span class="stage-label">Check right to work and qualifications</span><span class="muted"> &middot; Eligibility verification</span><span class="muted"> &middot; needs Education qualification evidence available</span><span class="muted"> &middot; gives Qualification verified</span> &middot; <a href="#qualification-verification">Qualification verification</a></li><li><span class="stage-label">Agree and sign the employment contract</span><span class="muted"> &middot; Contracting and signing</span><span class="muted"> &middot; needs Identity verified, Qualification verified</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Provision and later revoke access</span><span class="muted"> &middot; Access management</span><span class="muted"> &middot; needs Employment relationship open</span><span class="muted"> &middot; gives Access granted</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Retain the employment record</span><span class="muted"> &middot; Records management</span> &middot; <span class="gap">no use case yet</span></li></ol></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Gaps</h2>
+    <p class="prose">
+      The same model that finds connections also exposes gaps. A reported gap may
+      represent missing ecosystem capability, work outside the current scope, or a
+      use case that has not yet been modelled. None of these is presented as a
+      defect.
+    </p>
+    <div class="axes gaps">
+      <div><h3>Requirements with no provider</h3><p class="gap-note">A use case here asks for a condition that no use case here produces. The upstream step is outside this repository, or not yet modelled.</p><ul class="gap-list"><li><a href="#accreditation-verification">Accreditation verification</a> <span class="muted">requires</span> Accreditation evidence available</li></ul></div>
+      <div><h3>Principal outcomes with no consumer</h3><p class="gap-note">Nothing here requires what these patterns produce. Either a genuine end of a chain, or a downstream pattern nobody has written down.</p><ul class="gap-list"><li><a href="#age-threshold-verification">Age threshold verification</a> <span class="muted">provides</span> Age threshold established</li><li><a href="#credential-recovery-reidentification">Re-identification for credential recovery</a> <span class="muted">provides</span> Access granted</li><li><a href="#due-diligence-refresh">Periodic due diligence re-evaluation</a> <span class="muted">provides</span> KYC attestation current</li><li><a href="#employment-engagement">Employment engagement</a> <span class="muted">provides</span> Employment relationship open</li><li><a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a> <span class="muted">provides</span> Legal capacity established</li><li><a href="#patient-record-matching">Patient record matching</a> <span class="muted">provides</span> Patient record linked</li><li><a href="#public-service-access">Public service access</a> <span class="muted">provides</span> Access granted</li><li><a href="#supplier-qualification">Supplier qualification</a> <span class="muted">provides</span> Supplier qualified</li><li><a href="#tertiary-admission">Tertiary admission</a> <span class="muted">provides</span> Tertiary enrolment established</li></ul></div>
+      <div><h3>Patterns with no implementation flow</h3><p class="gap-note">A reusable pattern that no flow in this dataset realises.</p><ul class="gap-list"><li class="muted">None in the current dataset.</li></ul></div>
+      <div><h3>Value stream stages with no pattern (19 of 26)</h3><p class="gap-note">The dataset covers a slice of each stream. These stages mark where a pattern could be added without inventing a new classification.</p><ul class="gap-list"><li>Agree and sign the employment contract <span class="muted">&mdash; Hire to retire</span></li><li>Provision and later revoke access <span class="muted">&mdash; Hire to retire</span></li><li>Retain the employment record <span class="muted">&mdash; Hire to retire</span></li><li>Agree and sign <span class="muted">&mdash; Order to cash</span></li><li>Decide the terms to offer <span class="muted">&mdash; Order to cash</span></li><li>Deliver <span class="muted">&mdash; Order to cash</span></li><li>Handle what goes wrong <span class="muted">&mdash; Order to cash</span></li><li>Invoice and collect <span class="muted">&mdash; Order to cash</span></li><li>Retain the audit trail <span class="muted">&mdash; Order to cash</span></li><li>Agree and sign <span class="muted">&mdash; Procure to pay</span></li><li>Assess counterparty and financial risk <span class="muted">&mdash; Procure to pay</span></li><li>Check conformity of what will be supplied <span class="muted">&mdash; Procure to pay</span></li><li>Clear the border <span class="muted">&mdash; Procure to pay</span></li><li>Establish provenance through delivery <span class="muted">&mdash; Procure to pay</span></li><li>Establish the supplier is a real legal entity <span class="muted">&mdash; Procure to pay</span></li><li>Goods receipt against specification <span class="muted">&mdash; Procure to pay</span></li><li>Invoice and payment <span class="muted">&mdash; Procure to pay</span></li><li>Retain the audit trail <span class="muted">&mdash; Procure to pay</span></li><li>Substantiate the tax position <span class="muted">&mdash; Procure to pay</span></li></ul></div>
+      <div><h3>Credentials issued but not consumed here</h3><p class="gap-note">A flow issues the credential; no flow in this dataset presents or verifies it.</p><ul class="gap-list"><li>Employment attestation</li><li>KYC currency attestation</li><li>Service entitlement attestation</li><li>Supplier qualification record</li><li>Tertiary enrolment attestation</li><li>Vocational qualification certificate</li></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Candidates for editorial review</h2>
+    <p class="prose">
+      Patterns with the same primary function and related interfaces are surfaced
+      as potential overlaps. The graph does not merge them. Similar interfaces may
+      represent duplicate, narrower, broader, partially overlapping or genuinely
+      distinct work, and the relation below states which of those the comparison
+      found.
+    </p>
+    <div class="matrix-scroll">
+      <table class="matrix overlap">
+        <thead><tr><th>Relation</th><th>Pattern</th><th>Pattern</th>
+          <th>Shared primary function</th></tr></thead>
+        <tbody>
+        <tr><td>overlap</td><td><a href="#credential-recovery-reidentification">Re-identification for credential recovery</a></td><td><a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a></td><td>Identity lifecycle management</td></tr>
+        <tr><td>overlap</td><td><a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a></td><td><a href="#tertiary-admission">Tertiary admission</a></td><td>Relationship onboarding</td></tr>
+        <tr><td>overlap</td><td><a href="#eid-issuance">Electronic identity issuance</a></td><td><a href="#education-qualification-issuance">Education qualification issuance</a></td><td>Certification and attestation</td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -1155,17 +1410,42 @@
   </section>
 
   <section>
-    <h2>The graph itself</h2>
+    <h2>The machine-readable model</h2>
+    <p class="rule-line">This website is one view of the graph.</p>
     <p class="prose">
-      This page is generated from the same data as the machine-readable graph:
-      SKOS concept schemes for the sector, function, condition, role and credential
-      vocabularies; <code>ifm:UseCasePattern</code> nodes carrying a classification
-      and an interface of <code>ifm:requires</code> and <code>ifm:provides</code>; and
-      <code>ifm:Flow</code> nodes recording what actually implements them. Load
-      <a href="ifm-graph.ttl">ifm-graph.ttl</a> or
-      <a href="ifm-graph.jsonld">ifm-graph.jsonld</a> into any triple store, or read the
-      <a href="https://github.com/DIDAS-swiss/industry-function-graph">source data and build script</a>.
+      The same model is generated as RDF and JSON-LD and validated through SHACL
+      shapes and repository checks. Queries and derived reports use the same
+      underlying data as this page. The HTML is a projection: the composition
+      edges, gaps and overlap candidates shown above are derived at build time from
+      the interfaces in <code>data/</code>, and the RDF graph is not a second model
+      maintained by hand.
     </p>
+    <p class="prose">
+      The graph carries SKOS concept schemes for the sector, function, condition,
+      subject-role, trust-role and credential vocabularies;
+      <code>ifm:UseCasePattern</code> nodes carrying a classification and an
+      interface of <code>ifm:requires</code> and <code>ifm:provides</code>; and
+      <code>ifm:Flow</code> nodes recording what realises them. Provenance is
+      explicit: <code>ifm:codeStatus</code> separates concepts taken from an
+      external classification from this repository's own modelling, and
+      <code>ifm:mappingStatus</code> records how an alignment onto an external
+      scheme was arrived at.
+    </p>
+    <ul class="artefacts">
+      <li><a href="ifm-graph.ttl">ifm-graph.ttl</a> &mdash; the full graph in Turtle</li>
+      <li><a href="ifm-graph.jsonld">ifm-graph.jsonld</a> &mdash; the same graph as JSON-LD</li>
+      <li><a href="ontology">ontology</a> &mdash; the IFM vocabulary, served at the
+        IRI the concepts are minted in (also <a href="ontology.ttl">ontology.ttl</a>)</li>
+      <li><a href="ifm-shapes.ttl">ifm-shapes.ttl</a> &mdash; the SHACL shapes, so the
+        graph can be checked without this repository</li>
+      <li><a href="https://github.com/DIDAS-swiss/industry-function-graph/blob/main/generated/composition-report.md">composition report</a>
+        &mdash; worked chains, alternative evidence, overlap candidates and the full gap register</li>
+      <li><a href="https://github.com/DIDAS-swiss/industry-function-graph/blob/main/generated/matrix.md">matrix.md</a>
+        &mdash; the sector &times; function view as Markdown</li>
+      <li><a href="https://github.com/DIDAS-swiss/industry-function-graph">source data and build script</a></li>
+      <li><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository">Trust Flow Diagram Repository</a>
+        &mdash; worked implementation diagrams for several of the flows above</li>
+    </ul>
   </section>
 
 </div>

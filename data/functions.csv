@@ -4,7 +4,7 @@ relationship-onboarding,Relationship onboarding,customer onboarding; client onbo
 identity-lifecycle-management,Identity lifecycle management,,identity-proofing,"Maintaining an established identity relationship over time: re-verification, recovery, attribute updates, revocation."
 eligibility-verification,Eligibility verification,,,"Checking whether a subject meets a stated condition — age, residency, licence, membership — without necessarily identifying them."
 access-management,Access management,,,"Granting, restricting and revoking access to systems, premises or services."
-certification-and-attestation,Certification and attestation,,,"Issuing an authoritative statement about a subject, a product or a process — a diploma, a certificate, an accreditation."
+certification-and-attestation,Certification and attestation,,,"Issuing an attested statement about a subject, a product or a process under an applicable authority or governance framework — a diploma, a certificate, an accreditation. Whether the statement carries authority is a property of that framework, not of the signature on it."
 regulatory-compliance,Regulatory compliance,,,"Performing the record-keeping, control and supervisory-reporting work that statutory and regulatory obligations require."
 sourcing-and-procurement,Sourcing and procurement,,,"Selecting, qualifying and contracting suppliers, and running the purchase-to-pay process."
 supply-chain-traceability,Supply chain traceability,,sourcing-and-procurement,Establishing provenance and chain of custody for goods and their inputs.

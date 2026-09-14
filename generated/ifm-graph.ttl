@@ -702,7 +702,7 @@ func:certification-and-attestation
     skos:inScheme scheme:ifm-functions ;
     skos:topConceptOf scheme:ifm-functions ;
     skos:prefLabel "Certification and attestation"@en ;
-    skos:definition "Issuing an authoritative statement about a subject, a product or a process — a diploma, a certificate, an accreditation."@en .
+    skos:definition "Issuing an attested statement about a subject, a product or a process under an applicable authority or governance framework — a diploma, a certificate, an accreditation. Whether the statement carries authority is a property of that framework, not of the signature on it."@en .
 
 func:regulatory-compliance
     a ifm:BusinessFunction, skos:Concept ;
@@ -1024,28 +1024,28 @@ cond:identity-verified
     skos:inScheme scheme:ifm-conditions ;
     skos:topConceptOf scheme:ifm-conditions ;
     skos:prefLabel "Identity verified"@en ;
-    skos:definition "The relying party has established that the subject is who they claim to be to a stated level of assurance."@en .
+    skos:definition "The relying party has evaluated presented identity evidence and established the subject's identity to the level of assurance the interaction requires. The assurance level qualifies the conclusion and is part of it."@en .
 
 cond:qualification-verified
     a ifm:FactCondition, skos:Concept ;
     skos:inScheme scheme:ifm-conditions ;
     skos:topConceptOf scheme:ifm-conditions ;
     skos:prefLabel "Qualification verified"@en ;
-    skos:definition "The relying party has established that the subject holds the qualification the interaction requires."@en .
+    skos:definition "The relying party has evaluated presented qualification evidence and established that the subject holds the qualification the interaction requires. Which qualifications count is a policy question the interaction settles, not a property of the evidence."@en .
 
 cond:accreditation-verified
     a ifm:FactCondition, skos:Concept ;
     skos:inScheme scheme:ifm-conditions ;
     skos:topConceptOf scheme:ifm-conditions ;
     skos:prefLabel "Accreditation verified"@en ;
-    skos:definition "The relying party has established that the organisation's accreditations are genuine and current."@en .
+    skos:definition "The relying party has evaluated presented accreditation evidence and established, under the verification and acceptance policy that applies to the interaction, that the required accreditation is present and current. Checking a signature is one input to that conclusion and does not reach it alone."@en .
 
-cond:age-attribute-proven
+cond:age-threshold-established
     a ifm:FactCondition, skos:Concept ;
     skos:inScheme scheme:ifm-conditions ;
     skos:topConceptOf scheme:ifm-conditions ;
-    skos:prefLabel "Age attribute proven"@en ;
-    skos:definition "A threshold age has been demonstrated to the relying party without disclosing identity. An established fact about an interaction, not something a separate credential attests."@en .
+    skos:prefLabel "Age threshold established"@en ;
+    skos:definition "The relying party has established that the subject satisfies a stated age threshold, without requiring disclosure of the underlying date of birth or of the subject's identity. A fact established in an interaction, not something a separate credential attests."@en .
 
 cond:legal-capacity-established
     a ifm:FactCondition, skos:Concept ;
@@ -1253,7 +1253,7 @@ prov:accreditation-verification-accreditation
 
 prov:age-threshold-verification-age
     a ifm:Provision ;
-    ifm:condition cond:age-attribute-proven ;
+    ifm:condition cond:age-threshold-established ;
     ifm:principalOutcome "true"^^xsd:boolean ;
     ifm:subjectRole srole:subject .
 
@@ -1754,7 +1754,7 @@ uc:eid-issuance
 uc:identity-verification
     a ifm:UseCasePattern, ifm:ComposableElement ;
     rdfs:label "Identity verification"@en ;
-    dct:description "A relying party checks presented identity evidence and establishes who the subject is, to the level of assurance the interaction needs."@en ;
+    dct:description "A relying party evaluates presented identity evidence and establishes the subject's identity to the level of assurance the interaction requires."@en ;
     ifm:appliesToSector sector:ISIC-6419, sector:ISIC-8411, sector:ISIC-8531, sector:ISIC-8540, sector:ISIC-8610, sector:ISIC-4711, sector:ISIC-5610 ;
     ifm:primaryFunction func:identity-proofing ;
     ifm:realisesStage stage:order-to-cash-establish-customer-identity, stage:hire-to-retire-establish-candidate-identity ;
@@ -1793,7 +1793,7 @@ uc:qualification-verification
 uc:accreditation-verification
     a ifm:UseCasePattern, ifm:ComposableElement ;
     rdfs:label "Accreditation verification"@en ;
-    dct:description "A relying party checks an organisation's presented accreditations and establishes that they are genuine and current."@en ;
+    dct:description "A relying party evaluates an organisation's presented accreditation evidence and establishes, under the policy that applies to the interaction, that the required accreditation is present and current."@en ;
     ifm:appliesToSector sector:ISIC-2100, sector:ISIC-3030 ;
     ifm:primaryFunction func:audit-and-assurance ;
     ifm:realisesStage stage:procure-to-pay-check-accreditations ;
@@ -1812,7 +1812,7 @@ uc:accreditation-verification
 uc:age-threshold-verification
     a ifm:UseCasePattern, ifm:ComposableElement ;
     rdfs:label "Age threshold verification"@en ;
-    dct:description "A relying party establishes that the subject is over a stated age, learning nothing else about them."@en ;
+    dct:description "A relying party establishes that the subject satisfies a stated age threshold, without requiring disclosure of the date of birth or of the subject's identity."@en ;
     ifm:appliesToSector sector:ISIC-4711, sector:ISIC-5610 ;
     ifm:primaryFunction func:eligibility-verification ;
     ifm:executesFunction func:regulatory-compliance ;
@@ -1826,7 +1826,7 @@ uc:age-threshold-verification
     ifm:reducesRelianceOn prior:in-person-check ;
     ifm:transformationMode mode:redesign ;
     ifm:changeMode ifm:Change ;
-    skos:scopeNote "Not identity verification: the outcome is an attribute, and the subject is not identified."@en .
+    skos:scopeNote "Not identity verification: the outcome is an attribute, and the subject is not identified. What else a presentation discloses depends on the credential format and its metadata, so the pattern states what it does not require rather than what a verifier cannot learn."@en .
 
 uc:due-diligence-onboarding
     a ifm:UseCasePattern, ifm:ComposableElement ;

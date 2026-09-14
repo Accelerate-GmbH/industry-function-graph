@@ -1,12 +1,18 @@
-# industry-function-graph
+# Industry Function Graph
 
 **👉 https://didas-swiss.github.io/industry-function-graph/** — the graph as a
-page: the sector/function matrix, every use case pattern with its interface,
-the flows that realise them, and where the value streams have gaps.
+page: the three layers, how composition is derived, every use case pattern with
+its interface, the flows that realise them, and the gap register.
 
-**This graph classifies reusable business use cases and describes their
-machine-readable interfaces, so that ecosystem flows can be discovered,
-contextualised and composed.**
+**Classify, connect and realise reusable ecosystem use cases.**
+
+The Industry Function Graph separates three questions that are often mixed
+together: where a use case belongs, what it requires and provides, and how it is
+realised in a real ecosystem.
+
+> Classification tells us where a use case belongs. Interfaces tell us what it
+> can connect to. Realisation tells us how that use case is implemented in
+> practice.
 
 A use case is discoverable by sector, by business function and by its position
 in a value stream. It exposes an interface saying what must be true before it
@@ -22,6 +28,7 @@ classification itself to grow another node.
 [Turtle](https://didas-swiss.github.io/industry-function-graph/ifm-graph.ttl) ·
 [JSON-LD](https://didas-swiss.github.io/industry-function-graph/ifm-graph.jsonld) ·
 [ontology](https://didas-swiss.github.io/industry-function-graph/ontology) ·
+[SHACL shapes](https://didas-swiss.github.io/industry-function-graph/ifm-shapes.ttl) ·
 [composition report](./generated/composition-report.md)
 
 ```bash
@@ -150,7 +157,7 @@ relying party having established something on it.**
 | Kind | Asserts | Examples |
 |---|---|---|
 | `evidence` | A party holds something presentable and checkable | `eid-held`, `secondary-education-credential-held` |
-| `fact` | A relying party has established something by checking | `identity-verified`, `age-attribute-proven`, `legal-capacity-established` |
+| `fact` | A relying party has established something by checking | `identity-verified`, `age-threshold-established`, `legal-capacity-established` |
 | `relationship` | An ongoing relationship, entitlement or access exists | `customer-relationship-open`, `access-granted` |
 | `outcome` | A business decision has been taken | `supplier-qualified`, `patient-record-linked` |
 

@@ -3,7 +3,7 @@ eid-issuance,eid,eid-held,subject,eid-credential,yes,,
 identity-verification,identity,identity-verified,subject,,yes,,
 qualification-verification,qualification,qualification-verified,subject,,yes,,
 accreditation-verification,accreditation,accreditation-verified,organisation,,yes,,
-age-threshold-verification,age,age-attribute-proven,subject,,yes,,
+age-threshold-verification,age,age-threshold-established,subject,,yes,,
 due-diligence-onboarding,relationship,customer-relationship-open,subject,,yes,,
 due-diligence-onboarding,attestation,kyc-attestation-held,subject,kyc-attestation,no,,"The reusable attestation is a secondary output: the principal outcome is the relationship, and an implementation may open one without issuing an attestation."
 due-diligence-refresh,currency,kyc-attestation-current,subject,kyc-currency-attestation,yes,,

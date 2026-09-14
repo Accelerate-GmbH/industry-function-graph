@@ -47,7 +47,7 @@ An issuing authority identifies a person and issues a state electronic identity 
 
 ### Identity verification
 
-A relying party checks presented identity evidence and establishes who the subject is, to the level of assurance the interaction needs.
+A relying party evaluates presented identity evidence and establishes the subject's identity to the level of assurance the interaction requires.
 
 - Requires: Identity evidence available (subject)
 - Provides: **Identity verified (subject)**
@@ -71,7 +71,7 @@ A relying party checks presented evidence of an education or training qualificat
 
 ### Accreditation verification
 
-A relying party checks an organisation's presented accreditations and establishes that they are genuine and current.
+A relying party evaluates an organisation's presented accreditation evidence and establishes, under the policy that applies to the interaction, that the required accreditation is present and current.
 
 - Requires: Accreditation evidence available (organisation)
 - Provides: **Accreditation verified (organisation)**
@@ -83,10 +83,10 @@ A relying party checks an organisation's presented accreditations and establishe
 
 ### Age threshold verification
 
-A relying party establishes that the subject is over a stated age, learning nothing else about them.
+A relying party establishes that the subject satisfies a stated age threshold, without requiring disclosure of the date of birth or of the subject's identity.
 
 - Requires: Identity evidence available (subject)
-- Provides: **Age attribute proven (subject)**
+- Provides: **Age threshold established (subject)**
 - Primary function: Eligibility verification
 - Supporting functions: Regulatory compliance
 - Applies in: 4711 Non-specialized retail sale with food, beverages or tobacco predominating, 5610 Restaurants and mobile food service activities · cross-section · cross-division · cross-class

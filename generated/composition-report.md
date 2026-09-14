@@ -45,9 +45,9 @@ The same two upstream patterns feed a different downstream one. Neither the issu
 
 One step: age verification is not identity verification, and the interface says so - it consumes identity evidence and provides an attribute, never an identity.
 
-**Electronic identity held** → `age-threshold-verification` → **Age attribute proven**
+**Electronic identity held** → `age-threshold-verification` → **Age threshold established**
 
-- `age-threshold-verification` — needs Identity evidence available; provides Age attribute proven
+- `age-threshold-verification` — needs Identity evidence available; provides Age threshold established
 
 ## Alternative evidence for one requirement
 
@@ -108,7 +108,7 @@ Where the classification and the ecosystem do not yet meet.
 
 Either genuine ends of a chain, or downstream use cases nobody has written down.
 
-- `age-threshold-verification` provides **Age attribute proven**
+- `age-threshold-verification` provides **Age threshold established**
 - `credential-recovery-reidentification` provides **Access granted**
 - `due-diligence-refresh` provides **KYC attestation current**
 - `employment-engagement` provides **Employment relationship open**

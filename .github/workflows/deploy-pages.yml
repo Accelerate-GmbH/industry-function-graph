@@ -45,9 +45,13 @@ jobs:
         run: |
           mkdir -p dist
           cp generated/index.html generated/ifm-graph.ttl generated/ifm-graph.jsonld dist/
+          cp generated/matrix.md generated/composition-report.md dist/
           # served both at the ontology IRI itself and under a .ttl extension
           cp ontology/ifm.ttl dist/ontology
           cp ontology/ifm.ttl dist/ontology.ttl
+          # the shapes exist so a consumer holding only the RDF can check it
+          # without this repository, which means they have to be fetchable too
+          cp ontology/ifm-shapes.ttl dist/ifm-shapes.ttl
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

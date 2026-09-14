@@ -1964,7 +1964,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "Issuing an authoritative statement about a subject, a product or a process — a diploma, a certificate, an accreditation.",
+        "@value": "Issuing an attested statement about a subject, a product or a process under an applicable authority or governance framework — a diploma, a certificate, an accreditation. Whether the statement carries authority is a property of that framework, not of the signature on it.",
         "@language": "en"
       }
     },
@@ -2995,7 +2995,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The relying party has established that the subject is who they claim to be to a stated level of assurance.",
+        "@value": "The relying party has evaluated presented identity evidence and established the subject's identity to the level of assurance the interaction requires. The assurance level qualifies the conclusion and is part of it.",
         "@language": "en"
       }
     },
@@ -3016,7 +3016,7 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The relying party has established that the subject holds the qualification the interaction requires.",
+        "@value": "The relying party has evaluated presented qualification evidence and established that the subject holds the qualification the interaction requires. Which qualifications count is a policy question the interaction settles, not a property of the evidence.",
         "@language": "en"
       }
     },
@@ -3037,12 +3037,12 @@
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "The relying party has established that the organisation's accreditations are genuine and current.",
+        "@value": "The relying party has evaluated presented accreditation evidence and established, under the verification and acceptance policy that applies to the interaction, that the required accreditation is present and current. Checking a signature is one input to that conclusion and does not reach it alone.",
         "@language": "en"
       }
     },
     {
-      "@id": "cond:age-attribute-proven",
+      "@id": "cond:age-threshold-established",
       "@type": [
         "ifm:FactCondition",
         "skos:Concept"
@@ -3054,11 +3054,11 @@
         "@id": "scheme:ifm-conditions"
       },
       "skos:prefLabel": {
-        "@value": "Age attribute proven",
+        "@value": "Age threshold established",
         "@language": "en"
       },
       "skos:definition": {
-        "@value": "A threshold age has been demonstrated to the relying party without disclosing identity. An established fact about an interaction, not something a separate credential attests.",
+        "@value": "The relying party has established that the subject satisfies a stated age threshold, without requiring disclosure of the underlying date of birth or of the subject's identity. A fact established in an interaction, not something a separate credential attests.",
         "@language": "en"
       }
     },
@@ -3596,7 +3596,7 @@
         "ifm:Provision"
       ],
       "ifm:condition": {
-        "@id": "cond:age-attribute-proven"
+        "@id": "cond:age-threshold-established"
       },
       "ifm:principalOutcome": {
         "@value": "true",
@@ -5105,7 +5105,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "A relying party checks presented identity evidence and establishes who the subject is, to the level of assurance the interaction needs.",
+        "@value": "A relying party evaluates presented identity evidence and establishes the subject's identity to the level of assurance the interaction requires.",
         "@language": "en"
       },
       "ifm:appliesToSector": [
@@ -5341,7 +5341,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "A relying party checks an organisation's presented accreditations and establishes that they are genuine and current.",
+        "@value": "A relying party evaluates an organisation's presented accreditation evidence and establishes, under the policy that applies to the interaction, that the required accreditation is present and current.",
         "@language": "en"
       },
       "ifm:appliesToSector": [
@@ -5421,7 +5421,7 @@
         "@language": "en"
       },
       "dct:description": {
-        "@value": "A relying party establishes that the subject is over a stated age, learning nothing else about them.",
+        "@value": "A relying party establishes that the subject satisfies a stated age threshold, without requiring disclosure of the date of birth or of the subject's identity.",
         "@language": "en"
       },
       "ifm:appliesToSector": [
@@ -5482,7 +5482,7 @@
         "@id": "ifm:Change"
       },
       "skos:scopeNote": {
-        "@value": "Not identity verification: the outcome is an attribute, and the subject is not identified.",
+        "@value": "Not identity verification: the outcome is an attribute, and the subject is not identified. What else a presentation discloses depends on the credential format and its metadata, so the pattern states what it does not require rather than what a verifier cannot learn.",
         "@language": "en"
       }
     },

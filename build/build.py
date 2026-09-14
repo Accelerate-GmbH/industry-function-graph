@@ -1106,13 +1106,95 @@ def build_html(model):
             reused.append(f"<li><strong>{esc(model.label('function', function))}</strong> "
                           f"&mdash; {codes}</li>")
 
+    # --- Gaps -----------------------------------------------------------
+    # The same interfaces that derive the connections derive the holes. All
+    # five come from the model, so the page cannot disagree with the report.
+    def gap_block(heading, note, items):
+        body = ("".join(f"<li>{item}</li>" for item in items)
+                if items else '<li class="muted">None in the current dataset.</li>')
+        return (f'      <div><h3>{heading}</h3>'
+                f'<p class="gap-note">{note}</p>'
+                f'<ul class="gap-list">{body}</ul></div>')
+
+    unmet_items = []
+    for uc_id, requirement_id in unmet_pairs:
+        requirement = next(r for r in model.requires_of[uc_id]
+                           if r["requirement_id"] == requirement_id)
+        unmet_items.append(
+            f'<a href="#{esc(uc_id)}">{esc(model.label("use-case", uc_id))}</a> '
+            f'<span class="muted">requires</span> '
+            f'{esc(model.label("condition", requirement["condition_id"]))}')
+
+    end_items = []
+    for uc_id, provision_id in model.unconsumed_provisions():
+        provision = next(p for p in model.provides_of[uc_id]
+                         if p["provision_id"] == provision_id)
+        if provision.get("principal") == "yes":
+            end_items.append(
+                f'<a href="#{esc(uc_id)}">{esc(model.label("use-case", uc_id))}</a> '
+                f'<span class="muted">provides</span> '
+                f'{esc(model.label("condition", provision["condition_id"]))}')
+
+    unrealised_items = [
+        f'<a href="#{esc(uc)}">{esc(model.label("use-case", uc))}</a>'
+        for uc in model.unrealised_use_cases()]
+
+    stage_items = []
+    for stream_id, stage_id in model.unrealised_stages():
+        stage_items.append(
+            f'{esc(model.stage_index[(stream_id, stage_id)]["stage_label"])} '
+            f'<span class="muted">&mdash; '
+            f'{esc(model.label("stream", stream_id))}</span>')
+
+    orphan_items = [esc(model.label("credential", c)) for c in
+                    sorted(model.issued_credentials() - model.consumed_credentials())]
+
+    gaps_html = "\n".join([
+        gap_block("Requirements with no provider",
+                  "A use case here asks for a condition that no use case here "
+                  "produces. The upstream step is outside this repository, or "
+                  "not yet modelled.", unmet_items),
+        gap_block("Principal outcomes with no consumer",
+                  "Nothing here requires what these patterns produce. Either a "
+                  "genuine end of a chain, or a downstream pattern nobody has "
+                  "written down.", end_items),
+        gap_block("Patterns with no implementation flow",
+                  "A reusable pattern that no flow in this dataset realises.",
+                  unrealised_items),
+        gap_block(f"Value stream stages with no pattern "
+                  f"({len(stage_items)} of {len(model.stage_index)})",
+                  "The dataset covers a slice of each stream. These stages mark "
+                  "where a pattern could be added without inventing a new "
+                  "classification.", stage_items),
+        gap_block("Credentials issued but not consumed here",
+                  "A flow issues the credential; no flow in this dataset "
+                  "presents or verifies it.", orphan_items),
+    ])
+
+    overlap_rows = "\n".join(
+        f'        <tr><td>{esc(verdict)}</td>'
+        f'<td><a href="#{esc(first)}">{esc(model.label("use-case", first))}</a></td>'
+        f'<td><a href="#{esc(second)}">{esc(model.label("use-case", second))}</a></td>'
+        f'<td>{esc(model.label("function", model.primary_function(first)))}</td></tr>'
+        for verdict, first, second in model.overlaps()) or (
+        '        <tr><td colspan="4" class="muted">'
+        'None detected in the current dataset.</td></tr>')
+
+    # Counts used in the prose, so coverage claims cannot drift from the data.
+    n_patterns = len(model.use_cases)
+    n_flows = len(model.flows)
+    n_conditions = len(model.conditions)
+    n_sectors = len({s for uc in model.use_cases for s in model.sectors_of[uc]})
+    n_streams = len(model.value_streams)
+    n_credentials = len(model.credential_types)
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Industry &amp; function mapping</title>
-<meta name="description" content="Which use cases sit at which intersection of economic sector (ISIC Rev. 5) and business function.">
+<title>Industry Function Graph</title>
+<meta name="description" content="Classify, connect and realise reusable ecosystem use cases: sector and function classification, machine-readable interfaces, and the flows that realise them.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -1287,6 +1369,45 @@ def build_html(model):
     color: var(--accent); font-weight: 600; }}
   .lede {{ font-size: 1rem; color: var(--body); max-width: 680px; }}
   .prose {{ color: var(--body); font-size: 0.9062rem; max-width: 680px; }}
+  /* A single load-bearing sentence, set apart because the rest of the section
+     explains it. Used for the three-layer summary and the composition rule. */
+  .rule-line {{ font-size: 1rem; color: var(--ink); max-width: 680px;
+    margin: 20px 0; padding-left: 14px; border-left: 2px solid var(--accent); }}
+  /* The one architectural rule a reader must not miss, so it is not left to
+     read as just another sentence in the section. */
+  .rule-line.principal {{ font-size: 1.375rem; font-weight: 600; line-height: 1.3;
+    margin: 4px 0 18px; padding-left: 16px; }}
+  .hero .rule-line {{ font-size: 1.0625rem; font-weight: 500; }}
+  .layers h3, .gaps h3 {{ font-size: 0.8125rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); margin: 0 0 8px; }}
+  .layers .prose {{ margin-top: 0; }}
+  /* Five gap blocks of very different lengths: each takes its own height. */
+  .axes.gaps {{ align-items: start; }}
+  dl.kinds {{ display: grid; grid-template-columns: 7.5rem 1fr; gap: 6px 16px;
+    font-size: 0.875rem; color: var(--body); max-width: 680px; margin: 0 0 8px; }}
+  dl.kinds dt {{ font-weight: 600; color: var(--ink); }}
+  dl.kinds dd {{ margin: 0; }}
+  ol.questions {{ font-size: 0.9062rem; color: var(--body); max-width: 680px;
+    padding-left: 1.5rem; }}
+  ol.questions li {{ padding: 3px 0; }}
+  ol.questions li::marker {{ color: var(--body); font-size: 0.75rem; }}
+  .gap-note {{ font-size: 0.75rem; color: var(--body); margin: 0 0 8px; }}
+  ul.gap-list {{ list-style: none; padding: 0; margin: 0; font-size: 0.8125rem; }}
+  ul.gap-list li {{ padding: 5px 0; border-bottom: 1px solid var(--line);
+    color: var(--ink); }}
+  ul.gap-list li:last-child {{ border-bottom: none; }}
+  ul.gap-list a {{ color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }}
+  ul.gap-list a:hover {{ color: var(--accent); border-bottom-color: currentColor; }}
+  table.matrix.overlap td {{ text-align: left; font-size: 0.8125rem; }}
+  table.matrix.overlap th {{ text-align: left; font-weight: 600; font-size: 0.75rem;
+    color: var(--body); }}
+  table.matrix.overlap a {{ color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }}
+  table.matrix.overlap a:hover {{ color: var(--accent); border-bottom-color: currentColor; }}
+  ul.artefacts {{ font-size: 0.875rem; color: var(--body); max-width: 680px;
+    padding-left: 1.125rem; }}
+  ul.artefacts li {{ padding: 3px 0; }}
   .matrix-scroll {{ overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }}
   table.matrix {{ border-collapse: collapse; font-size: 0.8125rem; min-width: 100%; }}
   table.matrix th, table.matrix td {{ border-bottom: 1px solid var(--line); padding: 8px 10px; }}
@@ -1413,7 +1534,7 @@ def build_html(model):
       <a class="didas" href="https://www.didas.swiss" target="_blank" rel="noopener">
         <img src="https://www.didas.swiss/wp-content/uploads/2021/02/logo.png" alt="DIDAS">
       </a>
-      <p class="eyebrow">Industry &amp; function mapping · knowledge graph</p>
+      <p class="eyebrow">Industry Function Graph</p>
     </div>
     <div class="tools">
       <div class="seg" role="group" aria-label="Colour theme">
@@ -1441,18 +1562,239 @@ def build_html(model):
 <div class="wrap">
 
   <section class="hero" style="border-top:none;">
-    <span class="eyebrow">Knowledge graph</span>
-    <h1>Which function, in which sector</h1>
+    <span class="eyebrow">Industry Function Graph</span>
+    <h1>Classify, connect and realise reusable ecosystem use cases</h1>
     <p class="lede">
-      Every use case in this graph sits at an intersection: an economic sector
-      (ISIC Rev. 5) and a business function that is defined independently of it.
-      Read the matrix down a column to find the same function recurring across
-      sectors &mdash; those are the places where one pattern can serve many industries.
+      The Industry Function Graph separates three questions that are often mixed
+      together: where a use case belongs, what it requires and provides, and how
+      it is realised in a real ecosystem.
+    </p>
+    <p class="lede">
+      Sector, business function and value-stream stage classify the work.
+      Machine-readable interfaces define what can connect to what. Real
+      implementation flows record the participants, credentials, trust roles and
+      implementation context through which the work is performed.
+    </p>
+    <p class="rule-line">
+      Classification tells us where a use case belongs. Interfaces tell us what it
+      can connect to. Realisation tells us how that use case is implemented in
+      practice.
+    </p>
+    <p class="prose">
+      The graph therefore separates reusable business patterns from the credentials
+      and implementations that happen to realise them today. It currently holds
+      {n_patterns} patterns, {n_flows} flows, {n_conditions} conditions and
+      {n_credentials} credential types across {n_sectors} ISIC classes and
+      {n_streams} value streams.
     </p>
   </section>
 
   <section>
-    <h2>Sector &times; function</h2>
+    <h2>The three layers</h2>
+    <div class="axes layers">
+      <div>
+        <h3>Classification</h3>
+        <p class="prose">
+          Classification locates a reusable use case by economic sector, primary
+          business function and, where applicable, value-stream stage.
+          Classification supports discovery. It does not determine which use cases
+          compose.
+        </p>
+      </div>
+      <div>
+        <h3>Interface</h3>
+        <p class="prose">
+          Interface defines the conditions a use case requires before it can run
+          and the conditions it provides afterwards. These conditions form the
+          machine-readable contract from which composition is derived.
+        </p>
+      </div>
+      <div>
+        <h3>Realisation</h3>
+        <p class="prose">
+          Realisation records how a canonical use case is implemented in a concrete
+          sector and jurisdiction: the flow, participants, credentials, trust roles,
+          maturity and implementation evidence.
+        </p>
+      </div>
+    </div>
+    <p class="prose">
+      A <code>UseCasePattern</code> is the reusable definition. A <code>Flow</code>
+      is a concrete implementation of one or more patterns. A flow is never the
+      use case itself.
+    </p>
+  </section>
+
+  <section>
+    <h2>How composition works</h2>
+
+    <p class="rule-line principal">A credential is not the interface.</p>
+    <p class="prose">
+      A use case provides a condition. A credential may substantiate that
+      condition. Another use case requires the condition, not the credential.
+      Conditions connect use cases; credentials can provide evidence for
+      particular conditions. This is what allows a new credential, issuer or
+      evidence mechanism to satisfy an existing business requirement without
+      redefining every downstream use case.
+    </p>
+
+    <h3>Conditions form a hierarchy</h3>
+    <p class="prose">
+      A more specific condition can satisfy a broader requirement, but not the
+      reverse. An upper-secondary qualification credential substantiates the
+      narrower condition <em>Upper-secondary qualification held</em>. Because that
+      condition is a specialisation of <em>Education qualification evidence
+      available</em>, it satisfies a downstream use case that asks only for
+      education-qualification evidence. Composition therefore does not depend on
+      exact condition-name equality.
+    </p>
+    <p class="prose">
+      The reasoning performed is exactly this: a provision satisfies a requirement
+      when the provided condition is the required condition, or is reachable from
+      it by following <code>skos:broader</code> upwards. No other inference is
+      applied.
+    </p>
+
+    <h3>Four kinds of condition</h3>
+    <p class="prose">
+      Conditions distinguish four kinds of state. Holding evidence is not the same
+      as having established the corresponding fact: <code>eid-held</code> is
+      evidence, <code>identity-verified</code> is a fact.
+    </p>
+    <dl class="kinds">
+      <dt>Evidence</dt><dd>Something presentable and checkable is available.</dd>
+      <dt>Fact</dt><dd>A relying party has established something in the interaction.</dd>
+      <dt>Relationship</dt><dd>An ongoing relationship has been established.</dd>
+      <dt>Outcome</dt><dd>A business result has been reached.</dd>
+    </dl>
+
+    <h3>Where compatibility narrows further</h3>
+    <p class="prose">
+      Condition compatibility is the core composition rule. Where specified,
+      additional interface constraints &mdash; subject role, a named evidence type,
+      and <code>key=value</code> context such as jurisdiction or assurance level
+      &mdash; narrow compatibility further. The model supports all three; the
+      current dataset uses subject role and evidence type, and does not yet
+      populate any context constraints.
+    </p>
+
+    <h3>Adding a credential</h3>
+    <p class="prose">
+      Credential-to-condition mappings are many-to-many. A new credential type is
+      introduced by declaring which evidence condition it substantiates; existing
+      use cases requiring that condition do not need to be rewritten. It becomes a
+      candidate evidence mechanism for those use cases, subject to their additional
+      context, trust and policy constraints.
+    </p>
+  </section>
+
+  <section>
+    <h2>Derived composition</h2>
+    <p class="prose">
+      Every edge below is derived, not drawn. Each arrow follows one path:
+      a <strong>provided condition</strong> &rarr; <strong>condition compatibility
+      or subsumption</strong> &rarr; a <strong>required condition</strong>, with
+      any stated role, evidence-type and context constraints applied on top. No
+      file in this repository records which use case enables which.
+    </p>
+    <ul class="chain">
+{chain_html}
+    </ul>
+    <p class="legend">
+      <strong>Requirements with no provider here:</strong> {unmet_html}. Each marks
+      an upstream step outside this repository or not yet modelled.
+    </p>
+  </section>
+
+  <section>
+    <h2>What the model can answer</h2>
+    <p class="prose">
+      Because interfaces are machine-readable, these relationships are computed
+      from the model rather than maintained as a second set of hand-drawn links.
+      <code>build/queries.py</code> runs them against the dataset and CI checks
+      that each still returns an answer.
+    </p>
+    <ol class="questions">
+      <li>What can satisfy this requirement?</li>
+      <li>What can consume this output?</li>
+      <li>Which use cases can connect to this one?</li>
+      <li>Which real implementation flows realise this reusable pattern?</li>
+      <li>Which credential or evidence types can satisfy this input condition?</li>
+      <li>Which path connects a starting condition to a desired outcome?</li>
+      <li>Which requirements currently have no upstream provider?</li>
+      <li>Which value-stream stages have no use case yet?</li>
+      <li>Which credentials are issued but have no consuming flow in the graph?</li>
+      <li>Which use-case patterns may overlap semantically?</li>
+    </ol>
+    <p class="legend">
+      Answers are derived from the use cases and conditions currently represented
+      in the dataset, not from the ecosystem at large.
+    </p>
+  </section>
+
+  <section>
+    <h2>Use case patterns</h2>
+    <p class="prose">
+      The canonical unit: one primary business function, a defined set of required
+      conditions and one principal business outcome, shown in bold. A pattern may
+      expose additional outputs, but it represents one coherent transformation.
+      Where a proposed use case contains independently reusable transformations
+      with different principal outcomes, it is split into smaller patterns and a
+      real flow composes them.
+    </p>
+    <p class="prose">
+      Two use cases under the same primary function may still be distinct, because
+      their required conditions or principal outcomes differ. Conversely, two
+      implementations in different sectors realise the same canonical use case when
+      the underlying business transformation and interface are equivalent.
+    </p>
+    <div class="flows">
+{chr(10).join(cards)}
+    </div>
+  </section>
+
+  <section>
+    <h2>Flows &mdash; real implementations</h2>
+    <p class="prose">
+      A flow records how a pattern is realised in a concrete sector and
+      jurisdiction. A flow can record its sector, jurisdiction, participants and
+      their trust roles, the credentials issued, presented or verified, its
+      maturity, documentation and deployment evidence, and which participants bear
+      cost without direct value. Not every flow populates every field.
+    </p>
+    <p class="prose">
+      Realisation is many-to-many in both directions. Several flows may realise the
+      same canonical use case &mdash; the retail and hospitality age checks both
+      realise <em>Age threshold verification</em>. One flow may realise several
+      canonical use cases in sequence &mdash; employee onboarding composes identity
+      verification, qualification verification and employment engagement. The
+      reusable patterns stay stable while implementations, credentials and sectors
+      evolve independently.
+    </p>
+    <p class="legend">
+      Maturity is stated on each card. In this dataset every flow is
+      <strong>Modelled</strong> or <strong>Exploratory</strong>: none is recorded as
+      deployed, and no flow yet carries deployment evidence. All
+      {n_credentials} credential types are marked
+      <code>ifm:codeStatus "provisional"</code> &mdash; none has been checked
+      against a published schema registry.
+    </p>
+    <div class="flows">
+{chr(10).join(flow_cards)}
+    </div>
+  </section>
+
+  <section>
+    <h2>Sector &times; function &mdash; a classification view</h2>
+    <p class="prose">
+      The matrix shows where canonical use cases recur across economic sectors and
+      business functions. It is a classification and discovery view of the graph,
+      not the definition of it: sector and function aid discovery, and do not
+      determine whether two use cases are the same use case. Repetition across
+      sectors identifies candidates for reusable cross-sector patterns; the
+      interfaces determine whether the use cases are actually equivalent or
+      composable.
+    </p>
     <div class="matrix-scroll">
       <table class="matrix">
         <thead><tr><th class="sector">ISIC Rev. 5 section</th>{''.join(head)}</tr></thead>
@@ -1465,74 +1807,63 @@ def build_html(model):
       <span class="dot primary">&#9679;</span> primary function of a use case &nbsp;&middot;&nbsp;
       <span class="dot support">&#9675;</span> supporting function. Follow a marker to the use case.
     </p>
-  </section>
-
-  <section>
-    <h2>Functions that recur across sectors</h2>
+    <h3>Functions that recur across sectors</h3>
     <ul>
 {chr(10).join(reused)}
     </ul>
   </section>
 
   <section>
-    <h2>What plugs into what</h2>
-    <p class="prose">
-      Each use case declares the conditions it requires and the conditions it
-      provides. The arrows below are computed from those interfaces, through the
-      condition hierarchy: a use case providing something <em>narrower</em> than what
-      another asks for still counts as feeding it, which is what lets an alternative
-      upstream flow serve the same downstream need. Nothing here is a list of
-      hand-drawn dependencies.
-    </p>
-    <ul class="chain">
-{chain_html}
-    </ul>
-    <p class="legend">
-      <strong>Unmet requirements:</strong> {unmet_html} &mdash; required by a use case
-      here and provided by none. Each marks a flow that is outside this repository
-      or not yet written down.
-    </p>
-  </section>
-
-  <section>
-    <h2>Use case patterns</h2>
-    <p class="prose">
-      The canonical unit: one primary business function, a set of required
-      conditions and one principal outcome, shown in bold. A pattern is a reusable
-      definition, not an implementation &mdash; the implementations are below.
-    </p>
-    <div class="flows">
-{chr(10).join(cards)}
-    </div>
-  </section>
-
-  <section>
-    <h2>Flows &mdash; real implementations</h2>
-    <p class="prose">
-      An actual trust flow, in an actual sector and jurisdiction, naming the
-      credentials it uses. Several flows may realise one pattern &mdash; the same age
-      check in retail and in hospitality, the same qualification issuance for a
-      Matur&auml;t and a vocational certificate &mdash; and one flow may realise several
-      patterns in sequence. Keeping flows out of the taxonomy is the point: the
-      ecosystem adds implementations continuously, and each should find a place among
-      the existing patterns rather than becoming another one.
-    </p>
-    <div class="flows">
-{chr(10).join(flow_cards)}
-    </div>
-  </section>
-
-  <section>
     <h2>Value streams</h2>
     <p class="prose">
-      Where the work sits end to end. The concept follows ArchiMate's
-      <em>Value Stream</em> element. The catalogue and the stage decomposition below
-      are this repository's editorial models rather than extracts from a standard,
-      since no openly licensed catalogue exists: each is one modelled sequence, not
-      the universal one. Stage numbers are a reading order, not an execution order.
+      Value-stream stages provide an additional end-to-end structure. A stage can
+      declare its own required and provided conditions, and a canonical use case
+      realises that stage when its business transformation and interface fit. The
+      graph can then identify which stages are currently realised by use cases and
+      which remain unmodelled.
+    </p>
+    <p class="prose">
+      The concept follows ArchiMate's <em>Value Stream</em> element. The catalogue
+      and stage decomposition below are an IFM modelling layer rather than extracts
+      from a standard, since no openly licensed catalogue exists: each is one
+      modelled sequence, not an authoritative industry taxonomy. Stage numbers are
+      a reading order, not an execution order.
     </p>
     <div class="axes">
 {streams_html}
+    </div>
+  </section>
+
+  <section>
+    <h2>Gaps</h2>
+    <p class="prose">
+      The same model that finds connections also exposes gaps. A reported gap may
+      represent missing ecosystem capability, work outside the current scope, or a
+      use case that has not yet been modelled. None of these is presented as a
+      defect.
+    </p>
+    <div class="axes gaps">
+{gaps_html}
+    </div>
+  </section>
+
+  <section>
+    <h2>Candidates for editorial review</h2>
+    <p class="prose">
+      Patterns with the same primary function and related interfaces are surfaced
+      as potential overlaps. The graph does not merge them. Similar interfaces may
+      represent duplicate, narrower, broader, partially overlapping or genuinely
+      distinct work, and the relation below states which of those the comparison
+      found.
+    </p>
+    <div class="matrix-scroll">
+      <table class="matrix overlap">
+        <thead><tr><th>Relation</th><th>Pattern</th><th>Pattern</th>
+          <th>Shared primary function</th></tr></thead>
+        <tbody>
+{overlap_rows}
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -1560,17 +1891,42 @@ def build_html(model):
   </section>
 
   <section>
-    <h2>The graph itself</h2>
+    <h2>The machine-readable model</h2>
+    <p class="rule-line">This website is one view of the graph.</p>
     <p class="prose">
-      This page is generated from the same data as the machine-readable graph:
-      SKOS concept schemes for the sector, function, condition, role and credential
-      vocabularies; <code>ifm:UseCasePattern</code> nodes carrying a classification
-      and an interface of <code>ifm:requires</code> and <code>ifm:provides</code>; and
-      <code>ifm:Flow</code> nodes recording what actually implements them. Load
-      <a href="ifm-graph.ttl">ifm-graph.ttl</a> or
-      <a href="ifm-graph.jsonld">ifm-graph.jsonld</a> into any triple store, or read the
-      <a href="https://github.com/DIDAS-swiss/industry-function-graph">source data and build script</a>.
+      The same model is generated as RDF and JSON-LD and validated through SHACL
+      shapes and repository checks. Queries and derived reports use the same
+      underlying data as this page. The HTML is a projection: the composition
+      edges, gaps and overlap candidates shown above are derived at build time from
+      the interfaces in <code>data/</code>, and the RDF graph is not a second model
+      maintained by hand.
     </p>
+    <p class="prose">
+      The graph carries SKOS concept schemes for the sector, function, condition,
+      subject-role, trust-role and credential vocabularies;
+      <code>ifm:UseCasePattern</code> nodes carrying a classification and an
+      interface of <code>ifm:requires</code> and <code>ifm:provides</code>; and
+      <code>ifm:Flow</code> nodes recording what realises them. Provenance is
+      explicit: <code>ifm:codeStatus</code> separates concepts taken from an
+      external classification from this repository's own modelling, and
+      <code>ifm:mappingStatus</code> records how an alignment onto an external
+      scheme was arrived at.
+    </p>
+    <ul class="artefacts">
+      <li><a href="ifm-graph.ttl">ifm-graph.ttl</a> &mdash; the full graph in Turtle</li>
+      <li><a href="ifm-graph.jsonld">ifm-graph.jsonld</a> &mdash; the same graph as JSON-LD</li>
+      <li><a href="ontology">ontology</a> &mdash; the IFM vocabulary, served at the
+        IRI the concepts are minted in (also <a href="ontology.ttl">ontology.ttl</a>)</li>
+      <li><a href="ifm-shapes.ttl">ifm-shapes.ttl</a> &mdash; the SHACL shapes, so the
+        graph can be checked without this repository</li>
+      <li><a href="https://github.com/DIDAS-swiss/industry-function-graph/blob/main/generated/composition-report.md">composition report</a>
+        &mdash; worked chains, alternative evidence, overlap candidates and the full gap register</li>
+      <li><a href="https://github.com/DIDAS-swiss/industry-function-graph/blob/main/generated/matrix.md">matrix.md</a>
+        &mdash; the sector &times; function view as Markdown</li>
+      <li><a href="https://github.com/DIDAS-swiss/industry-function-graph">source data and build script</a></li>
+      <li><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository">Trust Flow Diagram Repository</a>
+        &mdash; worked implementation diagrams for several of the flows above</li>
+    </ul>
   </section>
 
 </div>
@@ -1614,7 +1970,7 @@ WORKED_COMPOSITIONS = [
      "The same two upstream patterns feed a different downstream one. Neither "
      "the issuance nor the verification pattern knows or cares which."),
     ("Electronic identity to a proven age threshold",
-     "eid-held", "age-attribute-proven",
+     "eid-held", "age-threshold-established",
      "One step: age verification is not identity verification, and the "
      "interface says so - it consumes identity evidence and provides an "
      "attribute, never an identity."),

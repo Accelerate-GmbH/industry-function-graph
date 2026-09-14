@@ -216,7 +216,7 @@ def q14(model):
         ("eid-held", "kyc-attestation-current"),
         ("secondary-education-credential-held", "tertiary-enrolment-established"),
         ("secondary-education-credential-held", "employment-relationship-open"),
-        ("eid-held", "age-attribute-proven"),
+        ("eid-held", "age-threshold-established"),
     ]
     out = []
     for start, goal in goals:
