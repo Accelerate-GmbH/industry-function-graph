@@ -1,8 +1,8 @@
 # industry-function-graph
 
-**👉 https://didas-swiss.github.io/industry-function-graph/index.html** — the
-graph as a page: the sector/function matrix, every use case pattern with its
-interface, the flows that realise them, and where the value streams have gaps.
+**👉 https://didas-swiss.github.io/industry-function-graph/** — the graph as a
+page: the sector/function matrix, every use case pattern with its interface,
+the flows that realise them, and where the value streams have gaps.
 
 **This graph classifies reusable business use cases and describes their
 machine-readable interfaces, so that ecosystem flows can be discovered,
