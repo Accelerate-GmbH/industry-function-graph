@@ -899,16 +899,22 @@ def build_html(model):
         primary = model.primary_function(uc_id)
         supporting = [model.label("function", r["function_id"])
                       for r in model.functions_of[uc_id] if r["role"] != "primary"]
-        sector_list = ", ".join(
-            f'<span class="code">{esc(model.sectors[s]["notation"])}</span> '
-            f'{esc(model.label("sector", s))}' for s in model.sectors_of[uc_id])
+        # One chip per sector rather than a running sentence: a pattern that
+        # applies in eight sectors is the interesting case, and a comma list
+        # that long reads as noise next to the interface it sits under.
+        sector_list = "".join(
+            f'<span class="chip"><span class="code">'
+            f'{esc(model.sectors[s]["notation"])}</span>'
+            f'{esc(model.label("sector", s))}</span>'
+            for s in model.sectors_of[uc_id])
         flows = model.flows_of_use_case(uc_id)
         if flows:
-            link = ('<div class="flow-link">Realised by ' + ", ".join(
-                (f'<a href="{esc(model.documentation_iri(f))}">'
-                 f'{esc(model.label("flow", f))} &rarr;</a>'
-                 if model.documentation_iri(f) else esc(model.label("flow", f)))
-                for f in flows) + '</div>')
+            link = ('<div class="flow-link">Realised by '
+                    + ", ".join(
+                        (f'<a href="{esc(model.documentation_iri(f))}">'
+                         f'{esc(model.label("flow", f))} &rarr;</a>'
+                         if model.documentation_iri(f) else esc(model.label("flow", f)))
+                        for f in flows) + '</div>')
         else:
             link = ('<div class="flow-link"><span class="status">'
                     'No implementation yet</span></div>')
@@ -919,33 +925,44 @@ def build_html(model):
         provides = iface(model.provides_of[uc_id], principal=True)
         enabled = ", ".join(f'<a href="#{esc(e)}">{esc(model.label("use-case", e))}</a>'
                             for e in model.enables(uc_id))
-        enables_line = (f'\n          <p class="meta"><strong>Enables:</strong> '
+        enables_line = (f'\n            <p class="meta enables"><strong>Enables:</strong> '
                         f'{enabled}</p>') if enabled else ""
         stages = model.stages_realised_by[uc_id]
-        stage_line = (f'\n          <p class="meta"><strong>Value stream stage:</strong> '
+        stage_line = (f'\n            <p class="meta"><strong>Value stream stage:</strong> '
                       + ", ".join(
                           f'{esc(model.label("stream", vs))} &mdash; '
                           f'{esc(model.stage_index[(vs, st)]["stage_label"])}'
                           for vs, st in stages) + '</p>') if stages else ""
+        # Interface first and set apart, classification below a rule: the
+        # interface is what composes, the classification is what it is filed
+        # under. Reading order follows that, and so does visual weight.
         cards.append(f"""      <div class="flow" id="{esc(uc_id)}">
         <div class="flow-tag">{esc(scope)}
           &middot; <span class="mode mode-{esc(change)}">{esc(mode['pref_label_en'])}</span></div>
         <div class="flow-body">
           <h3>{esc(row['name'])}</h3>
           <p>{esc(row['description'])}</p>
-          <p class="meta"><strong>Requires:</strong> {requires}</p>
-          <p class="meta"><strong>Provides:</strong> {provides}</p>{enables_line}
-          <p class="meta"><strong>Primary function:</strong> {esc(model.label('function', primary))}</p>
-          <p class="meta"><strong>Supporting:</strong> {esc(', '.join(supporting)) or '&mdash;'}</p>
-          <p class="meta"><strong>Applies in:</strong> {sector_list}</p>{stage_line}
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">{requires}</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val">{provides}</span></p>
+          </div>
+          <div class="classify">{enables_line}
+            <p class="meta"><strong>Primary function:</strong> {esc(model.label('function', primary))}</p>
+            <p class="meta"><strong>Supporting:</strong> {esc(', '.join(supporting)) or '&mdash;'}</p>
+            <p class="meta sectors"><strong>Applies in:</strong> {sector_list}</p>{stage_line}
+          </div>
         </div>
 {link}
       </div>""")
 
     flow_cards = []
     for flow_id, row in model.flows.items():
-        realises = " &rarr; ".join(
-            f'<a href="#{esc(uc)}">{esc(model.label("use-case", uc))}</a>'
+        # A numbered list, not an arrow chain: the step order is data the flow
+        # carries, and a chain of three long pattern names wraps into an
+        # unreadable ribbon in a card-width column.
+        realises = "\n".join(
+            f'              <li><a href="#{esc(uc)}">'
+            f'{esc(model.label("use-case", uc))}</a></li>'
             for uc in model.realises_of[flow_id])
         context = []
         if row["sector_id"].strip():
@@ -956,23 +973,31 @@ def build_html(model):
         credentials = sorted({link["credential_type_id"]
                               for (f, _pt), links in model.credentials_of.items()
                               if f == flow_id for link in links})
-        cred_line = (f'\n          <p class="meta"><strong>Credentials:</strong> '
+        cred_line = (f'\n            <p class="meta"><strong>Credentials:</strong> '
                      + ", ".join(esc(model.label("credential", c)) for c in credentials)
                      + '</p>') if credentials else ""
         payers = ", ".join(esc(p["party"]) for p in model.bears_cost_without_value(flow_id))
-        asym_line = (f'\n          <p class="meta asym"><strong>Recorded as bearing cost '
+        asym_line = (f'\n            <p class="meta asym"><strong>Recorded as bearing cost '
                      f'without direct value:</strong> {payers}</p>') if payers else ""
+        # Skip the block rather than draw its dividing rule over nothing.
+        detail = (f'\n          <div class="classify">{cred_line}{asym_line}\n          </div>'
+                  if cred_line or asym_line else "")
         documentation = model.documentation_iri(flow_id)
         link = (f'<div class="flow-link"><a href="{esc(documentation)}">Worked flow &rarr;</a></div>'
                 if documentation else
                 '<div class="flow-link"><span class="status">Not yet documented</span></div>')
         flow_cards.append(f"""      <div class="flow" id="{esc(flow_id)}">
-        <div class="flow-tag">{esc(" &middot; ".join(context)) or "sector-neutral"}
+        <div class="flow-tag">{" &middot; ".join(context) or "sector-neutral"}
           &middot; {esc(row['maturity'])}</div>
         <div class="flow-body">
           <h3>{esc(row['name'])}</h3>
           <p>{esc(row['description'])}</p>
-          <p class="meta"><strong>Realises:</strong> {realises}</p>{cred_line}{asym_line}
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+{realises}
+            </ol>
+          </div>{detail}
         </div>
 {link}
       </div>""")
@@ -1039,13 +1064,17 @@ def build_html(model):
         if gives:
             bits.append(f'<span class="muted"> &middot; gives '
                         f'{esc(", ".join(model.label("condition", c) for c in gives))}</span>')
+        # The uncovered stage is what this section exists to show, so it gets
+        # the accent and the covered one recedes - the reverse of treating a
+        # pattern link as the highlight.
         if realised:
             bits.append(" &middot; " + ", ".join(
                 f'<a href="#{esc(uc)}">{esc(model.label("use-case", uc))}</a>'
                 for uc in realised))
         else:
-            bits.append('<span class="muted"> &middot; no use case yet</span>')
-        return f'<li>{esc(stage["stage_label"])}' + "".join(bits) + '</li>'
+            bits.append(' &middot; <span class="gap">no use case yet</span>')
+        return (f'<li><span class="stage-label">{esc(stage["stage_label"])}</span>'
+                + "".join(bits) + '</li>')
 
     def stream_interface(stream_id):
         wants = [r["condition_id"] for r in model.stream_requires
@@ -1288,20 +1317,81 @@ def build_html(model):
   .mode {{ font-weight: 600; }}
   .mode-change {{ color: var(--accent); }}
   .meta.asym {{ color: var(--accent); }}
+  /* The tree's structure is carried by indentation, so the node names read as
+     text in the body colour; the accent is kept for hover, as elsewhere. */
   ul.chain {{ font-size: 0.875rem; }}
   ul.chain ul {{ margin: 4px 0; }}
   ul.chain li {{ padding: 2px 0; }}
-  ol.stages {{ font-size: 0.8125rem; color: var(--body); padding-left: 20px; margin: 0; }}
-  ol.stages li {{ padding: 2px 0; }}
-  .flows {{ display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }}
+  ul.chain a {{ color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }}
+  ul.chain a:hover {{ color: var(--accent); border-bottom-color: currentColor; }}
+  ol.stages {{ font-size: 0.8125rem; color: var(--body); padding-left: 1.5rem; margin: 0; }}
+  ol.stages li {{ padding: 4px 0; border-bottom: 1px solid var(--line); }}
+  ol.stages li:last-child {{ border-bottom: none; }}
+  ol.stages li::marker {{ color: var(--body); font-size: 0.6875rem; }}
+  .stage-label {{ color: var(--ink); }}
+  ol.stages a {{ color: var(--body); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }}
+  ol.stages a:hover {{ color: var(--accent); border-bottom-color: currentColor; }}
+  /* A tag rather than running red text: a stream with ten uncovered stages
+     should read as ten marks to scan, not as ten error messages. nowrap
+     stops "no use case / yet" breaking across the line. */
+  .gap {{ display: inline-block; color: var(--accent); font-size: 0.6875rem;
+    border: 1px solid var(--line); border-radius: 10px; padding: 0 7px;
+    line-height: 1.5; white-space: nowrap; background: var(--bg-soft); }}
+  /* Cards size to their own content: one pattern realised by nine flows must
+     not set the row height for the three beside it. */
+  .flows {{ display: grid; gap: 16px; align-items: start;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }}
   .flow {{ border: 1px solid var(--line); border-radius: 6px; display: flex;
     flex-direction: column; scroll-margin-top: 20px; }}
   .flow-tag {{ font-size: 0.6875rem; text-transform: uppercase; letter-spacing: .06em;
     color: var(--body); padding: 10px 16px; border-bottom: 1px solid var(--line);
     background: var(--bg-soft); }}
+  /* The sector code keeps its own casing inside an uppercased tag line. */
+  .flow-tag .code {{ text-transform: none; letter-spacing: 0; }}
   .flow-body {{ padding: 16px; flex: 1; }}
   .flow-body p {{ font-size: 0.875rem; color: var(--body); margin-top: 0; }}
-  .flow-link {{ padding: 12px 16px; border-top: 1px solid var(--line); font-size: 0.875rem; }}
+  /* --- interface: the composable part of a pattern, so it leads ------- */
+  .iface {{ margin: 14px 0 0; padding: 10px 12px; border: 1px solid var(--line);
+    border-left: 2px solid var(--accent); border-radius: 4px; background: var(--bg-soft); }}
+  .iface .io {{ display: grid; grid-template-columns: 4.25rem 1fr; gap: 10px;
+    margin: 0; font-size: 0.8125rem; color: var(--ink); line-height: 1.5; }}
+  .iface .io + .io {{ margin-top: 8px; padding-top: 8px;
+    border-top: 1px solid var(--line); }}
+  .iface .io-label {{ font-size: 0.6875rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); padding-top: 0.125rem; }}
+  .iface .muted {{ font-size: 0.6875rem; }}
+  /* Realisation is to a flow what the interface is to a pattern, so it takes
+     the same block - stacked here, because the steps are ordered. */
+  .iface.steps .io-label {{ display: block; margin: 0 0 6px; }}
+  ol.step-list {{ margin: 0; padding-left: 1.5rem; font-size: 0.8125rem;
+    color: var(--ink); line-height: 1.5; }}
+  ol.step-list li {{ padding: 1px 0; }}
+  ol.step-list li::marker {{ color: var(--body); font-size: 0.6875rem; }}
+  ol.step-list a {{ color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }}
+  ol.step-list a:hover {{ color: var(--accent); border-bottom-color: currentColor; }}
+  /* --- classification: filing, not composition, so it sits back ------- */
+  .classify {{ margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }}
+  .classify .meta {{ font-size: 0.75rem; margin: 3px 0; }}
+  .classify .meta strong {{ font-weight: 500; }}
+  /* Long cross-reference lists - what a pattern enables, the flows that
+     realise it - are navigation, not emphasis. Nine accent links in a row
+     read as a warning; they only take the accent on hover. */
+  .meta.enables a, .flow-link a {{ color: var(--body); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }}
+  .meta.enables a:hover, .flow-link a:hover {{ color: var(--accent);
+    border-bottom-color: currentColor; }}
+  .meta.sectors {{ display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; }}
+  .chip {{ display: inline-flex; align-items: baseline; gap: 4px; padding: 1px 6px 1px 3px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--bg-soft);
+    font-size: 0.6875rem; line-height: 1.5; color: var(--body); }}
+  .chip .code {{ margin-right: 0; }}
+  /* Body colour on the container, so a flow that is only named does not
+     outshine the ones that link to a worked document. */
+  .flow-link {{ padding: 12px 16px; border-top: 1px solid var(--line);
+    font-size: 0.8125rem; line-height: 1.55; color: var(--body); }}
   .status {{ font-size: 0.75rem; color: var(--body); }}
   footer.site {{ border-top: 1px solid var(--line); margin-top: 40px; }}
   footer.site .wrap {{ display: flex; flex-wrap: wrap; gap: 10px 24px;

@@ -209,20 +209,81 @@
   .mode { font-weight: 600; }
   .mode-change { color: var(--accent); }
   .meta.asym { color: var(--accent); }
+  /* The tree's structure is carried by indentation, so the node names read as
+     text in the body colour; the accent is kept for hover, as elsewhere. */
   ul.chain { font-size: 0.875rem; }
   ul.chain ul { margin: 4px 0; }
   ul.chain li { padding: 2px 0; }
-  ol.stages { font-size: 0.8125rem; color: var(--body); padding-left: 20px; margin: 0; }
-  ol.stages li { padding: 2px 0; }
-  .flows { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  ul.chain a { color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }
+  ul.chain a:hover { color: var(--accent); border-bottom-color: currentColor; }
+  ol.stages { font-size: 0.8125rem; color: var(--body); padding-left: 1.5rem; margin: 0; }
+  ol.stages li { padding: 4px 0; border-bottom: 1px solid var(--line); }
+  ol.stages li:last-child { border-bottom: none; }
+  ol.stages li::marker { color: var(--body); font-size: 0.6875rem; }
+  .stage-label { color: var(--ink); }
+  ol.stages a { color: var(--body); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }
+  ol.stages a:hover { color: var(--accent); border-bottom-color: currentColor; }
+  /* A tag rather than running red text: a stream with ten uncovered stages
+     should read as ten marks to scan, not as ten error messages. nowrap
+     stops "no use case / yet" breaking across the line. */
+  .gap { display: inline-block; color: var(--accent); font-size: 0.6875rem;
+    border: 1px solid var(--line); border-radius: 10px; padding: 0 7px;
+    line-height: 1.5; white-space: nowrap; background: var(--bg-soft); }
+  /* Cards size to their own content: one pattern realised by nine flows must
+     not set the row height for the three beside it. */
+  .flows { display: grid; gap: 16px; align-items: start;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
   .flow { border: 1px solid var(--line); border-radius: 6px; display: flex;
     flex-direction: column; scroll-margin-top: 20px; }
   .flow-tag { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: .06em;
     color: var(--body); padding: 10px 16px; border-bottom: 1px solid var(--line);
     background: var(--bg-soft); }
+  /* The sector code keeps its own casing inside an uppercased tag line. */
+  .flow-tag .code { text-transform: none; letter-spacing: 0; }
   .flow-body { padding: 16px; flex: 1; }
   .flow-body p { font-size: 0.875rem; color: var(--body); margin-top: 0; }
-  .flow-link { padding: 12px 16px; border-top: 1px solid var(--line); font-size: 0.875rem; }
+  /* --- interface: the composable part of a pattern, so it leads ------- */
+  .iface { margin: 14px 0 0; padding: 10px 12px; border: 1px solid var(--line);
+    border-left: 2px solid var(--accent); border-radius: 4px; background: var(--bg-soft); }
+  .iface .io { display: grid; grid-template-columns: 4.25rem 1fr; gap: 10px;
+    margin: 0; font-size: 0.8125rem; color: var(--ink); line-height: 1.5; }
+  .iface .io + .io { margin-top: 8px; padding-top: 8px;
+    border-top: 1px solid var(--line); }
+  .iface .io-label { font-size: 0.6875rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--body); padding-top: 0.125rem; }
+  .iface .muted { font-size: 0.6875rem; }
+  /* Realisation is to a flow what the interface is to a pattern, so it takes
+     the same block - stacked here, because the steps are ordered. */
+  .iface.steps .io-label { display: block; margin: 0 0 6px; }
+  ol.step-list { margin: 0; padding-left: 1.5rem; font-size: 0.8125rem;
+    color: var(--ink); line-height: 1.5; }
+  ol.step-list li { padding: 1px 0; }
+  ol.step-list li::marker { color: var(--body); font-size: 0.6875rem; }
+  ol.step-list a { color: var(--ink); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }
+  ol.step-list a:hover { color: var(--accent); border-bottom-color: currentColor; }
+  /* --- classification: filing, not composition, so it sits back ------- */
+  .classify { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .classify .meta { font-size: 0.75rem; margin: 3px 0; }
+  .classify .meta strong { font-weight: 500; }
+  /* Long cross-reference lists - what a pattern enables, the flows that
+     realise it - are navigation, not emphasis. Nine accent links in a row
+     read as a warning; they only take the accent on hover. */
+  .meta.enables a, .flow-link a { color: var(--body); text-decoration: none;
+    border-bottom: 1px dotted var(--line); }
+  .meta.enables a:hover, .flow-link a:hover { color: var(--accent);
+    border-bottom-color: currentColor; }
+  .meta.sectors { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; }
+  .chip { display: inline-flex; align-items: baseline; gap: 4px; padding: 1px 6px 1px 3px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--bg-soft);
+    font-size: 0.6875rem; line-height: 1.5; color: var(--body); }
+  .chip .code { margin-right: 0; }
+  /* Body colour on the container, so a flow that is only named does not
+     outshine the ones that link to a worked document. */
+  .flow-link { padding: 12px 16px; border-top: 1px solid var(--line);
+    font-size: 0.8125rem; line-height: 1.55; color: var(--body); }
   .status { font-size: 0.75rem; color: var(--body); }
   footer.site { border-top: 1px solid var(--line); margin-top: 40px; }
   footer.site .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px;
@@ -444,12 +505,16 @@
         <div class="flow-body">
           <h3>Electronic identity issuance</h3>
           <p>An issuing authority identifies a person and issues a state electronic identity into their wallet.</p>
-          <p class="meta"><strong>Requires:</strong> &mdash; nothing</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Electronic identity held <span class="muted">(as Electronic identity credential)</span></strong></p>
-          <p class="meta"><strong>Enables:</strong> <a href="#age-threshold-verification">Age threshold verification</a>, <a href="#identity-verification">Identity verification</a></p>
-          <p class="meta"><strong>Primary function:</strong> Certification and attestation</p>
-          <p class="meta"><strong>Supporting:</strong> Identity proofing, Records management, Regulatory compliance</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">8411</span> General public administration activities</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">&mdash; nothing</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Electronic identity held <span class="muted">(as Electronic identity credential)</span></strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta enables"><strong>Enables:</strong> <a href="#age-threshold-verification">Age threshold verification</a>, <a href="#identity-verification">Identity verification</a></p>
+            <p class="meta"><strong>Primary function:</strong> Certification and attestation</p>
+            <p class="meta"><strong>Supporting:</strong> Identity proofing, Records management, Regulatory compliance</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">8411</span>General public administration activities</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow">Swiss e-ID issuance &rarr;</a></div>
       </div>
@@ -459,13 +524,17 @@
         <div class="flow-body">
           <h3>Identity verification</h3>
           <p>A relying party checks presented identity evidence and establishes who the subject is, to the level of assurance the interaction needs.</p>
-          <p class="meta"><strong>Requires:</strong> Identity evidence available</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Identity verified</strong></p>
-          <p class="meta"><strong>Enables:</strong> <a href="#credential-recovery-reidentification">Re-identification for credential recovery</a>, <a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a>, <a href="#education-qualification-issuance">Education qualification issuance</a>, <a href="#employment-engagement">Employment engagement</a>, <a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a>, <a href="#patient-record-matching">Patient record matching</a>, <a href="#public-service-access">Public service access</a>, <a href="#tertiary-admission">Tertiary admission</a></p>
-          <p class="meta"><strong>Primary function:</strong> Identity proofing</p>
-          <p class="meta"><strong>Supporting:</strong> &mdash;</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">6419</span> Other monetary intermediation, <span class="code">8411</span> General public administration activities, <span class="code">8531</span> General secondary education, <span class="code">8540</span> Tertiary education, <span class="code">8610</span> Hospital activities, <span class="code">4711</span> Non-specialized retail sale with food, beverages or tobacco predominating, <span class="code">5610</span> Restaurants and mobile food service activities</p>
-          <p class="meta"><strong>Value stream stage:</strong> Order to cash &mdash; Establish who the customer is, Hire to retire &mdash; Establish who the candidate is</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity evidence available</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Identity verified</strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta enables"><strong>Enables:</strong> <a href="#credential-recovery-reidentification">Re-identification for credential recovery</a>, <a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a>, <a href="#education-qualification-issuance">Education qualification issuance</a>, <a href="#employment-engagement">Employment engagement</a>, <a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a>, <a href="#patient-record-matching">Patient record matching</a>, <a href="#public-service-access">Public service access</a>, <a href="#tertiary-admission">Tertiary admission</a></p>
+            <p class="meta"><strong>Primary function:</strong> Identity proofing</p>
+            <p class="meta"><strong>Supporting:</strong> &mdash;</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">6419</span>Other monetary intermediation</span><span class="chip"><span class="code">8411</span>General public administration activities</span><span class="chip"><span class="code">8531</span>General secondary education</span><span class="chip"><span class="code">8540</span>Tertiary education</span><span class="chip"><span class="code">8610</span>Hospital activities</span><span class="chip"><span class="code">4711</span>Non-specialized retail sale with food, beverages or tobacco predominating</span><span class="chip"><span class="code">5610</span>Restaurants and mobile food service activities</span></p>
+            <p class="meta"><strong>Value stream stage:</strong> Order to cash &mdash; Establish who the customer is, Hire to retire &mdash; Establish who the candidate is</p>
+          </div>
         </div>
 <div class="flow-link">Realised by <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority">Re-identification at the age of majority &rarr;</a>, <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential">Swiss bank onboarding with a reusable KYC attestation &rarr;</a>, <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password">Re-identification after a forgotten password &rarr;</a>, Federal vocational certificate issuance, <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Swiss university immatriculation &rarr;</a>, <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Maturitätszeugnis issuance &rarr;</a>, Government service portal access, <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow">Swiss e-ID presentation and verification &rarr;</a>, Employee onboarding, Patient identification at admission</div>
       </div>
@@ -475,13 +544,17 @@
         <div class="flow-body">
           <h3>Qualification verification</h3>
           <p>A relying party checks presented evidence of an education or training qualification and establishes that the subject holds it.</p>
-          <p class="meta"><strong>Requires:</strong> Education qualification evidence available</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Qualification verified</strong></p>
-          <p class="meta"><strong>Enables:</strong> <a href="#employment-engagement">Employment engagement</a>, <a href="#tertiary-admission">Tertiary admission</a></p>
-          <p class="meta"><strong>Primary function:</strong> Eligibility verification</p>
-          <p class="meta"><strong>Supporting:</strong> &mdash;</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">8540</span> Tertiary education, <span class="code">C</span> Manufacturing</p>
-          <p class="meta"><strong>Value stream stage:</strong> Hire to retire &mdash; Check right to work and qualifications</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Education qualification evidence available</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Qualification verified</strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta enables"><strong>Enables:</strong> <a href="#employment-engagement">Employment engagement</a>, <a href="#tertiary-admission">Tertiary admission</a></p>
+            <p class="meta"><strong>Primary function:</strong> Eligibility verification</p>
+            <p class="meta"><strong>Supporting:</strong> &mdash;</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">8540</span>Tertiary education</span><span class="chip"><span class="code">C</span>Manufacturing</span></p>
+            <p class="meta"><strong>Value stream stage:</strong> Hire to retire &mdash; Check right to work and qualifications</p>
+          </div>
         </div>
 <div class="flow-link">Realised by <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Swiss university immatriculation &rarr;</a>, Employee onboarding</div>
       </div>
@@ -491,13 +564,17 @@
         <div class="flow-body">
           <h3>Accreditation verification</h3>
           <p>A relying party checks an organisation&#x27;s presented accreditations and establishes that they are genuine and current.</p>
-          <p class="meta"><strong>Requires:</strong> Accreditation evidence available <span class="muted">(organisation)</span></p>
-          <p class="meta"><strong>Provides:</strong> <strong>Accreditation verified <span class="muted">(organisation)</span></strong></p>
-          <p class="meta"><strong>Enables:</strong> <a href="#supplier-qualification">Supplier qualification</a></p>
-          <p class="meta"><strong>Primary function:</strong> Audit and assurance</p>
-          <p class="meta"><strong>Supporting:</strong> &mdash;</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">2100</span> Manufacture of pharmaceuticals, medicinal chemical and botanical products, <span class="code">3030</span> Manufacture of air and spacecraft and related machinery</p>
-          <p class="meta"><strong>Value stream stage:</strong> Procure to pay &mdash; Check accreditations and audit reports</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Accreditation evidence available <span class="muted">(organisation)</span></span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Accreditation verified <span class="muted">(organisation)</span></strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta enables"><strong>Enables:</strong> <a href="#supplier-qualification">Supplier qualification</a></p>
+            <p class="meta"><strong>Primary function:</strong> Audit and assurance</p>
+            <p class="meta"><strong>Supporting:</strong> &mdash;</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">2100</span>Manufacture of pharmaceuticals, medicinal chemical and botanical products</span><span class="chip"><span class="code">3030</span>Manufacture of air and spacecraft and related machinery</span></p>
+            <p class="meta"><strong>Value stream stage:</strong> Procure to pay &mdash; Check accreditations and audit reports</p>
+          </div>
         </div>
 <div class="flow-link">Realised by Aerospace supplier qualification, Pharmaceutical supplier qualification</div>
       </div>
@@ -507,11 +584,15 @@
         <div class="flow-body">
           <h3>Age threshold verification</h3>
           <p>A relying party establishes that the subject is over a stated age, learning nothing else about them.</p>
-          <p class="meta"><strong>Requires:</strong> Identity evidence available</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Age attribute proven</strong></p>
-          <p class="meta"><strong>Primary function:</strong> Eligibility verification</p>
-          <p class="meta"><strong>Supporting:</strong> Regulatory compliance</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">4711</span> Non-specialized retail sale with food, beverages or tobacco predominating, <span class="code">5610</span> Restaurants and mobile food service activities</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity evidence available</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Age attribute proven</strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Eligibility verification</p>
+            <p class="meta"><strong>Supporting:</strong> Regulatory compliance</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">4711</span>Non-specialized retail sale with food, beverages or tobacco predominating</span><span class="chip"><span class="code">5610</span>Restaurants and mobile food service activities</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by Age check in hospitality, Age check at a retail point of sale</div>
       </div>
@@ -521,13 +602,17 @@
         <div class="flow-body">
           <h3>Onboarding with regulatory due diligence</h3>
           <p>A regulated organisation opens a relationship with a customer whose identity is already established, performs the due diligence its supervisor requires, and issues a reusable attestation that it did so.</p>
-          <p class="meta"><strong>Requires:</strong> Identity verified</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Customer relationship open</strong>, KYC attestation held <span class="muted">(as KYC attestation)</span></p>
-          <p class="meta"><strong>Enables:</strong> <a href="#credential-recovery-reidentification">Re-identification for credential recovery</a>, <a href="#due-diligence-refresh">Periodic due diligence re-evaluation</a>, <a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a></p>
-          <p class="meta"><strong>Primary function:</strong> Relationship onboarding</p>
-          <p class="meta"><strong>Supporting:</strong> Regulatory compliance</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">6419</span> Other monetary intermediation, <span class="code">6512</span> Non-life insurance</p>
-          <p class="meta"><strong>Value stream stage:</strong> Order to cash &mdash; Establish the customer relationship</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity verified</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Customer relationship open</strong>, KYC attestation held <span class="muted">(as KYC attestation)</span></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta enables"><strong>Enables:</strong> <a href="#credential-recovery-reidentification">Re-identification for credential recovery</a>, <a href="#due-diligence-refresh">Periodic due diligence re-evaluation</a>, <a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a></p>
+            <p class="meta"><strong>Primary function:</strong> Relationship onboarding</p>
+            <p class="meta"><strong>Supporting:</strong> Regulatory compliance</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">6419</span>Other monetary intermediation</span><span class="chip"><span class="code">6512</span>Non-life insurance</span></p>
+            <p class="meta"><strong>Value stream stage:</strong> Order to cash &mdash; Establish the customer relationship</p>
+          </div>
         </div>
 <div class="flow-link">Realised by <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential">Swiss bank onboarding with a reusable KYC attestation &rarr;</a></div>
       </div>
@@ -537,11 +622,15 @@
         <div class="flow-body">
           <h3>Periodic due diligence re-evaluation</h3>
           <p>An organisation re-runs customer due diligence on an existing relationship at the interval its supervisor requires.</p>
-          <p class="meta"><strong>Requires:</strong> Customer relationship open, Due diligence evidence available</p>
-          <p class="meta"><strong>Provides:</strong> <strong>KYC attestation current <span class="muted">(as KYC currency attestation)</span></strong></p>
-          <p class="meta"><strong>Primary function:</strong> Regulatory compliance</p>
-          <p class="meta"><strong>Supporting:</strong> Identity lifecycle management</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">6419</span> Other monetary intermediation, <span class="code">6512</span> Non-life insurance</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Customer relationship open, Due diligence evidence available</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>KYC attestation current <span class="muted">(as KYC currency attestation)</span></strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Regulatory compliance</p>
+            <p class="meta"><strong>Supporting:</strong> Identity lifecycle management</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">6419</span>Other monetary intermediation</span><span class="chip"><span class="code">6512</span>Non-life insurance</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential">Swiss bank periodic KYC re-evaluation &rarr;</a></div>
       </div>
@@ -551,11 +640,15 @@
         <div class="flow-body">
           <h3>Re-identification for credential recovery</h3>
           <p>A customer who has lost their access credentials is re-identified before access is restored.</p>
-          <p class="meta"><strong>Requires:</strong> Customer relationship open, Identity verified</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Access granted</strong></p>
-          <p class="meta"><strong>Primary function:</strong> Identity lifecycle management</p>
-          <p class="meta"><strong>Supporting:</strong> Request and complaint handling, Access management</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">6419</span> Other monetary intermediation</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Customer relationship open, Identity verified</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Access granted</strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Identity lifecycle management</p>
+            <p class="meta"><strong>Supporting:</strong> Request and complaint handling, Access management</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">6419</span>Other monetary intermediation</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password">Re-identification after a forgotten password &rarr;</a></div>
       </div>
@@ -565,11 +658,15 @@
         <div class="flow-body">
           <h3>Re-identification at a change of legal capacity</h3>
           <p>A relationship entered at limited legal capacity is re-established at full capacity, typically on reaching majority.</p>
-          <p class="meta"><strong>Requires:</strong> Customer relationship open, Identity verified</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Legal capacity established</strong></p>
-          <p class="meta"><strong>Primary function:</strong> Identity lifecycle management</p>
-          <p class="meta"><strong>Supporting:</strong> Regulatory compliance</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">6419</span> Other monetary intermediation</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Customer relationship open, Identity verified</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Legal capacity established</strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Identity lifecycle management</p>
+            <p class="meta"><strong>Supporting:</strong> Regulatory compliance</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">6419</span>Other monetary intermediation</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority">Re-identification at the age of majority &rarr;</a></div>
       </div>
@@ -579,12 +676,16 @@
         <div class="flow-body">
           <h3>Education qualification issuance</h3>
           <p>An awarding institution issues a completed education or training qualification to the graduate as a verifiable credential.</p>
-          <p class="meta"><strong>Requires:</strong> Identity verified</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Upper-secondary qualification held</strong></p>
-          <p class="meta"><strong>Enables:</strong> <a href="#qualification-verification">Qualification verification</a></p>
-          <p class="meta"><strong>Primary function:</strong> Certification and attestation</p>
-          <p class="meta"><strong>Supporting:</strong> Records management</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">8531</span> General secondary education</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity verified</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Upper-secondary qualification held</strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta enables"><strong>Enables:</strong> <a href="#qualification-verification">Qualification verification</a></p>
+            <p class="meta"><strong>Primary function:</strong> Certification and attestation</p>
+            <p class="meta"><strong>Supporting:</strong> Records management</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">8531</span>General secondary education</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by Federal vocational certificate issuance, <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Maturitätszeugnis issuance &rarr;</a></div>
       </div>
@@ -594,11 +695,15 @@
         <div class="flow-body">
           <h3>Tertiary admission</h3>
           <p>A higher education institution admits a student on established identity and qualification.</p>
-          <p class="meta"><strong>Requires:</strong> Identity verified, Qualification verified</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Tertiary enrolment established</strong>, Tertiary enrolment evidence held <span class="muted">(as Tertiary enrolment attestation)</span></p>
-          <p class="meta"><strong>Primary function:</strong> Relationship onboarding</p>
-          <p class="meta"><strong>Supporting:</strong> Records management</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">8540</span> Tertiary education</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity verified, Qualification verified</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Tertiary enrolment established</strong>, Tertiary enrolment evidence held <span class="muted">(as Tertiary enrolment attestation)</span></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Relationship onboarding</p>
+            <p class="meta"><strong>Supporting:</strong> Records management</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">8540</span>Tertiary education</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by <a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Swiss university immatriculation &rarr;</a></div>
       </div>
@@ -608,12 +713,16 @@
         <div class="flow-body">
           <h3>Employment engagement</h3>
           <p>An employer engages a candidate whose identity and qualifications are already established, and issues evidence of the employment relationship.</p>
-          <p class="meta"><strong>Requires:</strong> Identity verified, Qualification verified</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Employment relationship open</strong>, Employment evidence held <span class="muted">(as Employment attestation)</span></p>
-          <p class="meta"><strong>Primary function:</strong> Human capital management</p>
-          <p class="meta"><strong>Supporting:</strong> Contracting and signing</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">C</span> Manufacturing, <span class="code">K</span> Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities, <span class="code">L</span> Financial and insurance activities, <span class="code">Q</span> Education, <span class="code">R</span> Human health and social work activities</p>
-          <p class="meta"><strong>Value stream stage:</strong> Hire to retire &mdash; Recruit and employ</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity verified, Qualification verified</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Employment relationship open</strong>, Employment evidence held <span class="muted">(as Employment attestation)</span></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Human capital management</p>
+            <p class="meta"><strong>Supporting:</strong> Contracting and signing</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">C</span>Manufacturing</span><span class="chip"><span class="code">K</span>Telecommunications, computer programming, consultancy, computing infrastructure, and other information service activities</span><span class="chip"><span class="code">L</span>Financial and insurance activities</span><span class="chip"><span class="code">Q</span>Education</span><span class="chip"><span class="code">R</span>Human health and social work activities</span></p>
+            <p class="meta"><strong>Value stream stage:</strong> Hire to retire &mdash; Recruit and employ</p>
+          </div>
         </div>
 <div class="flow-link">Realised by Employee onboarding</div>
       </div>
@@ -623,11 +732,15 @@
         <div class="flow-body">
           <h3>Patient record matching</h3>
           <p>A care provider binds an identified person to the correct medical record.</p>
-          <p class="meta"><strong>Requires:</strong> Identity verified</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Patient record linked</strong></p>
-          <p class="meta"><strong>Primary function:</strong> Service delivery</p>
-          <p class="meta"><strong>Supporting:</strong> Records management</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">8610</span> Hospital activities</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity verified</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Patient record linked</strong></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Service delivery</p>
+            <p class="meta"><strong>Supporting:</strong> Records management</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">8610</span>Hospital activities</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by Patient identification at admission</div>
       </div>
@@ -637,11 +750,15 @@
         <div class="flow-body">
           <h3>Public service access</h3>
           <p>A public administration grants a resident access to an online service and establishes the entitlement that service rests on.</p>
-          <p class="meta"><strong>Requires:</strong> Identity verified</p>
-          <p class="meta"><strong>Provides:</strong> <strong>Access granted</strong>, Service entitlement established, Service entitlement evidence held <span class="muted">(as Service entitlement attestation)</span></p>
-          <p class="meta"><strong>Primary function:</strong> Access management</p>
-          <p class="meta"><strong>Supporting:</strong> Service delivery, Entitlement administration</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">8411</span> General public administration activities</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Identity verified</span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Access granted</strong>, Service entitlement established, Service entitlement evidence held <span class="muted">(as Service entitlement attestation)</span></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Access management</p>
+            <p class="meta"><strong>Supporting:</strong> Service delivery, Entitlement administration</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">8411</span>General public administration activities</span></p>
+          </div>
         </div>
 <div class="flow-link">Realised by Government service portal access</div>
       </div>
@@ -651,12 +768,16 @@
         <div class="flow-body">
           <h3>Supplier qualification</h3>
           <p>A buying organisation decides that a supplier with verified accreditations is eligible to be contracted, and records the decision.</p>
-          <p class="meta"><strong>Requires:</strong> Accreditation verified <span class="muted">(organisation)</span></p>
-          <p class="meta"><strong>Provides:</strong> <strong>Supplier qualified <span class="muted">(organisation)</span></strong>, Supplier qualification evidence held <span class="muted">(organisation, as Supplier qualification record)</span></p>
-          <p class="meta"><strong>Primary function:</strong> Sourcing and procurement</p>
-          <p class="meta"><strong>Supporting:</strong> Product compliance, Quality assurance, Supply chain traceability, Regulatory compliance</p>
-          <p class="meta"><strong>Applies in:</strong> <span class="code">2100</span> Manufacture of pharmaceuticals, medicinal chemical and botanical products, <span class="code">3030</span> Manufacture of air and spacecraft and related machinery</p>
-          <p class="meta"><strong>Value stream stage:</strong> Procure to pay &mdash; Source and qualify</p>
+          <div class="iface">
+            <p class="io"><span class="io-label">Requires</span><span class="io-val">Accreditation verified <span class="muted">(organisation)</span></span></p>
+            <p class="io"><span class="io-label">Provides</span><span class="io-val"><strong>Supplier qualified <span class="muted">(organisation)</span></strong>, Supplier qualification evidence held <span class="muted">(organisation, as Supplier qualification record)</span></span></p>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Primary function:</strong> Sourcing and procurement</p>
+            <p class="meta"><strong>Supporting:</strong> Product compliance, Quality assurance, Supply chain traceability, Regulatory compliance</p>
+            <p class="meta sectors"><strong>Applies in:</strong> <span class="chip"><span class="code">2100</span>Manufacture of pharmaceuticals, medicinal chemical and botanical products</span><span class="chip"><span class="code">3030</span>Manufacture of air and spacecraft and related machinery</span></p>
+            <p class="meta"><strong>Value stream stage:</strong> Procure to pay &mdash; Source and qualify</p>
+          </div>
         </div>
 <div class="flow-link">Realised by Aerospace supplier qualification, Pharmaceutical supplier qualification</div>
       </div>
@@ -676,14 +797,21 @@
     </p>
     <div class="flows">
       <div class="flow" id="eid-issuance-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;8411&lt;/span&gt; General public administration activities &amp;middot; CH
+        <div class="flow-tag"><span class="code">8411</span> General public administration activities &middot; CH
           &middot; Modelled</div>
         <div class="flow-body">
           <h3>Swiss e-ID issuance</h3>
           <p>The federal issuer identifies a resident and issues the EID into their wallet.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#eid-issuance">Electronic identity issuance</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
-          <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Federal e-ID issuer, Federal trust registry</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#eid-issuance">Electronic identity issuance</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+            <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Federal e-ID issuer, Federal trust registry</p>
+          </div>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow">Worked flow &rarr;</a></div>
       </div>
@@ -693,167 +821,285 @@
         <div class="flow-body">
           <h3>Swiss e-ID presentation and verification</h3>
           <p>A relying party requests a presentation from the wallet and verifies it against the federal trust infrastructure.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
-          <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Federal trust registry</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+            <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Federal trust registry</p>
+          </div>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/basic-flow">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="banking-kyc-onboarding-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;6419&lt;/span&gt; Other monetary intermediation &amp;middot; CH
+        <div class="flow-tag"><span class="code">6419</span> Other monetary intermediation &middot; CH
           &middot; Modelled</div>
         <div class="flow-body">
           <h3>Swiss bank onboarding with a reusable KYC attestation</h3>
           <p>A prospective customer opens an account remotely. The bank verifies the e-ID, completes due diligence and issues a reusable KYC attestation.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential, KYC attestation</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential, KYC attestation</p>
+          </div>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="banking-re-kyc-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;6419&lt;/span&gt; Other monetary intermediation &amp;middot; CH
+        <div class="flow-tag"><span class="code">6419</span> Other monetary intermediation &middot; CH
           &middot; Modelled</div>
         <div class="flow-body">
           <h3>Swiss bank periodic KYC re-evaluation</h3>
           <p>The bank re-runs due diligence on an existing relationship at the supervisory interval.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#due-diligence-refresh">Periodic due diligence re-evaluation</a></p>
-          <p class="meta"><strong>Credentials:</strong> KYC attestation, KYC currency attestation</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#due-diligence-refresh">Periodic due diligence re-evaluation</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> KYC attestation, KYC currency attestation</p>
+          </div>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/KYC%20Credential">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="banking-password-reset-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;6419&lt;/span&gt; Other monetary intermediation &amp;middot; CH
+        <div class="flow-tag"><span class="code">6419</span> Other monetary intermediation &middot; CH
           &middot; Modelled</div>
         <div class="flow-body">
           <h3>Re-identification after a forgotten password</h3>
           <p>An e-banking customer who has lost their credentials is re-identified before access is restored.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#credential-recovery-reidentification">Re-identification for credential recovery</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#credential-recovery-reidentification">Re-identification for credential recovery</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          </div>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20After%20Forgotten%20Password">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="banking-age-of-majority-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;6419&lt;/span&gt; Other monetary intermediation &amp;middot; CH
+        <div class="flow-tag"><span class="code">6419</span> Other monetary intermediation &middot; CH
           &middot; Modelled</div>
         <div class="flow-body">
           <h3>Re-identification at the age of majority</h3>
           <p>A customer onboarded as a minor turns 18 and the relationship is re-established at full legal capacity, with a qualified electronic signature.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#legal-capacity-reidentification">Re-identification at a change of legal capacity</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          </div>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/banking/Re-Identification%20at%20Age%20of%20Majority">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="education-matura-issuance-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;8531&lt;/span&gt; General secondary education &amp;middot; CH
+        <div class="flow-tag"><span class="code">8531</span> General secondary education &middot; CH
           &middot; Modelled</div>
         <div class="flow-body">
           <h3>Maturitätszeugnis issuance</h3>
           <p>An upper-secondary school issues the gymnasiale Maturitätszeugnis to the graduate as a verifiable credential.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#education-qualification-issuance">Education qualification issuance</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Upper-secondary school-leaving certificate</p>
-          <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Upper-secondary school</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#education-qualification-issuance">Education qualification issuance</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Upper-secondary school-leaving certificate</p>
+            <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Upper-secondary school</p>
+          </div>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="education-efz-issuance-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;8531&lt;/span&gt; General secondary education &amp;middot; CH
+        <div class="flow-tag"><span class="code">8531</span> General secondary education &middot; CH
           &middot; Exploratory</div>
         <div class="flow-body">
           <h3>Federal vocational certificate issuance</h3>
           <p>A vocational school issues the eidgenössisches Fähigkeitszeugnis to the apprentice as a verifiable credential. The same pattern as the Maturität flow, a different credential.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#education-qualification-issuance">Education qualification issuance</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Vocational qualification certificate</p>
-          <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Vocational school</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#education-qualification-issuance">Education qualification issuance</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Vocational qualification certificate</p>
+            <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Vocational school</p>
+          </div>
         </div>
 <div class="flow-link"><span class="status">Not yet documented</span></div>
       </div>
       <div class="flow" id="education-immatriculation-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;8540&lt;/span&gt; Tertiary education &amp;middot; CH
+        <div class="flow-tag"><span class="code">8540</span> Tertiary education &middot; CH
           &middot; Modelled</div>
         <div class="flow-body">
           <h3>Swiss university immatriculation</h3>
           <p>A university admits a student on the e-ID and an upper-secondary qualification, without re-collecting paper documents.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#qualification-verification">Qualification verification</a> &rarr; <a href="#tertiary-admission">Tertiary admission</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Upper-secondary school-leaving certificate, Tertiary enrolment attestation</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#qualification-verification">Qualification verification</a></li>
+              <li><a href="#tertiary-admission">Tertiary admission</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Upper-secondary school-leaving certificate, Tertiary enrolment attestation</p>
+          </div>
         </div>
 <div class="flow-link"><a href="https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/tree/main/education">Worked flow &rarr;</a></div>
       </div>
       <div class="flow" id="retail-age-check-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;4711&lt;/span&gt; Non-specialized retail sale with food, beverages or tobacco predominating &amp;middot; CH
+        <div class="flow-tag"><span class="code">4711</span> Non-specialized retail sale with food, beverages or tobacco predominating &middot; CH
           &middot; Exploratory</div>
         <div class="flow-body">
           <h3>Age check at a retail point of sale</h3>
           <p>A merchant checks that a customer is over the legal age for a restricted product.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#age-threshold-verification">Age threshold verification</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#age-threshold-verification">Age threshold verification</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          </div>
         </div>
 <div class="flow-link"><span class="status">Not yet documented</span></div>
       </div>
       <div class="flow" id="hospitality-age-check-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;5610&lt;/span&gt; Restaurants and mobile food service activities &amp;middot; CH
+        <div class="flow-tag"><span class="code">5610</span> Restaurants and mobile food service activities &middot; CH
           &middot; Exploratory</div>
         <div class="flow-body">
           <h3>Age check in hospitality</h3>
           <p>A restaurant checks that a guest is over the legal age for a restricted product. The same pattern as the retail flow, a different sector.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#age-threshold-verification">Age threshold verification</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#age-threshold-verification">Age threshold verification</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          </div>
         </div>
 <div class="flow-link"><span class="status">Not yet documented</span></div>
       </div>
       <div class="flow" id="employment-onboarding-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;C&lt;/span&gt; Manufacturing &amp;middot; CH
+        <div class="flow-tag"><span class="code">C</span> Manufacturing &middot; CH
           &middot; Exploratory</div>
         <div class="flow-body">
           <h3>Employee onboarding</h3>
           <p>An employer identifies a new hire, checks the qualifications the role requires and engages them.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#qualification-verification">Qualification verification</a> &rarr; <a href="#employment-engagement">Employment engagement</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Employment attestation, Upper-secondary school-leaving certificate</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#qualification-verification">Qualification verification</a></li>
+              <li><a href="#employment-engagement">Employment engagement</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Employment attestation, Upper-secondary school-leaving certificate</p>
+          </div>
         </div>
 <div class="flow-link"><span class="status">Not yet documented</span></div>
       </div>
       <div class="flow" id="healthcare-admission-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;8610&lt;/span&gt; Hospital activities &amp;middot; CH
+        <div class="flow-tag"><span class="code">8610</span> Hospital activities &middot; CH
           &middot; Exploratory</div>
         <div class="flow-body">
           <h3>Patient identification at admission</h3>
           <p>A hospital identifies a patient at admission and links them to the right record.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#patient-record-matching">Patient record matching</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#patient-record-matching">Patient record matching</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential</p>
+          </div>
         </div>
 <div class="flow-link"><span class="status">Not yet documented</span></div>
       </div>
       <div class="flow" id="egov-portal-ch">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;8411&lt;/span&gt; General public administration activities &amp;middot; CH
+        <div class="flow-tag"><span class="code">8411</span> General public administration activities &middot; CH
           &middot; Exploratory</div>
         <div class="flow-body">
           <h3>Government service portal access</h3>
           <p>A resident authenticates to a public-administration service portal and discloses the attributes that service requires.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#identity-verification">Identity verification</a> &rarr; <a href="#public-service-access">Public service access</a></p>
-          <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Service entitlement attestation</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#identity-verification">Identity verification</a></li>
+              <li><a href="#public-service-access">Public service access</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Electronic identity credential, Service entitlement attestation</p>
+          </div>
         </div>
 <div class="flow-link"><span class="status">Not yet documented</span></div>
       </div>
       <div class="flow" id="supplier-qualification-pharma">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;2100&lt;/span&gt; Manufacture of pharmaceuticals, medicinal chemical and botanical products &amp;middot; CH
+        <div class="flow-tag"><span class="code">2100</span> Manufacture of pharmaceuticals, medicinal chemical and botanical products &middot; CH
           &middot; Exploratory</div>
         <div class="flow-body">
           <h3>Pharmaceutical supplier qualification</h3>
           <p>A pharmaceutical manufacturer qualifies a supplier against GMP certification.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#accreditation-verification">Accreditation verification</a> &rarr; <a href="#supplier-qualification">Supplier qualification</a></p>
-          <p class="meta"><strong>Credentials:</strong> Quality accreditation certificate, Supplier qualification record</p>
-          <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Accreditation body</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#accreditation-verification">Accreditation verification</a></li>
+              <li><a href="#supplier-qualification">Supplier qualification</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Quality accreditation certificate, Supplier qualification record</p>
+            <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Accreditation body</p>
+          </div>
         </div>
 <div class="flow-link"><span class="status">Not yet documented</span></div>
       </div>
       <div class="flow" id="supplier-qualification-aerospace">
-        <div class="flow-tag">&lt;span class=&quot;code&quot;&gt;3030&lt;/span&gt; Manufacture of air and spacecraft and related machinery &amp;middot; CH
+        <div class="flow-tag"><span class="code">3030</span> Manufacture of air and spacecraft and related machinery &middot; CH
           &middot; Exploratory</div>
         <div class="flow-body">
           <h3>Aerospace supplier qualification</h3>
           <p>An aerospace manufacturer qualifies a supplier against quality accreditations. The same pattern as the pharmaceutical flow, a different sector.</p>
-          <p class="meta"><strong>Realises:</strong> <a href="#accreditation-verification">Accreditation verification</a> &rarr; <a href="#supplier-qualification">Supplier qualification</a></p>
-          <p class="meta"><strong>Credentials:</strong> Quality accreditation certificate, Supplier qualification record</p>
-          <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Accreditation body</p>
+          <div class="iface steps">
+            <p class="io-label">Realises</p>
+            <ol class="step-list">
+              <li><a href="#accreditation-verification">Accreditation verification</a></li>
+              <li><a href="#supplier-qualification">Supplier qualification</a></li>
+            </ol>
+          </div>
+          <div class="classify">
+            <p class="meta"><strong>Credentials:</strong> Quality accreditation certificate, Supplier qualification record</p>
+            <p class="meta asym"><strong>Recorded as bearing cost without direct value:</strong> Accreditation body</p>
+          </div>
         </div>
 <div class="flow-link"><span class="status">Not yet documented</span></div>
       </div>
@@ -870,9 +1116,9 @@
       the universal one. Stage numbers are a reading order, not an execution order.
     </p>
     <div class="axes">
-      <div><h3>Procure to pay</h3><p class="meta"><strong>Stream interface:</strong> Accreditation evidence available &rarr; Supplier qualified</p><ol class="stages"><li>Source and qualify<span class="muted"> &middot; Sourcing and procurement</span><span class="muted"> &middot; needs Accreditation verified</span><span class="muted"> &middot; gives Supplier qualified</span> &middot; <a href="#supplier-qualification">Supplier qualification</a></li><li>Establish the supplier is a real legal entity<span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Accreditation verified</span><span class="muted"> &middot; no use case yet</span></li><li>Assess counterparty and financial risk<span class="muted"> &middot; Credit and risk assessment</span><span class="muted"> &middot; no use case yet</span></li><li>Check accreditations and audit reports<span class="muted"> &middot; Audit and assurance</span><span class="muted"> &middot; needs Accreditation evidence available</span><span class="muted"> &middot; gives Accreditation verified</span> &middot; <a href="#accreditation-verification">Accreditation verification</a></li><li>Check conformity of what will be supplied<span class="muted"> &middot; Product compliance</span><span class="muted"> &middot; no use case yet</span></li><li>Agree and sign<span class="muted"> &middot; Contracting and signing</span><span class="muted"> &middot; needs Supplier qualified</span><span class="muted"> &middot; no use case yet</span></li><li>Establish provenance through delivery<span class="muted"> &middot; Supply chain traceability</span><span class="muted"> &middot; no use case yet</span></li><li>Clear the border<span class="muted"> &middot; Customs and trade facilitation</span><span class="muted"> &middot; no use case yet</span></li><li>Goods receipt against specification<span class="muted"> &middot; Quality assurance</span><span class="muted"> &middot; no use case yet</span></li><li>Invoice and payment<span class="muted"> &middot; Invoicing and settlement</span><span class="muted"> &middot; no use case yet</span></li><li>Substantiate the tax position<span class="muted"> &middot; Tax administration</span><span class="muted"> &middot; no use case yet</span></li><li>Retain the audit trail<span class="muted"> &middot; Records management</span><span class="muted"> &middot; no use case yet</span></li></ol></div>
-      <div><h3>Order to cash</h3><p class="meta"><strong>Stream interface:</strong> Identity evidence available &rarr; Customer relationship open</p><ol class="stages"><li>Establish the customer relationship<span class="muted"> &middot; Relationship onboarding</span><span class="muted"> &middot; needs Identity verified</span><span class="muted"> &middot; gives Customer relationship open</span> &middot; <a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a></li><li>Establish who the customer is<span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Identity verified</span> &middot; <a href="#identity-verification">Identity verification</a></li><li>Decide the terms to offer<span class="muted"> &middot; Credit and risk assessment</span><span class="muted"> &middot; no use case yet</span></li><li>Agree and sign<span class="muted"> &middot; Contracting and signing</span><span class="muted"> &middot; no use case yet</span></li><li>Deliver<span class="muted"> &middot; Service delivery</span><span class="muted"> &middot; no use case yet</span></li><li>Invoice and collect<span class="muted"> &middot; Invoicing and settlement</span><span class="muted"> &middot; no use case yet</span></li><li>Handle what goes wrong<span class="muted"> &middot; Request and complaint handling</span><span class="muted"> &middot; no use case yet</span></li><li>Retain the audit trail<span class="muted"> &middot; Records management</span><span class="muted"> &middot; no use case yet</span></li></ol></div>
-      <div><h3>Hire to retire</h3><p class="meta"><strong>Stream interface:</strong> Identity evidence available, Education qualification evidence available &rarr; Employment relationship open, Access granted</p><ol class="stages"><li>Recruit and employ<span class="muted"> &middot; Human capital management</span><span class="muted"> &middot; gives Employment relationship open</span> &middot; <a href="#employment-engagement">Employment engagement</a></li><li>Establish who the candidate is<span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Identity verified</span> &middot; <a href="#identity-verification">Identity verification</a></li><li>Check right to work and qualifications<span class="muted"> &middot; Eligibility verification</span><span class="muted"> &middot; needs Education qualification evidence available</span><span class="muted"> &middot; gives Qualification verified</span> &middot; <a href="#qualification-verification">Qualification verification</a></li><li>Agree and sign the employment contract<span class="muted"> &middot; Contracting and signing</span><span class="muted"> &middot; needs Identity verified, Qualification verified</span><span class="muted"> &middot; no use case yet</span></li><li>Provision and later revoke access<span class="muted"> &middot; Access management</span><span class="muted"> &middot; needs Employment relationship open</span><span class="muted"> &middot; gives Access granted</span><span class="muted"> &middot; no use case yet</span></li><li>Retain the employment record<span class="muted"> &middot; Records management</span><span class="muted"> &middot; no use case yet</span></li></ol></div>
+      <div><h3>Procure to pay</h3><p class="meta"><strong>Stream interface:</strong> Accreditation evidence available &rarr; Supplier qualified</p><ol class="stages"><li><span class="stage-label">Source and qualify</span><span class="muted"> &middot; Sourcing and procurement</span><span class="muted"> &middot; needs Accreditation verified</span><span class="muted"> &middot; gives Supplier qualified</span> &middot; <a href="#supplier-qualification">Supplier qualification</a></li><li><span class="stage-label">Establish the supplier is a real legal entity</span><span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Accreditation verified</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Assess counterparty and financial risk</span><span class="muted"> &middot; Credit and risk assessment</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Check accreditations and audit reports</span><span class="muted"> &middot; Audit and assurance</span><span class="muted"> &middot; needs Accreditation evidence available</span><span class="muted"> &middot; gives Accreditation verified</span> &middot; <a href="#accreditation-verification">Accreditation verification</a></li><li><span class="stage-label">Check conformity of what will be supplied</span><span class="muted"> &middot; Product compliance</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Agree and sign</span><span class="muted"> &middot; Contracting and signing</span><span class="muted"> &middot; needs Supplier qualified</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Establish provenance through delivery</span><span class="muted"> &middot; Supply chain traceability</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Clear the border</span><span class="muted"> &middot; Customs and trade facilitation</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Goods receipt against specification</span><span class="muted"> &middot; Quality assurance</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Invoice and payment</span><span class="muted"> &middot; Invoicing and settlement</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Substantiate the tax position</span><span class="muted"> &middot; Tax administration</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Retain the audit trail</span><span class="muted"> &middot; Records management</span> &middot; <span class="gap">no use case yet</span></li></ol></div>
+      <div><h3>Order to cash</h3><p class="meta"><strong>Stream interface:</strong> Identity evidence available &rarr; Customer relationship open</p><ol class="stages"><li><span class="stage-label">Establish the customer relationship</span><span class="muted"> &middot; Relationship onboarding</span><span class="muted"> &middot; needs Identity verified</span><span class="muted"> &middot; gives Customer relationship open</span> &middot; <a href="#due-diligence-onboarding">Onboarding with regulatory due diligence</a></li><li><span class="stage-label">Establish who the customer is</span><span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Identity verified</span> &middot; <a href="#identity-verification">Identity verification</a></li><li><span class="stage-label">Decide the terms to offer</span><span class="muted"> &middot; Credit and risk assessment</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Agree and sign</span><span class="muted"> &middot; Contracting and signing</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Deliver</span><span class="muted"> &middot; Service delivery</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Invoice and collect</span><span class="muted"> &middot; Invoicing and settlement</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Handle what goes wrong</span><span class="muted"> &middot; Request and complaint handling</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Retain the audit trail</span><span class="muted"> &middot; Records management</span> &middot; <span class="gap">no use case yet</span></li></ol></div>
+      <div><h3>Hire to retire</h3><p class="meta"><strong>Stream interface:</strong> Identity evidence available, Education qualification evidence available &rarr; Employment relationship open, Access granted</p><ol class="stages"><li><span class="stage-label">Recruit and employ</span><span class="muted"> &middot; Human capital management</span><span class="muted"> &middot; gives Employment relationship open</span> &middot; <a href="#employment-engagement">Employment engagement</a></li><li><span class="stage-label">Establish who the candidate is</span><span class="muted"> &middot; Identity proofing</span><span class="muted"> &middot; gives Identity verified</span> &middot; <a href="#identity-verification">Identity verification</a></li><li><span class="stage-label">Check right to work and qualifications</span><span class="muted"> &middot; Eligibility verification</span><span class="muted"> &middot; needs Education qualification evidence available</span><span class="muted"> &middot; gives Qualification verified</span> &middot; <a href="#qualification-verification">Qualification verification</a></li><li><span class="stage-label">Agree and sign the employment contract</span><span class="muted"> &middot; Contracting and signing</span><span class="muted"> &middot; needs Identity verified, Qualification verified</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Provision and later revoke access</span><span class="muted"> &middot; Access management</span><span class="muted"> &middot; needs Employment relationship open</span><span class="muted"> &middot; gives Access granted</span> &middot; <span class="gap">no use case yet</span></li><li><span class="stage-label">Retain the employment record</span><span class="muted"> &middot; Records management</span> &middot; <span class="gap">no use case yet</span></li></ol></div>
     </div>
   </section>
 
